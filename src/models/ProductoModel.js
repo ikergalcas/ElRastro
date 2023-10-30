@@ -14,7 +14,8 @@ const productSchema = new mongoose.Schema({
         type: String
     },
     historialPujas: {
-        type: [Number]
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'pujas'
     },
     precioFinal: {
         type: Number
@@ -29,6 +30,6 @@ const productSchema = new mongoose.Schema({
         type: String
     }
 
-})
+},{ versionKey: false });
 
 export default mongoose.model('productos', productSchema)

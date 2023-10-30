@@ -15,8 +15,8 @@ const userSchema = new mongoose.Schema({
         //unique: true
     },
     valoracionMedia: {
-        type: Number,
+        type:Number,
     }
-})
+},{ versionKey: false });
 
 export default mongoose.model('usuarios', userSchema)

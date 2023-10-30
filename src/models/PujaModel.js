@@ -12,6 +12,6 @@ const pujaSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,  
         ref: 'usuarios',  
     }
-});
+},{ versionKey: false });
 
 export default mongoose.model('pujas', pujaSchema);
