@@ -1,13 +1,20 @@
 import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema({
+    contacto: {
+        type: String,
+    },
+    ubicacion:{
+        type: String,
+    },
     username: {
         type: String,
-        required: true, //Esto hace que sea obligatorio que este atributo tenga un valor
-        trim: true,     //Esto hace que si hay espacios no los tiene en cuenta
-        unique: true
+        //(en principio lo quito pq en la bdd no esta puesto asi)
+        //required: true, //Esto hace que sea obligatorio que este atributo tenga un valor
+        //trim: true,     //Esto hace que si hay espacios no los tiene en cuenta
+        //unique: true
     },
-    valoracion: {
+    valoracionMedia: {
         type: Number,
     }
 })

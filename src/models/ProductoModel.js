@@ -1,8 +1,8 @@
 import mongoose from 'mongoose'
 
 const productSchema = new mongoose.Schema({
-    comprador: {
-        type: String
+    comentarios: {
+        type: [Number]
     },
     descripcion: {
         type: String
@@ -16,20 +16,14 @@ const productSchema = new mongoose.Schema({
     historialPujas: {
         type: [Number]
     },
-    localizacion: {
-        type: String 
-    },
-    precioActual: {
-        type: Number
-    },
     precioFinal: {
         type: Number
     },
-    precioInicial: {
-        type: Number
-    },
     titulo: {
-        type: Number
+        type: String
+    },
+    ubicacion: {
+        type: String 
     },
     vendedor: {
         type: String
