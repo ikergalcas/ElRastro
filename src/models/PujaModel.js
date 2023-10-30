@@ -1,16 +1,17 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
 const pujaSchema = new mongoose.Schema({
     precio: {
-        type: Number
+        type: Number,
     },
     producto: {
-        type: String
+        type: mongoose.Schema.Types.ObjectId,  //tipo ObjectId
+        ref: 'productos',  //nombre del modelo
     },
     usuario: {
-        type: String
+        type: mongoose.Schema.Types.ObjectId,  
+        ref: 'usuarios',  
     }
+});
 
-})
-
-export default mongoose.model('puja', pujaSchema)
+export default mongoose.model('pujas', pujaSchema);

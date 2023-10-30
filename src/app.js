@@ -13,6 +13,6 @@ app.use(express.json()) //Esto es para convertir los req.body en formato json
 
 app.use('/usuarios',routerUsuario)
 app.use('/productos', routerProducto)
-app.use('/puja', routerPuja)
+app.use('/pujas', routerPuja)
 
 export default app;
