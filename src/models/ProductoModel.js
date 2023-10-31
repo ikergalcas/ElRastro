@@ -27,14 +27,16 @@ const productSchema = new mongoose.Schema({
         type: String 
     },
     vendedor: {
-        type: String
+        type: [mongoose.Schema.Types.ObjectId],  
+        ref: 'usuarios',
     },
     comprador: {
         type:  [mongoose.Schema.Types.ObjectId],
         ref: 'usuarios'
     },
     vendido: {
-        type: Schema.Types.Boolean, default: false
+        type: [mongoose.Schema.Types.Boolean], 
+        default: false
     }
 
 },{ versionKey: false });

@@ -45,7 +45,7 @@ export const editProducto = async (req, res) => {
     try {
         const { id } = req.params;
         const updateData = req.body; //la info modificada
-
+        
         //buscamos user y modificamos
         const updatedProducto = await Producto.findByIdAndUpdate(id, updateData, {new: true});
 
@@ -78,3 +78,19 @@ export const deleteProducto = async (req, res) => {
         res.status(500).json({ message: 'Error al editar un producto' });
     }
 }
+
+// operación que devuelva los productos ofertados por un usuario
+export const getProductosdeUsuario = async (req, res) => {
+    try {
+        const { idUsuario } = req.params;
+        const listaProductos = await Producto.find({vendedor : idUsuario});
+
+        console.log(listaProductos)
+
+        res.json(listaProductos);
+
+    } catch (error) {
+        console.log('Error en la consulta de productos en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+};
