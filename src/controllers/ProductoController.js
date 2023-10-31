@@ -83,8 +83,8 @@ export const deleteProducto = async (req, res) => {
 export const getProductosdeUsuario = async (req, res) => {
     try {
         const { idUsuario } = req.params;
-        const listaProductos = await Producto.find({vendedor : idUsuario});
-
+        const listaProductos = (await Producto.find({vendedor : idUsuario}).sort({fechaCierre: -1}));
+        
         console.log(listaProductos)
 
         res.json(listaProductos);
