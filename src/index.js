@@ -1,8 +1,14 @@
 //Desde index.js arrancamos el backend
 
-import app from './app.js'  //Como el fichero app.js es creado por nosotros debemos indicar la direccion
+import appProducto from './apps/appProducto.js'  //Como el fichero app.js es creado por nosotros debemos indicar la direccion
+import appPuja from './apps/appPuja.js'
+import appUsuario from './apps/appUsuario.js'
 import {connectDB} from './db.js'   //Uso las llaves pq no he hecho export default
 
 connectDB()
-app.listen(3000)
-console.log('Server on port', 3000)
+appProducto.listen(3001)
+console.log('Server Productos on port', 3001)
+appPuja.listen(3002)
+console.log('Server Pujas on port', 3002)
+appUsuario.listen(3003)
+console.log('Server Usuario on port', 3003)
