@@ -79,11 +79,26 @@ export const deleteProducto = async (req, res) => {
     }
 }
 
-// operación que devuelva los productos ofertados por un usuario
+// operación que devuelva los productos ofertados por un usuario ordenados por la fecha
 export const getProductosdeUsuario = async (req, res) => {
     try {
         const { idUsuario } = req.params;
         const listaProductos = (await Producto.find({vendedor : idUsuario}).sort({fechaCierre: -1}));
+        
+        console.log(listaProductos)
+
+        res.json(listaProductos);
+
+    } catch (error) {
+        console.log('Error en la consulta de productos en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+};
+
+export const getProductosDescripcion = async (req, res) => {
+    try {
+        const {descripcion}  = req.body;
+        const listaProductos = (await Producto.find({descripcion: {$regex: descripcion, $options:"i"}}));
         
         console.log(listaProductos)
 

@@ -71,3 +71,50 @@ export const deletePuja = async (req, res) => {
         res.status(500).json({ message: 'Error al editar un Puja' });
     }
 }
+
+export const getPujaProducto = async (req, res) => {
+    try {
+        const { idProducto } = req.params;
+        const listaPujas = (await Puja.find({producto: idProducto}).sort({precio : -1}));
+        
+        console.log(listaPujas)
+
+        res.json(listaPujas);
+
+    } catch (error) {
+        console.log('Error en la consulta de pujas en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+};
+
+
+export const getPujaUsuario = async (req, res) => {
+    try {
+        const { idUsuario } = req.params;
+        const listaPujas = (await Puja.find({usuario: idUsuario}).sort({precio : 1}));
+        
+        console.log(listaPujas)
+
+        res.json(listaPujas);
+
+    } catch (error) {
+        console.log('Error en la consulta de pujas en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+};
+
+// $gt $gte $lt $lte
+export const getPujaPrecio = async (req, res) => {
+    try {
+        const {precio} = req.params;
+        const listaPujas = (await Puja.find({precio: {$gte:precio}}));
+        
+        console.log(listaPujas)
+
+        res.json(listaPujas);
+
+    } catch (error) {
+        console.log('Error en la consulta de pujas en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+};

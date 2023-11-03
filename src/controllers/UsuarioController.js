@@ -71,3 +71,18 @@ export const deleteUsuario = async (req, res) => {
         res.status(500).json({ message: 'Error al editar un usuario' });
     }
 }
+
+export const getUsuarioNombre = async (req, res) => {
+    try {
+        const {username}  = req.body;
+        const listaUsuarios = (await Usuario.find({username: {$regex: username, $options:"i"}}));
+        
+        console.log(listaUsuarios)
+
+        res.json(listaUsuarios);
+
+    } catch (error) {
+        console.log('Error en la consulta de usuarios en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+};
