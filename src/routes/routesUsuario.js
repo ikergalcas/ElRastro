@@ -9,5 +9,7 @@ routerUsuario.put('/:id', editUsuario)
 routerUsuario.delete('/:id', deleteUsuario)
 routerUsuario.post('/username',getUsuarioNombre)
 routerUsuario.post('/valoracion',getUsuarioValoracion)
+routerUsuario.get('/ubi/:idUsuario', getUbiUsuario)
+routerUsuario.post('/compradores',getCompradores)
 
 export default routerUsuario
