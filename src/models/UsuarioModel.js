@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
         //(en principio lo quito pq en la bdd no esta puesto asi)
         //required: true, //Esto hace que sea obligatorio que este atributo tenga un valor
         //trim: true,     //Esto hace que si hay espacios no los tiene en cuenta
-        //unique: true
+        unique: true
     },
     valoracionMedia: {
         type:Number,

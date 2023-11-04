@@ -1,4 +1,5 @@
 import Usuario from '../models/UsuarioModel.js'
+import Producto from "../models/ProductoModel.js";
 
 export const getAllUsuarios = async (req, res) => {
     try {
@@ -84,7 +85,7 @@ export const getUsuarioNombre = async (req, res) => {
 
     } catch (error) {
         console.log('Error en la consulta de usuarios en la base de datos: ', error)
-        res.status(500).json({ message: 'Error al obtener los usuarios' })
+        res.status(500).json({ message: 'Error al obtener el usuarios' })
     }
 };
 
@@ -102,3 +103,30 @@ export const getUsuarioValoracion = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener los usuarios' })
     }
 };
+
+export const getCompradores = async (req, res) => {
+    try {
+        const {username}  = req.body;
+        const usuario = (await Usuario.findOne({username: username}));
+        const listaProductos = (await Producto.find({vendedor: usuario._id}));
+        const listaIdCompradores = listaProductos.map((producto) => producto.comprador);
+
+        const listaCompradores = [];
+        
+        for (const comprador of listaIdCompradores) {
+            const compradorObjeto = await Usuario.findById(comprador);
+            listaCompradores.push(compradorObjeto);
+        }
+
+        console.log(listaCompradores)
+
+        res.json(listaCompradores);
+
+    } catch (error) {
+        console.log('Error en la consulta de usuarios en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener el usuario' })
+    }
+};
+
+
+
