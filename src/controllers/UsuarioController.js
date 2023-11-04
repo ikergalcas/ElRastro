@@ -128,5 +128,36 @@ export const getCompradores = async (req, res) => {
     }
 };
 
+export const getUbiUsuario = async (req, res) => {
+    try {
+        const {idUsuario} = req.params;
+        const usuario = await Usuario.findById(idUsuario);
+        if(usuario) {
+            const locationName = usuario.ubicacion;
+            //const locationName = "Calle babor, 13, Malaga";
+            const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}`;
+
+            fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                const firstResult = data[0];
+                const latitude = parseFloat(firstResult.lat);
+                const longitude = parseFloat(firstResult.lon);
+                console.log(`Latitud: ${latitude}, Longitud: ${longitude}`);
+                } else {
+                console.log("Ubicación no encontrada");
+                }
+            })
+            .catch(error => {
+                console.error("Error en la solicitud de geocodificación: " + error);
+            });
+        }
+
+    } catch (error) {
+        
+    }
+};
+
 
 
