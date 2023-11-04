@@ -95,6 +95,7 @@ export const getProductosdeUsuario = async (req, res) => {
     }
 };
 
+//obtener productos por descripcion
 export const getProductosDescripcion = async (req, res) => {
     try {
         const {descripcion}  = req.body;

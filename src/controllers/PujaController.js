@@ -72,6 +72,7 @@ export const deletePuja = async (req, res) => {
     }
 }
 
+//pujas de un producto
 export const getPujaProducto = async (req, res) => {
     try {
         const { idProducto } = req.params;
@@ -87,7 +88,7 @@ export const getPujaProducto = async (req, res) => {
     }
 };
 
-
+//pujas usuario
 export const getPujaUsuario = async (req, res) => {
     try {
         const { idUsuario } = req.params;
@@ -104,10 +105,11 @@ export const getPujaUsuario = async (req, res) => {
 };
 
 // $gt $gte $lt $lte
+//pujas por precio
 export const getPujaPrecio = async (req, res) => {
     try {
         const {precio} = req.params;
-        const listaPujas = (await Puja.find({precio: {$gte:precio}}));
+        const listaPujas = (await Puja.find({precio: {$lte:precio}}));
         
         console.log(listaPujas)
 

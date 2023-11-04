@@ -16,12 +16,13 @@ export const getAllUsuarios = async (req, res) => {
 
 export const createUsuario = async (req, res) => {
     try {
-        const { contacto, ubicacion, username } = req.body
+        const { contacto, ubicacion, username, valoracionMedia } = req.body
 
         const newUser = new Usuario({
             contacto,
             ubicacion,
-            username
+            username,
+            valoracionMedia
         })
 
         await newUser.save()
@@ -83,6 +84,21 @@ export const getUsuarioNombre = async (req, res) => {
 
     } catch (error) {
         console.log('Error en la consulta de usuarios en la base de datos: ', error)
-        res.status(500).json({ message: 'Error al obtener los productos' })
+        res.status(500).json({ message: 'Error al obtener los usuarios' })
+    }
+};
+
+export const getUsuarioValoracion = async (req, res) => {
+    try {
+        const {valoracionMedia} = req.body;
+        const listaUsuarios = (await Usuario.find({valoracionMedia: {$gte:valoracionMedia}}));
+        
+        console.log(listaUsuarios)
+
+        res.json(listaUsuarios);
+
+    } catch (error) {
+        console.log('Error en la consulta de usuarios en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener los usuarios' })
     }
 };
