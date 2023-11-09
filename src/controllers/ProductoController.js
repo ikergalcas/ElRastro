@@ -1,5 +1,8 @@
 import Producto from "../models/ProductoModel.js";
+import Usuario from "../models/UsuarioModel.js";
 import Puja from "../models/PujaModel.js";
+import { response } from "express";
+
 
 export const getAllProductos = async (req, res) => {
     try {
@@ -133,5 +136,154 @@ export const getProductosPujados = async (req, res) => {
     } catch (error) {
         console.log('Error en la consulta de productos en la base de datos: ', error)
         res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+};
+
+///HUELLA DE CARBONO
+
+//Huella carbono dada distancia (basico)
+
+/*export const getHuellaCarbono2 = async (req, res) => {
+    try {
+        const {distancia} = req.body;
+        const {peso} = req.body;
+        const {transporte} = req.body;
+    
+        const data = {
+            "type": "shipping",
+            "weight_value": peso,
+            "weight_unit": "g",
+            "distance_value": distancia,
+            "distance_unit": "km",
+            "transport_method": `${transporte}`
+        };
+          
+        const options = {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer wxfLsXHV9f8w4hmXKSxA'
+          }
+        };
+        const apiUrl = `https://www.carboninterface.com/api/v1/estimates`;
+
+        fetch(apiUrl,options)
+        .then(response => response.json())
+        .then(data => {
+            res.json(data.data.attributes.carbon_g)
+            console.log(data.data.attributes.carbon_g)
+        })  
+        .catch(error => {
+            console.error("Error en la solicitud de huella de carbono: " + error);
+        });
+ 
+    } catch (error) {
+        
+    }
+};*/
+
+//calcular desde ubicacion origen y ubicaion destino por hacer, combina openstreetmap y huella carbono
+function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2-lat1);  // deg2rad below
+    var dLon = deg2rad(lon2-lon1); 
+    var a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2)
+        ; 
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    var d = R * c; // Distance in km
+    return d;
+    }
+    
+    function deg2rad(deg) {
+    return deg * (Math.PI/180)
+} 
+
+export const getHuellaCarbono = async (req, res) => {
+    try {
+        const {ubicacionOrigen} = req.body;
+        const {ubicacionDestino} =req.body;
+        const {peso} = req.body;
+        const {transporte} = req.body;
+        var latO;
+        var lonO;
+        var latD;
+        var lonD;
+        var distancia;
+
+        //const locationName = "Calle babor, 13, Malaga";
+        const apiUrl1 = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(ubicacionOrigen)}`;
+        const apiUrl2 = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(ubicacionDestino)}`;
+
+        fetch(apiUrl1) //peticion ubicacion Origen
+        .then(response => response.json())
+        .then(dataU1 => {
+            if (dataU1 && dataU1.length > 0) {
+            const firstResult = dataU1[0];
+            latO = parseFloat(firstResult.lat);
+            lonO = parseFloat(firstResult.lon);
+            console.log(`Latitud: ${latO}, Longitud: ${lonO}`);
+            } else {
+            console.log("Ubicación1 no encontrada");
+            }
+            ///////////
+            fetch(apiUrl2)//peticion ubicacion Destino
+            .then(response => response.json())
+            .then(dataU2 => {
+                if (dataU2 && dataU2.length > 0) {
+                const firstResult2 = dataU2[0];
+                latD= parseFloat(firstResult2.lat);
+                lonD = parseFloat(firstResult2.lon);
+                console.log(`Latitud: ${latD}, Longitud: ${lonD}`);
+                } else {
+                console.log("Ubicación2 no encontrada");
+                }
+                
+                distancia=getDistanceFromLatLonInKm (latO,lonO,latD,lonD);
+                console.log(`La distancia entre las dos ubicaciones es: ${distancia} km`);
+                
+                //Datos para la peticion huella carbono
+                const dataHC = {
+                    "type": "shipping",
+                    "weight_value": peso,
+                    "weight_unit": "g",
+                    "distance_value": distancia,
+                    "distance_unit": "km",
+                    "transport_method": `${transporte}`
+                };
+                  
+                const options = {
+                  method: 'POST',
+                  body: JSON.stringify(dataHC),
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer wxfLsXHV9f8w4hmXKSxA'
+                  }
+                };
+                const apiUrl = `https://www.carboninterface.com/api/v1/estimates`;
+        
+                fetch(apiUrl,options) //peticion huella carbono
+                .then(response => response.json())
+                .then(data => {
+                    res.json(data.data.attributes.carbon_g)
+                    console.log(data.data.attributes.carbon_g)
+                })  
+                .catch(error => {
+                    console.error("Error en la solicitud de huella de carbono: " + error);
+                });
+            })
+            .catch(error => {
+                console.error("Error en la solicitud de geocodificación1: " + error);
+            });
+        })
+        .catch(error => {
+            console.error("Error en la solicitud de geocodificación2: " + error);
+        });
+
+    } catch (error) {
+        
     }
 };
