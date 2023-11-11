@@ -1,7 +1,6 @@
 import Producto from "../models/ProductoModel.js";
 import Usuario from "../models/UsuarioModel.js";
 import Puja from "../models/PujaModel.js";
-import { response } from "express";
 
 
 export const getAllProductos = async (req, res) => {

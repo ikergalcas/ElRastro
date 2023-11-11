@@ -1,34 +1,11 @@
 npm install react-leaflet leaflet
 npm install axios
+npm install multer cloudinary
 
 porro de huella de carbono con carbon interface
 const API_KEY = 'wW4yDorzSkjS6jfux8TA'; // Reemplaza 'TU_API_KEY' con tu clave de API
 
-export const calcularHuellaDeCarbono = async (datosCalculo) => {
-  try {
-    // Configura las opciones de la solicitud, incluyendo el encabezado de autorización
-    const opciones = {
-      method: 'POST', // O el método HTTP que corresponda a tu solicitud
-      url: 'https://www.carboninterface.com/api/v1/rpc/calculate',
-      headers: {
-        Authorization: `Bearer ${API_KEY}`, // Incluye la API key en el encabezado de autorización
-        'Content-Type': 'application/json', // Ajusta el tipo de contenido si es necesario
-      },
-      data: datosCalculo, // Incluye los datos de cálculo en el cuerpo de la solicitud
-    };
 
-    // Realiza la solicitud a la API de Carbon Interface
-    const respuesta = await axios(opciones);
-
-    // Procesa la respuesta y devuelve los resultados
-    const resultado = respuesta.data;
-    console.log(resultado)
-    return resultado;
-  } catch (error) {
-    console.error('Error al realizar la solicitud a la API:', error);
-    return null;
-  }
-};
 
 // Ejemplo de uso
 const datosCalculo = {
