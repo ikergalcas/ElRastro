@@ -27,15 +27,15 @@ const productSchema = new mongoose.Schema({
         type: String 
     },
     vendedor: {
-        type: [mongoose.Schema.Types.ObjectId],  
+        type: mongoose.Schema.Types.ObjectId,  
         ref: 'usuarios',
     },
     comprador: {
-        type:  [mongoose.Schema.Types.ObjectId],
+        type:  mongoose.Schema.Types.ObjectId,
         ref: 'usuarios'
     },
     vendido: {
-        type: [mongoose.Schema.Types.Boolean], 
+        type: mongoose.Schema.Types.Boolean, 
         default: false
     }
 
