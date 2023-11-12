@@ -5,8 +5,6 @@ export const getAllUsuarios = async (req, res) => {
     try {
         const data = await Usuario.find()
 
-        console.log(data)
-
         res.json(data)
 
     } catch (error) {
@@ -78,8 +76,6 @@ export const getUsuarioNombre = async (req, res) => {
     try {
         const {username}  = req.body;
         const listaUsuarios = (await Usuario.find({username: {$regex: username, $options:"i"}}));
-        
-        console.log(listaUsuarios)
 
         res.json(listaUsuarios);
 
@@ -93,8 +89,6 @@ export const getUsuarioValoracion = async (req, res) => {
     try {
         const {valoracionMedia} = req.body;
         const listaUsuarios = (await Usuario.find({valoracionMedia: {$gte:valoracionMedia}}));
-        
-        console.log(listaUsuarios)
 
         res.json(listaUsuarios);
 
@@ -117,8 +111,6 @@ export const getCompradores = async (req, res) => {
             const compradorObjeto = await Usuario.findById(comprador);
             listaCompradores.push(compradorObjeto);
         }
-
-        console.log(listaCompradores)
 
         res.json(listaCompradores);
 
@@ -144,7 +136,7 @@ export const getUbiUsuario = async (req, res) => {
                 const firstResult = data[0];
                 const latitude = parseFloat(firstResult.lat);
                 const longitude = parseFloat(firstResult.lon);
-                console.log(`Latitud: ${latitude}, Longitud: ${longitude}`);
+                res.json(`Latitud: ${latitude}, Longitud: ${longitude}`);
                 } else {
                 console.log("Ubicación no encontrada");
                 }

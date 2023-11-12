@@ -20,7 +20,7 @@ routerProducto.put('/:id', editProducto)
 routerProducto.delete('/:id', deleteProducto)
 routerProducto.get('/usuario/:idUsuario',getProductosdeUsuario)
 routerProducto.post('/descripcion',getProductosDescripcion)
-routerProducto.post('/pujados',getProductosPujados)
+routerProducto.get('/pujados/:idUsuario',getProductosPujados)
 routerProducto.post('/huellaCarbono',getHuellaCarbono)
 routerProducto.post('/subirFoto', upload.single('foto'), async (req, res) => {
     try {

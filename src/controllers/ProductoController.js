@@ -7,8 +7,6 @@ export const getAllProductos = async (req, res) => {
     try {
         const data = await Producto.find()
 
-        console.log(data)
-
         res.json(data)
 
     } catch (error) {
@@ -87,8 +85,6 @@ export const getProductosdeUsuario = async (req, res) => {
     try {
         const { idUsuario } = req.params;
         const listaProductos = (await Producto.find({vendedor : idUsuario}).sort({fechaCierre: -1}));
-        
-        console.log(listaProductos)
 
         res.json(listaProductos);
 
@@ -103,8 +99,6 @@ export const getProductosDescripcion = async (req, res) => {
     try {
         const {descripcion}  = req.body;
         const listaProductos = (await Producto.find({descripcion: {$regex: descripcion, $options:"i"}}));
-        
-        console.log(listaProductos)
 
         res.json(listaProductos);
 
@@ -117,8 +111,8 @@ export const getProductosDescripcion = async (req, res) => {
 // Devuelve una lista de los productos en los que un usuario específico ha pujado
 export const getProductosPujados = async (req, res) => {
     try {
-        const {_id} = req.body;
-        const listaPujas = (await Puja.find({usuario:_id}));
+        const {idUsuario} = req.params;
+        const listaPujas = (await Puja.find({usuario:idUsuario}));
         const listaIdProductos = listaPujas.map((puja) => puja.producto);
 
         const listaProductos = [];
@@ -128,8 +122,6 @@ export const getProductosPujados = async (req, res) => {
             listaProductos.push(productoObjeto);
         }
 
-        console.log(listaProductos)
-
         res.json(listaProductos);
 
     } catch (error) {
@@ -137,50 +129,6 @@ export const getProductosPujados = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener los productos' })
     }
 };
-
-///HUELLA DE CARBONO
-
-//Huella carbono dada distancia (basico)
-
-/*export const getHuellaCarbono2 = async (req, res) => {
-    try {
-        const {distancia} = req.body;
-        const {peso} = req.body;
-        const {transporte} = req.body;
-    
-        const data = {
-            "type": "shipping",
-            "weight_value": peso,
-            "weight_unit": "g",
-            "distance_value": distancia,
-            "distance_unit": "km",
-            "transport_method": `${transporte}`
-        };
-          
-        const options = {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer wxfLsXHV9f8w4hmXKSxA'
-          }
-        };
-        const apiUrl = `https://www.carboninterface.com/api/v1/estimates`;
-
-        fetch(apiUrl,options)
-        .then(response => response.json())
-        .then(data => {
-            res.json(data.data.attributes.carbon_g)
-            console.log(data.data.attributes.carbon_g)
-        })  
-        .catch(error => {
-            console.error("Error en la solicitud de huella de carbono: " + error);
-        });
- 
-    } catch (error) {
-        
-    }
-};*/
 
 //calcular desde ubicacion origen y ubicaion destino por hacer, combina openstreetmap y huella carbono
 function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
@@ -224,7 +172,6 @@ export const getHuellaCarbono = async (req, res) => {
             const firstResult = dataU1[0];
             latO = parseFloat(firstResult.lat);
             lonO = parseFloat(firstResult.lon);
-            console.log(`Latitud: ${latO}, Longitud: ${lonO}`);
             } else {
             console.log("Ubicación1 no encontrada");
             }
@@ -236,13 +183,11 @@ export const getHuellaCarbono = async (req, res) => {
                 const firstResult2 = dataU2[0];
                 latD= parseFloat(firstResult2.lat);
                 lonD = parseFloat(firstResult2.lon);
-                console.log(`Latitud: ${latD}, Longitud: ${lonD}`);
                 } else {
                 console.log("Ubicación2 no encontrada");
                 }
                 
                 distancia=getDistanceFromLatLonInKm (latO,lonO,latD,lonD);
-                console.log(`La distancia entre las dos ubicaciones es: ${distancia} km`);
                 
                 //Datos para la peticion huella carbono
                 const dataHC = {
@@ -268,7 +213,6 @@ export const getHuellaCarbono = async (req, res) => {
                 .then(response => response.json())
                 .then(data => {
                     res.json(data.data.attributes.carbon_g)
-                    console.log(data.data.attributes.carbon_g)
                 })  
                 .catch(error => {
                     console.error("Error en la solicitud de huella de carbono: " + error);

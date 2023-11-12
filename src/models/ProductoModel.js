@@ -9,8 +9,7 @@ const productSchema = new mongoose.Schema({
         type: String
     },
     fechaCierre: {
-        type: Date,
-        default: null
+        type: Date
     },
     foto: {
         type: String,

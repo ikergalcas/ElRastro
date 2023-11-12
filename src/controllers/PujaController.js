@@ -4,8 +4,6 @@ export const getAllPujas = async (req, res) => {
     try {
         const data = await Puja.find()
 
-        console.log(data)
-
         res.json(data)
 
     } catch (error) {
@@ -77,8 +75,6 @@ export const getPujaProducto = async (req, res) => {
     try {
         const { idProducto } = req.params;
         const listaPujas = (await Puja.find({producto: idProducto}).sort({precio : -1}));
-        
-        console.log(listaPujas)
 
         res.json(listaPujas);
 
@@ -93,8 +89,6 @@ export const getPujaUsuario = async (req, res) => {
     try {
         const { idUsuario } = req.params;
         const listaPujas = (await Puja.find({usuario: idUsuario}).sort({precio : 1}));
-        
-        console.log(listaPujas)
 
         res.json(listaPujas);
 
@@ -108,10 +102,8 @@ export const getPujaUsuario = async (req, res) => {
 //pujas por precio
 export const getPujaPrecio = async (req, res) => {
     try {
-        const {precio} = req.params;
+        const {precio} = req.body;
         const listaPujas = (await Puja.find({precio: {$lte:precio}}));
-        
-        console.log(listaPujas)
 
         res.json(listaPujas);
 

@@ -10,6 +10,6 @@ routerPuja.put('/:id', editPuja)
 routerPuja.delete('/:id', deletePuja)
 routerPuja.get('/producto/:idProducto', getPujaProducto)
 routerPuja.get('/usuario/:idUsuario', getPujaUsuario)
-routerPuja.get('/precio/:precio',getPujaPrecio)
+routerPuja.post('/precio',getPujaPrecio)
 
 export default routerPuja
