@@ -2,20 +2,24 @@ import mongoose from 'mongoose'
 
 const productSchema = new mongoose.Schema({
     comentarios: {
-        type: [Number]
+        type: [Number],
+        default: null
     },
     descripcion: {
         type: String
     },
     fechaCierre: {
-        type: Date
+        type: Date,
+        default: null
     },
     foto: {
-        type: String
+        type: String,
+        default: null
     },
     historialPujas: {
         type: [mongoose.Schema.Types.ObjectId],
-        ref: 'pujas'
+        ref: 'pujas',
+        default: null
     },
     precioFinal: {
         type: Number
@@ -32,7 +36,8 @@ const productSchema = new mongoose.Schema({
     },
     comprador: {
         type:  mongoose.Schema.Types.ObjectId,
-        ref: 'usuarios'
+        ref: 'usuarios',
+        default: null
     },
     vendido: {
         type: mongoose.Schema.Types.Boolean, 
