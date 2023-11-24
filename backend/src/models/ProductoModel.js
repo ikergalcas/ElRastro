@@ -1,10 +1,6 @@
 import mongoose from 'mongoose'
 
 const productSchema = new mongoose.Schema({
-    comentarios: {
-        type: [Number],
-        default: null
-    },
     descripcion: {
         type: String
     },
