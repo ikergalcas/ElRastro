@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+
+
+.primario {
+  background-color: #54A6F0 !important;
+  color: black !important
+}
