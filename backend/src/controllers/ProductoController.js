@@ -18,10 +18,9 @@ export const getAllProductos = async (req, res) => {
 
 export const createProducto = async (req, res) => {
     try {
-        const { comentarios, descripcion, fechaCierre, foto, historialPujas, precioFinal, titulo, ubicacion, vendedor } = req.body
+        const { descripcion, fechaCierre, foto, historialPujas, precioFinal, titulo, ubicacion, vendedor } = req.body
 
         const newProducto = new Producto({
-            comentarios,
             descripcion,
             fechaCierre,
             foto,
