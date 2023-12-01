@@ -4,7 +4,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom"
 
 import Productos from "./productos/ShowProductos.js"
 import Login from "./login/Login.js"
-import DetallesProducto from "./productos/ShowDetallesProducto.js"
+import EditUsuario from "./usuario/EditUser.js"
+import MiProductoBloque from './pages/MiProductoBloque.jsx';
 
 function App() {
   return (
@@ -12,7 +13,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Login/>}/>
           <Route path="/productos" element={<Productos/>}/>
-          <Route path="/detallesProducto" element={<DetallesProducto/>}/>
+          <Route path="/detallesProducto" element={<MiProductoBloque/>}/>
+          <Route path="/editUser" element={<EditUsuario/>}/>
         </Routes>
       </BrowserRouter>
   );
