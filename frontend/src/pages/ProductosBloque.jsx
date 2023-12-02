@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import axios from 'axios'
 const URIproductos = 'http://localhost:3001/productos'
 
-const ShowProductos = () => {
+const ProductosBloque = () => {
     const [productos, setProductos] = useState([])
     useEffect( () => {
         getProductos()
@@ -18,20 +18,17 @@ const ShowProductos = () => {
 
 return(
     <html lang="es">
-        <div>
-            {productos.map ((producto) => (
-                <p>
-                    {console.log(producto)}
-                    {producto}
-                </p>
-            ))}
-            {console.log(productos)}
+         {productos.map ((producto) => (
             <p>
-                ESTA PAGINA ES SHOWPRODUCTOS
+                {console.log(producto)}
+                {producto}
             </p>
-        </div>
+        ))}
+        <p>
+            ESTA PAGINA ES SHOWPRODUCTOS
+        </p>
     </html>
     )
 }
 
-export default ShowProductos
+export default ProductosBloque
