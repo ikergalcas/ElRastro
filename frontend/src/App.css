@@ -37,8 +37,46 @@
   }
 }
 
-
 .primario {
   background-color: #54A6F0 !important;
   color: black !important
+}
+
+/*PALETA COLORES: #27374D #526D82 #9DB2BF #DDE6ED*/
+
+.tarjeta {
+  width: 18rem;
+  margin-right: 2%;
+  margin-bottom: 1%;
+}
+
+.buscador {
+  margin-top: 2%;
+  margin-bottom: 1%;
+  margin-right: 3%;
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+}
+
+.container1 {
+  margin-left: 19%;
+}
+
+.navbar {
+  background-color: #9DB2BF ;
+}
+
+.botonBusqueda {
+  margin-left: 2%;
+  margin-right: 2%;
+  width: 65%;
+  border: #282c34 2px solid;
+  background-color: #9DB2BF;
+  border-radius: 1vmin;
+}
+
+.barrabusqueda {
+  height: 6vmin;
+  width: 30vmin;
 }
