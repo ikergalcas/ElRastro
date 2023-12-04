@@ -15,7 +15,7 @@ function App() {
           <Route path="/" element={<Login/>}/>
           <Route path="/productos" element={<ProductosInicial/>}/>
           <Route path="/detallesProducto" element={<MiProductoBloque/>}/>
-          <Route path="/editUser" element={<EditUsuario/>}/>
+          <Route path="/editUser/:idUser" element={<EditUsuario/>}/>
         </Routes>
       </BrowserRouter>
   );

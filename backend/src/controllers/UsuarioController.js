@@ -13,6 +13,18 @@ export const getAllUsuarios = async (req, res) => {
     }
 };
 
+export const getUsuarioID = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await Usuario.findById(id);
+        res.json(user);
+
+    } catch (error) {
+        console.log('Error en la consulta de usuarios a la base de datos:', error);
+        res.status(500).json({ message: 'Error al editar un usuario' });
+    }
+}
+
 export const createUsuario = async (req, res) => {
     try {
         const { contacto, ubicacion, username, valoracionMedia } = req.body
