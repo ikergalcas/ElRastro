@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema({
     },
     foto: {
         type: String,
-        default: null
+        default: "http://res.cloudinary.com/dten77l85/image/upload/v1701645989/hfxempzbqlkawdekvuxy.jpg"
     },
     historialPujas: {
         type: [mongoose.Schema.Types.ObjectId],

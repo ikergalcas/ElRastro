@@ -10,7 +10,7 @@ cloudinary.config({
 });
 
 import { getAllProductos, createProducto, editProducto, deleteProducto,getProductosdeUsuario,getProductosDescripcion,
-    getProductosPujados,getHuellaCarbono } from '../controllers/ProductoController.js'
+    getProductosPujados,getHuellaCarbono,getProductosPrecioMax, getProductosDescripcionPrecio } from '../controllers/ProductoController.js'
 
 const routerProducto = express.Router()
 
@@ -20,6 +20,8 @@ routerProducto.put('/:id', editProducto)
 routerProducto.delete('/:id', deleteProducto)
 routerProducto.get('/usuario/:idUsuario',getProductosdeUsuario)
 routerProducto.post('/descripcion',getProductosDescripcion)
+routerProducto.post('/preciomax',getProductosPrecioMax)
+routerProducto.post('/descripcionPrecio',getProductosDescripcionPrecio)
 routerProducto.get('/pujados/:idUsuario',getProductosPujados)
 routerProducto.post('/huellaCarbono',getHuellaCarbono)
 routerProducto.post('/subirFoto', upload.single('foto'), async (req, res) => {

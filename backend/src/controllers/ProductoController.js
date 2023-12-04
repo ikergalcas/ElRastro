@@ -97,7 +97,47 @@ export const getProductosdeUsuario = async (req, res) => {
 export const getProductosDescripcion = async (req, res) => {
     try {
         const {descripcion}  = req.body;
-        const listaProductos = (await Producto.find({descripcion: {$regex: descripcion, $options:"i"}}));
+        const listaProductos = (await Producto.find({
+            $or:[
+                {descripcion: {$regex: descripcion, $options:"i"}}, 
+                {titulo:{$regex: descripcion, $options:"i"}}
+            ]}));
+
+        res.json(listaProductos);
+
+    } catch (error) {
+        console.log('Error en la consulta de productos en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+};
+
+export const getProductosPrecioMax= async (req, res) => {
+    try {
+        const {precio}  = req.body;
+        const listaProductos = (await Producto.find({         
+                precioFinal: {$lte: precio}
+            }));
+
+        res.json(listaProductos);
+
+    } catch (error) {
+        console.log('Error en la consulta de productos en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+};
+
+export const getProductosDescripcionPrecio = async (req, res) => {
+    try {
+        const {descripcion, precio}  = req.body;
+        const listaProductos = (await Producto.find({
+            $and: [
+                {$or:[
+                    {descripcion: {$regex: descripcion, $options:"i"}}, 
+                    {titulo:{$regex: descripcion, $options:"i"}}
+                ]},
+                { precioFinal: {$lte: precio} }
+            ]
+            }));
 
         res.json(listaProductos);
 
