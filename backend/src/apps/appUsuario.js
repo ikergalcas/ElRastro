@@ -9,7 +9,6 @@ const app = express()
 
 app.use(morgan('dev4'))  //Si hacemos un get esto nos lo mostrara por el terminal
 app.use(express.json()) //Esto es para convertir los req.body en formato json
-
 app.use('/usuarios',routerUsuario)
 
 export default app;

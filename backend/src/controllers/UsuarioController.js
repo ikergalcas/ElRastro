@@ -85,6 +85,20 @@ export const getUsuarioNombre = async (req, res) => {
     }
 };
 
+export const getUsuarioPorId = async (req, res) => {
+    try {
+        const {idUsuario}  = req.params;
+        const user = (await Usuario.findById(idUsuario));
+
+        res.json(user);
+
+    } catch (error) {
+        console.log('Error en la consulta de usuarios en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener el usuarios' })
+    }
+};
+
+
 export const getUsuarioValoracion = async (req, res) => {
     try {
         const {valoracionMedia} = req.body;

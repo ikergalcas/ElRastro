@@ -16,6 +16,20 @@ export const getAllProductos = async (req, res) => {
 };
 
 
+export const getProductoPorId = async (req, res) => {
+    try {
+        const {idProducto}  = req.params;
+        const product = (await Producto.findById(idProducto));
+
+        res.json(product);
+
+    } catch (error) {
+        console.log('Error en la consulta de productos en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener el producto' })
+    }
+};
+
+
 export const createProducto = async (req, res) => {
     try {
         const { descripcion, fechaCierre, foto, historialPujas, precioFinal, titulo, ubicacion, vendedor } = req.body

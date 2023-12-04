@@ -9,7 +9,7 @@ cloudinary.config({
     api_secret: 'Km6kFadj1HOmPf6mYYyyd6KIMeQ'
 });
 
-import { getAllProductos, createProducto, editProducto, deleteProducto,getProductosdeUsuario,getProductosDescripcion,
+import { getProductoPorId, getAllProductos, createProducto, editProducto, deleteProducto,getProductosdeUsuario,getProductosDescripcion,
     getProductosPujados,getHuellaCarbono,getProductosPrecioMax, getProductosDescripcionPrecio } from '../controllers/ProductoController.js'
 
 const routerProducto = express.Router()
@@ -18,6 +18,7 @@ routerProducto.get('/', getAllProductos)
 routerProducto.post('/', createProducto)
 routerProducto.put('/:id', editProducto)
 routerProducto.delete('/:id', deleteProducto)
+routerProducto.get('/:idProducto', getProductoPorId)
 routerProducto.get('/usuario/:idUsuario',getProductosdeUsuario)
 routerProducto.post('/descripcion',getProductosDescripcion)
 routerProducto.post('/preciomax',getProductosPrecioMax)
