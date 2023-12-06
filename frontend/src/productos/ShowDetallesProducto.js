@@ -73,7 +73,7 @@ const CompShowDetallesProducto = () => {
                 
             </div>
         )}
-    </div>
+        </div>
     );
 };
 
