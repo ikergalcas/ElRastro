@@ -12,6 +12,9 @@ cloudinary.config({
 import { getAllProductos, createProducto, editProducto, deleteProducto,getProductosdeUsuario,getProductosDescripcion,
     getProductosPujados,getHuellaCarbono,getProductosPrecioMax, getProductosDescripcionPrecio } from '../controllers/ProductoController.js'
 
+import { getAllPujas, createPuja } from '../controllers/PujaController.js'
+ 
+
 const routerProducto = express.Router()
 
 routerProducto.get('/', getAllProductos)
@@ -24,6 +27,9 @@ routerProducto.post('/preciomax',getProductosPrecioMax)
 routerProducto.post('/descripcionPrecio',getProductosDescripcionPrecio)
 routerProducto.get('/pujados/:idUsuario',getProductosPujados)
 routerProducto.post('/huellaCarbono',getHuellaCarbono)
+routerProducto.get('/:idProducto/pujas',getAllPujas)
+routerProducto.put('/:idProducto/crearPuja',createPuja)
+routerProducto.put('/:idProducto/editPuja/:idPuja',createPuja)
 routerProducto.post('/subirFoto', upload.single('foto'), async (req, res) => {
     try {
       const foto = req.file;
@@ -47,6 +53,7 @@ routerProducto.post('/subirFoto', upload.single('foto'), async (req, res) => {
       res.status(500).json({ error: 'Error al subir la foto a Cloudinary' });
     }
   });
+
   
 
 export default routerProducto

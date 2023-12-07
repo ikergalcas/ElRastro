@@ -18,18 +18,20 @@ export const getAllProductos = async (req, res) => {
 
 export const createProducto = async (req, res) => {
     try {
-        const { descripcion, fechaCierre, foto, historialPujas, precioFinal, titulo, ubicacion, vendedor } = req.body
+        const { descripcion, fechaCierre, foto, historialPujas, precioInicial, titulo, ubicacion, vendedor } = req.body
 
         const newProducto = new Producto({
             descripcion,
             fechaCierre,
             foto,
             historialPujas,
-            precioFinal,
+            precioInicial,
             titulo,
             ubicacion,
             vendedor
         })
+
+        newProducto.maximaPuja = precioInicial
 
         await newProducto.save()
 
@@ -115,7 +117,7 @@ export const getProductosPrecioMax= async (req, res) => {
     try {
         const {precio}  = req.body;
         const listaProductos = (await Producto.find({         
-                precioFinal: {$lte: precio}
+                maximaPuja: {$lte: precio}
             }));
 
         res.json(listaProductos);
@@ -151,15 +153,7 @@ export const getProductosDescripcionPrecio = async (req, res) => {
 export const getProductosPujados = async (req, res) => {
     try {
         const {idUsuario} = req.params;
-        const listaPujas = (await Puja.find({usuario:idUsuario}));
-        const listaIdProductos = listaPujas.map((puja) => puja.producto);
-
-        const listaProductos = [];
-        
-        for (const producto of listaIdProductos) {
-            const productoObjeto = await Producto.findById(producto);
-            listaProductos.push(productoObjeto);
-        }
+        const listaProductos = (await Producto.find({pujas: {usuario:idUsuario}}));
 
         res.json(listaProductos);
 

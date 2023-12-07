@@ -11,12 +11,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: "http://res.cloudinary.com/dten77l85/image/upload/v1701645989/hfxempzbqlkawdekvuxy.jpg"
     },
-    historialPujas: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'pujas',
-        default: null
+    precioInicial: {
+        type: Number
     },
-    precioFinal: {
+    maximaPuja: {
         type: Number
     },
     titulo: {
@@ -37,6 +35,35 @@ const productSchema = new mongoose.Schema({
     vendido: {
         type: mongoose.Schema.Types.Boolean, 
         default: false
+    },
+    comentarios: {
+        type: [ 
+            {usuario: {
+                type: [mongoose.Schema.Types.ObjectId],
+                require: true
+            },
+            texto: {
+                type: String,
+                require: true
+            },
+            fecha: {
+                type: Date,
+                default: Date.now()
+            }}
+        ],
+        default:[]
+    },
+    pujas: {
+        type: [ 
+            {precio: {
+                type: Number,
+            },
+            usuario: {
+                type: mongoose.Schema.Types.ObjectId,  
+                ref: 'usuarios',  
+            }}
+        ],
+        default:[]
     }
 
 },{ versionKey: false });

@@ -1,10 +1,11 @@
 import Puja from "../models/PujaModel.js";
+import Producto from "../models/ProductoModel.js";
 
 export const getAllPujas = async (req, res) => {
     try {
-        const data = await Puja.find()
-
-        res.json(data)
+        const {idProducto} = req.params
+        const data = await Producto.findById(idProducto)
+        res.json(data.pujas)
 
     } catch (error) {
         console.log('Error en la consulta de pujas en la base de datos: ', error)
@@ -14,17 +15,21 @@ export const getAllPujas = async (req, res) => {
 
 export const createPuja = async (req, res) => {
     try {
-        const { precio, producto, usuario } = req.body
+        const {idProducto} = req.params
+        const { precio, usuario } = req.body
 
-        const newPuja = new Puja({
-            precio,
-            producto,
-            usuario
+        const newPuja = new Object({
+            "precio": precio,
+            "usuario": usuario
         })
 
-        await newPuja.save()
+        const data = await Producto.findById(idProducto)
+        const listaPujas = data.pujas
+        listaPujas.push(newPuja)
 
-        res.send("creando")
+        await Producto.findByIdAndUpdate(idProducto, {pujas:listaPujas}, {new:true})
+
+        res.send("añadiendo Puja")
 
     } catch (error) {
         console.log('Error en la consulta de pujas a la base de datos:', error);
@@ -34,19 +39,26 @@ export const createPuja = async (req, res) => {
 
 export const editPuja = async (req, res) => {
     try {
-        const { id } = req.params;
-        const updateData = req.body; //la info modificada
+        const { idPuja, idProducto } = req.params;
+        const updateData = req.body;
 
-        //buscamos user y modificamos
-        const updatedPuja = await Puja.findByIdAndUpdate(id, updateData, {new: true});
-
-        if(!updatedPuja){
-            return res.status(404).json({message : 'Puja no encontrado' });
+        const producto = await Producto.findById(idProducto)
+        const listaPujas = producto.listaPujas
+        for (const puja of listaPujas ) {
+            if(puja._id = idPuja){
+                listaContactos.pull(puja);
+                listaContactos.push(new Object (updateData));
+            }    
         }
-        res.json(updatedPuja);
+        const updatedProducto = await Producto.findByIdAndUpdate(idProducto, {pujas:listaPujas}, {new:true})
+
+        if(!updatedProducto){
+            return res.status(404).json({message : 'Producto o puja no encontrada' });
+        }
+        res.json(updatedProducto);
 
     } catch (error) {
-        console.log('Error en la consulta de PujaS a la base de datos:', error);
+        console.log('Error en la consulta de Productos a la base de datos:', error);
         res.status(500).json({ message: 'Error al editar un Puja' });
     }
 }
