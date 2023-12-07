@@ -13,6 +13,7 @@ export const getAllUsuarios = async (req, res) => {
     }
 };
 
+
 export const createUsuario = async (req, res) => {
     try {
         const { contacto, ubicacion, username, valoracionMedia } = req.body
