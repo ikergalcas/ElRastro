@@ -140,7 +140,7 @@ return(
                         <h5 className="card-title">{producto.titulo}</h5>
                         <p className="card-text">{producto.descripcion}</p>
                         <p className="card-text">Maxima puja: {producto.maximaPuja}</p>
-                        <a href={`/detallesProducto/${idUsuario}/${producto._id}`} className='btn btn-secondary'>Ir a productos</a>
+                        <a href={`/detallesProducto/${idUsuario}/${producto._id}`} className='btn btn-secondary'>Ver mas informacion</a>
                     </div>
                 </div>
             ))}
