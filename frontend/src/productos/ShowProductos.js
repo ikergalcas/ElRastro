@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 const ShowProductos = () => {
 
     const [productos, setProductos] = useState([]);
+    const idUsuario='653fe434b1b1e5d84c3ed746';
     const [maxPuja,setMaxPuja]= useState('');
     useEffect(() => {
         getProductos()
@@ -139,7 +140,7 @@ return(
                         <h5 className="card-title">{producto.titulo}</h5>
                         <p className="card-text">{producto.descripcion}</p>
                         <p className="card-text">Maxima puja: {producto.maximaPuja}</p>
-                        <Link to={`/detallesProducto/653fe434b1b1e5d84c3ed746/${producto._id}`} className='btn btn-secondary'>Ir a productos</Link>
+                        <a href={`/detallesProducto/${idUsuario}/${producto._id}`} className='btn btn-secondary'>Ir a productos</a>
                     </div>
                 </div>
             ))}

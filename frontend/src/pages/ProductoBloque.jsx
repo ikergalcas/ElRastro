@@ -1,4 +1,4 @@
-import CompShowDetallesProducto from "../detallesProducto/ShowComentarios.js";
+import CompShowDetallesProducto from "../detallesProducto/ShowDetallesProducto.js";
 import CompShowMapaProducto from "../detallesProducto/ShowMapaProducto.js";
 import CompShowComentarios from "../detallesProducto/ShowComentarios.js";
 import CompShowPujas from "../detallesProducto/ShowPujas.js";
