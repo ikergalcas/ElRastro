@@ -6,15 +6,14 @@ import Productos from "./productos/ShowProductos.js"
 import ProductosInicial from "./pages/ProductosInicial.jsx"
 import Login from "./login/Login.js"
 import EditUsuario from "./usuario/EditUser.js"
-import ProductoBloque from './pages/ProductoBloque.jsx';
-
-//
+import MiProductoBloque from './pages/MiProductoBloque.jsx';
 
 function App() {
   return (
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login/>}/>
+          <Route path="/" element={<ProductosInicial/>}/>
+          <Route path="/login" element={<Login/>}/>
           <Route path="/productos" element={<ProductosInicial/>}/>
           <Route path="/detallesProducto/:idUsuario/:idProducto" element={<ProductoBloque/>}/>
           <Route path="/editUser" element={<EditUsuario/>}/>

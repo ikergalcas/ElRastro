@@ -12,6 +12,8 @@ function NavbarPage(props) {
         <Nav className="me-auto">
           <Nav.Link href={`/productos`} className='navbar-link' style={{marginLeft: '10vmin'}}> Home
           </Nav.Link>
+          <Nav.Link href={`/login`} className='navbar-link' style={{marginLeft: '10vmin'}}> Inicio de sesion
+          </Nav.Link>
         </Nav>
         <Nav>
             <NavDropdown drop='start' className='me-3' title={<img src={fotoUser} style={{ width: '6vh', borderRadius: '50%' }} alt="" />} id="basic-nav-dropdown">

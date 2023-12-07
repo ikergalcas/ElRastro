@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const ShowProductos = () => {
-    const [productos, setProductos] = useState([]);
 
+    const [productos, setProductos] = useState([]);
+    const idUsuario='653fe434b1b1e5d84c3ed746';
+    const [maxPuja,setMaxPuja]= useState('');
     useEffect(() => {
         getProductos()
     }, []);
+
+    const getMaxPuja = async (id) => {
+
+    }
 
     const getProductos = async () => {
         // Hacer la solicitud para obtener productos desde el backend
@@ -14,9 +21,8 @@ const ShowProductos = () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-        })
-            .then(response => response.json())
-            .then(data => {
+        }).then(response => response.json())
+          .then(data => {
                 // Actualizar el estado con los productos obtenidos
                 setProductos(data);
                 console.log(data);
@@ -31,7 +37,7 @@ const ShowProductos = () => {
     const buscarProductos = async (e) => {
         e.preventDefault()
 
-        if(busqueda.size!=0 && !precioMax){
+        if(busqueda!="" && !precioMax){
             console.log("desc")
             let raw = JSON.stringify({
                 "descripcion": busqueda.toString()
@@ -52,7 +58,7 @@ const ShowProductos = () => {
                 .catch(error => {
                     console.error('Error al obtener productos:', error);
                 });
-        }else if (busqueda.size==0 && precioMax ){
+        }else if (busqueda=="" && precioMax ){
             console.log("precio")
             let raw = JSON.stringify({
                 "precio": precioMax
@@ -74,7 +80,7 @@ const ShowProductos = () => {
                     console.error('Error al obtener productos:', error);
                 });
             
-        }else if (busqueda.size!=0 && precioMax){
+        }else if (busqueda!="" && precioMax){
             console.log("precio y desc");
             let raw = JSON.stringify({
                 "descripcion": busqueda.toString(),
@@ -111,33 +117,34 @@ const ShowProductos = () => {
 
 return(
     <div>
-        
-        <div class="buscador">
-            <form class="buscador" onSubmit={buscarProductos}>
-                <input value={precioMax} className="barrabusqueda" onChange={(e) => setPrecioMax(e.target.value)} type="number" placeholder="Precio maximo" />
-                <input value={busqueda} className="barrabusqueda" onChange={(e) => setBusqueda(e.target.value)} type="string" placeholder="Busca aquí ..." />
-                <button class="botonBusqueda" type="submit" >Buscar</button>
-                <button onClick={limpiarSeleccion} className="btn btn-outline-dark btn-sm" >Limpiar</button>
-            </form>
-        </div>
-
-
-        <div class="container1" >
-            <div className="row">
-            {productos.length==0 ? (
-                <p> No hay productos que cumplan con los criterios de búsqueda.</p> 
-            ) : productos.map(producto => (
-                <div class="card tarjeta col-md-3 " >
-                    <div className="card-body">
-                        <img className="card-img-top" src={producto.foto} alt={producto.titulo} style={{ objectFit: 'cover', height: '200px' }} />
-                        <h5 className="card-title">{producto.titulo}</h5>
-                        <p className="card-title">{producto.descripcion}</p>
-                    </div>
-                </div>
-             ))}
+        <div className="row"> 
+            <div class="buscador col 4">
+                <form class="buscador" onSubmit={buscarProductos}>
+                    <input value={precioMax} className="barrabusqueda col 1" 
+                        onChange={(e) => setPrecioMax(e.target.value)} type="number" placeholder="Precio maximo" />
+                    <input value={busqueda} className="barrabusqueda col 1" 
+                        onChange={(e) => setBusqueda(e.target.value)} type="string" placeholder="Busca aquí ..." />
+                    <button class="botonBusqueda col 1" type="submit" >Buscar</button>
+                    <button onClick={limpiarSeleccion} className="btn btn-outline-dark btn-sm col 1" >Limpiar</button>
+                </form>
             </div>
         </div>
 
+        <div className="row" style={{justifyContent: 'center'}}>  
+            {productos.length==0 ? (
+                <p> No hay productos que cumplan con los criterios de búsqueda.</p> 
+            ) : productos.map(producto => (
+                <div class="card tarjeta col-md-3 col-sm-2" >
+                    <div className="card-body">
+                        <img className="card-img-top" src={producto.foto} alt={producto.titulo} style={{ objectFit: 'contain', height: '25vmin'}} />
+                        <h5 className="card-title">{producto.titulo}</h5>
+                        <p className="card-text">{producto.descripcion}</p>
+                        <p className="card-text">Maxima puja: {producto.maximaPuja}</p>
+                        <a href={`/detallesProducto/${idUsuario}/${producto._id}`} className='btn btn-secondary'>Ir a productos</a>
+                    </div>
+                </div>
+            ))}
+        </div>
     </div>
 
 
