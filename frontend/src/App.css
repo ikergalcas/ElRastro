@@ -42,6 +42,13 @@
   color: black !important
 }
 
+/*MARCADOR MAPA*/
+.leaflet-bootstrap-icon {
+  font-size: 24px; 
+  color: #007bff; 
+}
+
+
 /*PALETA COLORES: #27374D #526D82 #9DB2BF #DDE6ED*/
 
 .tarjeta {
