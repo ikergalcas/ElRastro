@@ -9,6 +9,11 @@ const CompShowDetallesProducto = () => {
 
     const [producto, setProducto] = useState([]);
     useEffect(() => {
+        getProductos()
+    }, []);
+ 
+    const getProductos = async () => {
+        console.log(idProducto);
         // Hacer la solicitud para obtener productos desde el backend
         fetch(`http://localhost:3001/productos/${idProducto}`, {
             method: 'GET',
@@ -25,11 +30,12 @@ const CompShowDetallesProducto = () => {
             .catch(error => {
                 console.error('Error al obtener producto:', error);
             });
-    }, []);
+    }
 
 
-    const [vendedor, setVendedor] = useState([]);
+    const [vendedor, setVendedor] = useState({});
     useEffect(() => {
+        console.log(idUsuario);
         // Hacer la solicitud para obtener productos desde el backend
         fetch(`http://localhost:3003/usuarios/${producto.vendedor}`, {
             method: 'GET',
@@ -46,7 +52,7 @@ const CompShowDetallesProducto = () => {
             .catch(error => {
                 console.error('Error al obtener vendedor:', error);
             });
-    }, []);
+    },[]);
 
 
     return (

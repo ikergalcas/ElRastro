@@ -16,7 +16,10 @@ const productSchema = new mongoose.Schema({
         ref: 'pujas',
         default: null
     },
-    precioFinal: {
+    maximaPuja: {
+        type: Number
+    },
+    precioInicial: {
         type: Number
     },
     titulo: {

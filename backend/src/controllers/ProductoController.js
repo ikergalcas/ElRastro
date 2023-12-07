@@ -32,14 +32,15 @@ export const getProductoPorId = async (req, res) => {
 
 export const createProducto = async (req, res) => {
     try {
-        const { descripcion, fechaCierre, foto, historialPujas, precioFinal, titulo, ubicacion, vendedor } = req.body
-
+        const { descripcion, fechaCierre, foto, historialPujas, precioInicial, titulo, ubicacion, vendedor } = req.body
+        let maximaPuja= precioInicial;
         const newProducto = new Producto({
             descripcion,
             fechaCierre,
             foto,
             historialPujas,
-            precioFinal,
+            maximaPuja,
+            precioInicial,
             titulo,
             ubicacion,
             vendedor
@@ -129,7 +130,7 @@ export const getProductosPrecioMax= async (req, res) => {
     try {
         const {precio}  = req.body;
         const listaProductos = (await Producto.find({         
-                precioFinal: {$lte: precio}
+                maximaPuja: {$lte: precio}
             }));
 
         res.json(listaProductos);
@@ -149,7 +150,7 @@ export const getProductosDescripcionPrecio = async (req, res) => {
                     {descripcion: {$regex: descripcion, $options:"i"}}, 
                     {titulo:{$regex: descripcion, $options:"i"}}
                 ]},
-                { precioFinal: {$lte: precio} }
+                { maximaPuja: {$lte: precio} }
             ]
             }));
 

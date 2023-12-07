@@ -45,9 +45,9 @@
 /*PALETA COLORES: #27374D #526D82 #9DB2BF #DDE6ED*/
 
 .tarjeta {
-  width: 18rem;
-  margin-right: 2%;
-  margin-bottom: 1%;
+  margin-left: 3%;
+  margin-right: 3%;
+  margin-bottom: 5%;
 }
 
 .buscador {
@@ -79,4 +79,5 @@
 .barrabusqueda {
   height: 6vmin;
   width: 30vmin;
+  margin-right: 2%;
 }
