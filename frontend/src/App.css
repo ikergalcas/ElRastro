@@ -59,6 +59,15 @@
   justify-content: right;
 }
 
+.buscador-center {
+  margin-top: 2%;
+  margin-bottom: 1%;
+  margin-right: 3%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
 .container1 {
   margin-left: 19%;
 }
@@ -75,9 +84,23 @@
   background-color: #9DB2BF;
   border-radius: 1vmin;
 }
+.botonBusquedaBig {
+  margin-left: 2%;
+  margin-right: 2%;
+  width: 80%;
+  border: #282c34 2px solid;
+  background-color: #9DB2BF;
+  border-radius: 1vmin;
+}
 
 .barrabusqueda {
   height: 6vmin;
   width: 30vmin;
+  margin-right: 2%;
+}
+
+.barrabusquedabig {
+  height: 5vmin;
+  width: 55vmin;
   margin-right: 2%;
 }
