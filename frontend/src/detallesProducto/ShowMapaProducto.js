@@ -28,7 +28,7 @@ const CompShowMapaProducto = () => {
     }, [idProducto]);
 
     return (
-      <div className='container'>
+      <div className='container mb-4'>
         <div className='card'>
           <div className='card-body'>
             <h2 className='card-title'> Ubicacion del producto </h2>
@@ -59,15 +59,6 @@ const CompShowMapaProducto = () => {
             )}
           </div>
         </div>
-
-        {//PROVISIONAL
-        geo.latitude && geo.longitude && (
-            <div>
-                <p>Latitud: {geo.latitude}</p>
-                <p>Longitud: {geo.longitude}</p>
-            </div>
-        )}
-        <p>ID Producto: {idProducto}</p>
     </div>
     );
 }

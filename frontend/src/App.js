@@ -7,6 +7,7 @@ import ProductosInicial from "./pages/ProductosInicial.jsx"
 import Login from "./login/Login.js"
 import EditUsuario from "./usuario/EditUser.js"
 import MiProductoBloque from './pages/ProductoBloque.jsx';
+import CompEditProducto from './detallesProducto/EditProducto.js';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<Login/>}/>
           <Route path="/productos" element={<ProductosInicial/>}/>
           <Route path="/detallesProducto/:idUsuario/:idProducto" element={<MiProductoBloque/>}/>
+          <Route path="/editarProducto/:idProducto" element={<CompEditProducto/>}/>
           <Route path="/editUser" element={<EditUsuario/>}/>
         </Routes>
       </BrowserRouter>

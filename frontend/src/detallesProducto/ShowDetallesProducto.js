@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
+
 
 const CompShowDetallesProducto = () => {
     const {idUsuario, idProducto} = useParams()
@@ -31,39 +32,11 @@ const CompShowDetallesProducto = () => {
                 console.error('Error al obtener producto o vendedor:', error);
             });
     }, [idProducto]);
-    
-    // NO FUNCIONA
-    const editarDescripcion = async (e, nuevaDescripcion) => {
-        e.preventDefault();
-    
-        try {
-            // Realizar una solicitud PUT al servidor para actualizar la descripción
-            const response = await fetch(`http://localhost:3001/productos/${idProducto}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ descripcion: nuevaDescripcion }),
-            });
-    
-            if (response.ok) {
-                // Actualizar el estado local directamente
-            setProducto(prevProducto => ({
-                ...prevProducto,
-                descripcion: nuevaDescripcion,
-            }));
-            } else {
-                console.error('Error al actualizar la descripción');
-            }
-        } catch (error) {
-            console.error('Error al actualizar la descripción:', error);
-        }
-    };
 
     
     const [fotoNueva, setFotoNueva] = useState(null);
     
-    const handleFileChange = (event) => {
+    const nuevaFoto = (event) => {
         const file = event.target.files[0];
     
         setFotoNueva(file);
@@ -76,19 +49,18 @@ const CompShowDetallesProducto = () => {
                 <div className='col 4'>
                     <div className='row'>
                         <div className='col'>
-                            { //ACTUALIZAR FOTO -- NO TERMINADO
+                            { 
                             idUsuario == vendedor._id ? 
                                 <div>
                                     <input
                                         type="file"
                                         accept="image/*" // Para aceptar solo archivos de imagen
-                                        onChange={handleFileChange}
+                                        onChange={nuevaFoto}
                                     />
 
                                     {fotoNueva && (
                                         <div>
-                                        <p>Nombre del archivo: {fotoNueva.name}</p>
-                                        <p>Tipo de archivo: {fotoNueva.type}</p>
+                                            <img src={URL.createObjectURL(fotoNueva)}/>
                                         </div>
                                     )}
                                 </div>
@@ -137,28 +109,10 @@ const CompShowDetallesProducto = () => {
                                 </div>
                                 
                                 {idUsuario == vendedor._id ? 
-                                <form onSubmit={editarDescripcion} className='mb-3'>
-                                    <div className="row mt-4 align-items-center">
-                                        <div className="col-md-2"></div>
-                                        <div className="col-md-5">
-                                            <input 
-                                                value={descripcion}
-                                                onChange={ (e) => setDescripcion(e.target.value)}
-                                                type="text"
-                                                className="form-control"
-                                                placeholder="(Nueva Descipcion)"
-                                                style={{ width: '100%'}}
-                                                aria-label="Ingresar nueva descripcion"
-                                                title="Ingresar nueva descripcion"
-                                            />
-                                        </div>
-                                        <div className="col-md-3">
-                                            <button type='submit' className="ms-2 btn btn-secondary">Modificar</button>
-                                        </div>
-                                        <div className="col-md-2"></div>
-                                    </div>
-                                </form> : null
-                                
+                                <div>
+                                    <Link to={`/editarProducto/${idProducto}`} className="btn btn-secondary">Editar</Link>
+                                </div>
+                                : null
                                 }
                             </div>
                         </div>

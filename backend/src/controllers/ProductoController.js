@@ -35,7 +35,7 @@ export const getUbiProducto = async (req, res) => {
         const producto = await Producto.findById(idProducto);
         if(producto) {
             const locationName = producto.ubicacion;
-            //const locationName = "Calle babor, 13, Malaga";
+            
             const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}`;
 
             fetch(apiUrl)
