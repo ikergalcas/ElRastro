@@ -13,7 +13,10 @@ import { getAllProductos, createProducto, editProducto, deleteProducto,getProduc
     getHuellaCarbono,getProductosPrecioMax, getProductosDescripcionPrecio } from '../controllers/ProductoController.js'
 
 import { getAllPujas, createPuja, deletePuja, editPuja, getPujasPrecio } from '../controllers/PujaController.js'
+
+import { createComentario, deleteComentario, editComentario, getAllComentarios } from '../controllers/comentarioController.js';
  
+
 
 const routerProducto = express.Router()
 
@@ -31,6 +34,12 @@ routerProducto.put('/:idProducto/crearPuja',createPuja)
 routerProducto.put('/:idProducto/editPuja/:idPuja',editPuja)
 routerProducto.put('/:idProducto/deletePuja/:idPuja',deletePuja)
 routerProducto.get('/:idProducto/pujasPrecio/',getPujasPrecio)
+routerProducto.get('/:idProducto/comentarios',getAllComentarios)
+routerProducto.put('/:idProducto/crearComentario',createComentario)
+routerProducto.put('/:idProducto/editComentario/:idComentario',editComentario)
+routerProducto.put('/:idProducto/deleteComentario/:idComentario',deleteComentario)
+
+
 routerProducto.post('/subirFoto', upload.single('foto'), async (req, res) => {
     try {
       const foto = req.file;

@@ -33,8 +33,9 @@ export const createProducto = async (req, res) => {
         newProducto.maximaPuja = precioInicial
 
         await newProducto.save()
-
-        res.send("creando producto")
+        
+        const idNuevoProducto = newProducto._id;
+        res.send(idNuevoProducto)
 
     } catch (error) {
         console.log('Error en la consulta de productos a la base de datos:', error);

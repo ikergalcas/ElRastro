@@ -11,6 +11,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: "http://res.cloudinary.com/dten77l85/image/upload/v1701645989/hfxempzbqlkawdekvuxy.jpg"
     },
+    imagenes: {
+        type:[String],
+        default: []
+    },
     precioInicial: {
         type: Number
     },
@@ -39,7 +43,7 @@ const productSchema = new mongoose.Schema({
     comentarios: {
         type: [ 
             {usuario: {
-                type: [mongoose.Schema.Types.ObjectId],
+                type: mongoose.Schema.Types.ObjectId,
                 require: true
             },
             texto: {
@@ -49,6 +53,10 @@ const productSchema = new mongoose.Schema({
             fecha: {
                 type: Date,
                 default: Date.now()
+            },
+            respuesta: {
+                type: String,
+                default: ""
             }}
         ],
         default:[]
