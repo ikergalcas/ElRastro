@@ -10,9 +10,9 @@ cloudinary.config({
 });
 
 import { getAllProductos, createProducto, editProducto, deleteProducto,getProductosdeUsuario,getProductosDescripcion,
-    getProductosPujados,getHuellaCarbono,getProductosPrecioMax, getProductosDescripcionPrecio } from '../controllers/ProductoController.js'
+    getHuellaCarbono,getProductosPrecioMax, getProductosDescripcionPrecio } from '../controllers/ProductoController.js'
 
-import { getAllPujas, createPuja } from '../controllers/PujaController.js'
+import { getAllPujas, createPuja, deletePuja, editPuja, getPujasPrecio } from '../controllers/PujaController.js'
  
 
 const routerProducto = express.Router()
@@ -25,11 +25,12 @@ routerProducto.get('/usuario/:idUsuario',getProductosdeUsuario)
 routerProducto.post('/descripcion',getProductosDescripcion)
 routerProducto.post('/preciomax',getProductosPrecioMax)
 routerProducto.post('/descripcionPrecio',getProductosDescripcionPrecio)
-routerProducto.get('/pujados/:idUsuario',getProductosPujados)
 routerProducto.post('/huellaCarbono',getHuellaCarbono)
 routerProducto.get('/:idProducto/pujas',getAllPujas)
 routerProducto.put('/:idProducto/crearPuja',createPuja)
-routerProducto.put('/:idProducto/editPuja/:idPuja',createPuja)
+routerProducto.put('/:idProducto/editPuja/:idPuja',editPuja)
+routerProducto.put('/:idProducto/deletePuja/:idPuja',deletePuja)
+routerProducto.get('/:idProducto/pujasPrecio/',getPujasPrecio)
 routerProducto.post('/subirFoto', upload.single('foto'), async (req, res) => {
     try {
       const foto = req.file;

@@ -132,6 +132,29 @@ export const getCompradores = async (req, res) => {
     }
 };
 
+// Devuelve una lista de los productos en los que un usuario específico ha pujado
+export const getProductosPujados = async (req, res) => {
+    try {
+        const {idUsuario} = req.params;
+        const listaProductos = await Producto.find();
+        
+        const listaFiltrada = []
+        for (const producto of listaProductos) {
+            for(const puja of producto.pujas) {
+                if (puja.usuario == idUsuario) {
+                    listaFiltrada.push(producto)
+                }
+            }
+        }
+
+        res.json(listaFiltrada);
+
+    } catch (error) {
+        console.log('Error en la consulta de productos en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+};
+
 export const getUbiUsuario = async (req, res) => {
     try {
         const {idUsuario} = req.params;

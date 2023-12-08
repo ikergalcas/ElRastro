@@ -1,6 +1,5 @@
 import Producto from "../models/ProductoModel.js";
 import Usuario from "../models/UsuarioModel.js";
-import Puja from "../models/PujaModel.js";
 
 
 export const getAllProductos = async (req, res) => {
@@ -140,20 +139,6 @@ export const getProductosDescripcionPrecio = async (req, res) => {
                 { precioFinal: {$lte: precio} }
             ]
             }));
-
-        res.json(listaProductos);
-
-    } catch (error) {
-        console.log('Error en la consulta de productos en la base de datos: ', error)
-        res.status(500).json({ message: 'Error al obtener los productos' })
-    }
-};
-
-// Devuelve una lista de los productos en los que un usuario específico ha pujado
-export const getProductosPujados = async (req, res) => {
-    try {
-        const {idUsuario} = req.params;
-        const listaProductos = (await Producto.find({pujas: {usuario:idUsuario}}));
 
         res.json(listaProductos);
 
