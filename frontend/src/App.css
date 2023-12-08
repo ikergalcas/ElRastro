@@ -42,6 +42,13 @@
   color: black !important
 }
 
+/*MARCADOR MAPA*/
+.leaflet-bootstrap-icon {
+  font-size: 24px; 
+  color: #007bff; 
+}
+
+
 /*PALETA COLORES: #27374D #526D82 #9DB2BF #DDE6ED*/
 
 .tarjeta {
@@ -69,7 +76,7 @@
 }
 
 .container1 {
-  margin-left: 19%;
+  margin-bottom: 7%;
 }
 
 .navbar {
@@ -97,6 +104,17 @@
   height: 6vmin;
   width: 30vmin;
   margin-right: 2%;
+}
+
+.formularioCrear{
+  width: 60%;
+  margin-left: 20%;
+  margin-top: 5%;
+}
+
+.formularioCrear h2 {
+  display:flex;
+  margin-left: 40%;
 }
 
 .barrabusquedabig {

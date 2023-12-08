@@ -1,6 +1,5 @@
 import Producto from "../models/ProductoModel.js";
 import Usuario from "../models/UsuarioModel.js";
-import Puja from "../models/PujaModel.js";
 
 
 export const getAllProductos = async (req, res) => {
@@ -28,8 +27,38 @@ export const getProductoPorId = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener el producto' })
     }
 };
+//-----------------------NUEVO------------------------------//
+export const getUbiProducto = async (req, res) => {
+    try {
+        const {idProducto} = req.params;
+        const producto = await Producto.findById(idProducto);
+        if(producto) {
+            const locationName = producto.ubicacion;
+            
+            const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}`;
 
+            fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                const firstResult = data[0];
+                const latitude = parseFloat(firstResult.lat);
+                const longitude = parseFloat(firstResult.lon);
+                res.json({latitude, longitude});
+                } else {
+                console.log("Ubicación de producto no encontrada");
+                }
+            })
+            .catch(error => {
+                console.error("Error en la solicitud de geocodificación: " + error);
+            });
+        }
 
+    } catch (error) {
+        
+    }
+};
+//-----------------------------------------------------//
 export const createProducto = async (req, res) => {
     try {
         const { descripcion, fechaCierre, foto, historialPujas, precioInicial, titulo, ubicacion, vendedor } = req.body
@@ -46,9 +75,13 @@ export const createProducto = async (req, res) => {
             vendedor
         })
 
+        newProducto.maximaPuja = precioInicial
+
         await newProducto.save()
 
-        res.send("creando producto")
+        const idNuevoProducto = newProducto._id;
+
+        res.send(idNuevoProducto)
 
     } catch (error) {
         console.log('Error en la consulta de productos a la base de datos:', error);
@@ -162,28 +195,6 @@ export const getProductosDescripcionPrecio = async (req, res) => {
     }
 };
 
-// Devuelve una lista de los productos en los que un usuario específico ha pujado
-export const getProductosPujados = async (req, res) => {
-    try {
-        const {idUsuario} = req.params;
-        const listaPujas = (await Puja.find({usuario:idUsuario}));
-        const listaIdProductos = listaPujas.map((puja) => puja.producto);
-
-        const listaProductos = [];
-        
-        for (const producto of listaIdProductos) {
-            const productoObjeto = await Producto.findById(producto);
-            listaProductos.push(productoObjeto);
-        }
-
-        res.json(listaProductos);
-
-    } catch (error) {
-        console.log('Error en la consulta de productos en la base de datos: ', error)
-        res.status(500).json({ message: 'Error al obtener los productos' })
-    }
-};
-
 //calcular desde ubicacion origen y ubicaion destino por hacer, combina openstreetmap y huella carbono
 function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
     var R = 6371; // Radius of the earth in km
@@ -202,6 +213,37 @@ function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
     function deg2rad(deg) {
     return deg * (Math.PI/180)
 } 
+
+export const getUbiProducto = async (req, res) => {
+    try {
+        const {idProducto} = req.params;
+        const producto = await Producto.findById(idProducto);
+        if(producto) {
+            const locationName = producto.ubicacion;
+            
+            const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}`;
+
+            fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                const firstResult = data[0];
+                const latitude = parseFloat(firstResult.lat);
+                const longitude = parseFloat(firstResult.lon);
+                res.json({latitude, longitude});
+                } else {
+                console.log("Ubicación de producto no encontrada");
+                }
+            })
+            .catch(error => {
+                console.error("Error en la solicitud de geocodificación: " + error);
+            });
+        }
+
+    } catch (error) {
+        
+    }
+};
 
 export const getHuellaCarbono = async (req, res) => {
     try {
