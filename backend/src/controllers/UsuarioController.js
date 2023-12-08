@@ -182,7 +182,8 @@ export const getUbiUsuario = async (req, res) => {
         }
 
     } catch (error) {
-        
+        console.log('Error en la consulta de productos en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
     }
 };
 

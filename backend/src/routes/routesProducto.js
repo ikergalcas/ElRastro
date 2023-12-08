@@ -10,7 +10,7 @@ cloudinary.config({
 });
 
 import { getAllProductos, createProducto, editProducto, deleteProducto,getProductosdeUsuario,getProductosDescripcion,
-    getHuellaCarbono,getProductosPrecioMax, getProductosDescripcionPrecio } from '../controllers/ProductoController.js'
+    getHuellaCarbono,getProductosPrecioMax, getProductosDescripcionPrecio, getUbiProducto } from '../controllers/ProductoController.js'
 
 import { getAllPujas, createPuja, deletePuja, editPuja, getPujasPrecio } from '../controllers/PujaController.js'
 
@@ -38,7 +38,7 @@ routerProducto.get('/:idProducto/comentarios',getAllComentarios)
 routerProducto.put('/:idProducto/crearComentario',createComentario)
 routerProducto.put('/:idProducto/editComentario/:idComentario',editComentario)
 routerProducto.put('/:idProducto/deleteComentario/:idComentario',deleteComentario)
-
+routerProducto.get('/:idProducto/ubicacion', getUbiProducto)
 
 routerProducto.post('/subirFoto', upload.single('foto'), async (req, res) => {
     try {
