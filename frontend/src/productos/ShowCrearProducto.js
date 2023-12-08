@@ -152,7 +152,7 @@ return(
                 <a>Añade una foto representativa:</a><br/>
                 <div style={{flexdirection: 'row'}} >
                     <input type="file" className="form-control" id="archivo" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg"/>
-                    <button className="btn btn-secondary" type="submit" >Button</button>
+                    <button className="btn btn-secondary" type="submit" >Enviar</button>
                 </div>
             </form>
         </div>        
