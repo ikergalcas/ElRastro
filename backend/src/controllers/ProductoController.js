@@ -133,7 +133,6 @@ export const getProductosPrecioMax= async (req, res) => {
         const {precio}  = req.body;
         const listaProductos = (await Producto.find({         
                 maximaPuja: {$lte: precio}
-                maximaPuja: {$lte: precio}
             }));
 
         res.json(listaProductos);
