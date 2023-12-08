@@ -27,8 +27,38 @@ export const getProductoPorId = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener el producto' })
     }
 };
+//-----------------------NUEVO------------------------------//
+export const getUbiProducto = async (req, res) => {
+    try {
+        const {idProducto} = req.params;
+        const producto = await Producto.findById(idProducto);
+        if(producto) {
+            const locationName = producto.ubicacion;
+            
+            const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}`;
 
+            fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                const firstResult = data[0];
+                const latitude = parseFloat(firstResult.lat);
+                const longitude = parseFloat(firstResult.lon);
+                res.json({latitude, longitude});
+                } else {
+                console.log("Ubicación de producto no encontrada");
+                }
+            })
+            .catch(error => {
+                console.error("Error en la solicitud de geocodificación: " + error);
+            });
+        }
 
+    } catch (error) {
+        
+    }
+};
+//-----------------------------------------------------//
 export const createProducto = async (req, res) => {
     try {
         const { descripcion, fechaCierre, foto, historialPujas, precioInicial, titulo, ubicacion, vendedor } = req.body

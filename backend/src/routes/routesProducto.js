@@ -20,6 +20,10 @@ import { createComentario, deleteComentario, editComentario, getAllComentarios }
 
 const routerProducto = express.Router()
 
+//-----------------------NUEVO------------------------------//
+routerProducto.get('/:idProducto/ubi', getUbiProducto)
+//-----------------------------------------------------//
+
 routerProducto.get('/', getAllProductos)
 routerProducto.post('/', createProducto)
 routerProducto.put('/:id', editProducto)
