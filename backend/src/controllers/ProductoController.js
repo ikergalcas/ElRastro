@@ -50,6 +50,7 @@ export const createProducto = async (req, res) => {
         await newProducto.save()
 
         const idNuevoProducto = newProducto._id;
+
         res.send(idNuevoProducto)
 
     } catch (error) {

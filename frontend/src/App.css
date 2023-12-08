@@ -60,7 +60,7 @@
 }
 
 .container1 {
-  margin-left: 19%;
+  margin-bottom: 7%;
 }
 
 .navbar {
@@ -80,4 +80,15 @@
   height: 6vmin;
   width: 30vmin;
   margin-right: 2%;
+}
+
+.formularioCrear{
+  width: 60%;
+  margin-left: 20%;
+  margin-top: 5%;
+}
+
+.formularioCrear h2 {
+  display:flex;
+  margin-left: 40%;
 }
