@@ -54,7 +54,28 @@ const CompShowComentarios = () => {
             });
     },[]);
 
+    //conseguimos los comentarios de un producto
+    const [comentarios, setComentarios] = useState({});
+    useEffect(() => {
+        // Hacer la solicitud para obtener productos desde el backend
+        fetch(`http://localhost:3004/comentarios/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Actualizar el estado con los comentarios obtenidos
+                setComentarios(data);
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error al obtener los comentarios:', error);
+            });
+    },[]);
 
+    //METER LA LISTITA DE COMENTARIOS
     return (
         <div>
         <div class="buscador-center col 4">
@@ -66,11 +87,8 @@ const CompShowComentarios = () => {
         <b>COMENTARIOS</b>
             <div class="card">
                 <div class="card-body">
-                    <ul>
-                        <li>comentario 1 </li>
-                        <li>comentario 2 </li>
-                        <li>comentario 3 </li>
-                    </ul>
+                <div>
+                </div>
                 </div>
             </div>
     </div>

@@ -54,6 +54,36 @@ const CompShowPujas = () => {
             });
     },[]);
 
+    const [pujas, setPujas] = useState({});
+    useEffect(() => {
+        // Hacer la solicitud para obtener productos desde el backend
+        fetch(`http://localhost:3002/pujas/producto/${idProducto}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Actualizar el estado con los productos obtenidos
+                setPujas(data);
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error al obtener pujas:', error);
+            });
+
+        //    <ul>
+        //    {pujas.length==0 ? (
+        //    <p> No pujas.</p> 
+        //        ) : pujas.map(puja => (
+        //        <li>
+        //            <p>Usuario: {puja.usuario.username}</p>
+        //            <p>Precio: {puja.precio}</p>
+        //        </li>
+        //        ))}
+        //    </ul>
+    },[]);
 
 
     return (
@@ -68,11 +98,7 @@ const CompShowPujas = () => {
             <b>FECHA FINAL DE PUJA</b>
                 <div class="card">
                     <div class="card-body">
-                        <ul>
-                            <li>puja 1 </li>
-                            <li>puja 2 </li>
-                            <li>puja 3 </li>
-                        </ul>
+                   
                     </div>
                 </div>
         </div>
