@@ -1,10 +1,10 @@
-import Puja from "../models/PujaModel.js";
+import Producto from "../models/ProductoModel.js";
 
 export const getAllPujas = async (req, res) => {
     try {
-        const data = await Puja.find()
-
-        res.json(data)
+        const {idProducto} = req.params
+        const data = await Producto.findById(idProducto)
+        res.json(data.pujas)
 
     } catch (error) {
         console.log('Error en la consulta de pujas en la base de datos: ', error)
@@ -14,17 +14,21 @@ export const getAllPujas = async (req, res) => {
 
 export const createPuja = async (req, res) => {
     try {
-        const { precio, producto, usuario } = req.body
+        const {idProducto} = req.params
+        const { precio, usuario } = req.body
 
-        const newPuja = new Puja({
-            precio,
-            producto,
-            usuario
+        const newPuja = new Object({
+            "precio": precio,
+            "usuario": usuario
         })
 
-        await newPuja.save()
+        const data = await Producto.findById(idProducto)
+        const listaPujas = data.pujas
+        listaPujas.push(newPuja)
 
-        res.send("creando")
+        await Producto.findByIdAndUpdate(idProducto, {pujas:listaPujas}, {new:true})
+
+        res.send("añadiendo Puja")
 
     } catch (error) {
         console.log('Error en la consulta de pujas a la base de datos:', error);
@@ -34,76 +38,96 @@ export const createPuja = async (req, res) => {
 
 export const editPuja = async (req, res) => {
     try {
-        const { id } = req.params;
-        const updateData = req.body; //la info modificada
+        const { idPuja, idProducto } = req.params;
+        const {precio} = req.body;
 
-        //buscamos user y modificamos
-        const updatedPuja = await Puja.findByIdAndUpdate(id, updateData, {new: true});
-
-        if(!updatedPuja){
-            return res.status(404).json({message : 'Puja no encontrado' });
+        const producto = await Producto.findById(idProducto)
+        const listaPujas = producto.pujas
+        for (const puja of listaPujas ) {
+            if(puja._id == idPuja){
+                const usuario = puja.usuario
+                listaPujas.pull(puja);
+                listaPujas.push(new Object ({
+                    "precio": precio,
+                    "usuario": usuario
+                }));
+            }    
         }
-        res.json(updatedPuja);
+        const updatedProducto = await Producto.findByIdAndUpdate(idProducto, {pujas:listaPujas}, {new:true})
+
+        if(!updatedProducto){
+            return res.status(404).json({message : 'Producto o puja no encontrada' });
+        }
+        res.json("editando Puja");
 
     } catch (error) {
-        console.log('Error en la consulta de PujaS a la base de datos:', error);
-        res.status(500).json({ message: 'Error al editar un Puja' });
+        console.log('Error en la consulta de Productos a la base de datos:', error);
+        res.status(500).json({ message: 'Error al editar un Producto' });
     }
 }
 
 
 export const deletePuja = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { idPuja, idProducto } = req.params;
 
-        //buscamos user y borramos
-        const searchedPuja = await Puja.findByIdAndDelete(id);
-
-        if(!searchedPuja){
-            return res.status(404).json({message : 'Puja no encontrado' });
+        const producto = await Producto.findById(idProducto)
+        const listaPujas = producto.pujas
+        for (const puja of listaPujas ) {
+            if(puja._id == idPuja){
+                listaPujas.pull(puja);
+            }    
         }
-        res.send("borrada")
+        const updatedProducto = await Producto.findByIdAndUpdate(idProducto, {pujas:listaPujas}, {new:true})
+
+        if(!updatedProducto){
+            return res.status(404).json({message : 'Producto o puja no encontrada' });
+        }
+        res.json("borrando puja")
 
     } catch (error) {
-        console.log('Error en la consulta de PujaS a la base de datos:', error);
-        res.status(500).json({ message: 'Error al editar un Puja' });
+        console.log('Error en la consulta de Productos a la base de datos:', error);
+        res.status(500).json({ message: 'Error al editar un Producto' });
     }
 }
 
-//pujas de un producto
-export const getPujaProducto = async (req, res) => {
-    try {
-        const { idProducto } = req.params;
-        const listaPujas = (await Puja.find({producto: idProducto}).sort({precio : -1}));
-
-        res.json(listaPujas);
-
-    } catch (error) {
-        console.log('Error en la consulta de pujas en la base de datos: ', error)
-        res.status(500).json({ message: 'Error al obtener los productos' })
-    }
-};
-
 //pujas usuario
-export const getPujaUsuario = async (req, res) => {
+export const getPujasUsuario = async (req, res) => {
     try {
         const { idUsuario } = req.params;
-        const listaPujas = (await Puja.find({usuario: idUsuario}).sort({precio : 1}));
+        const listaProductos = await Producto.find();
+        
+        const listaPujas = []
+        for (const producto of listaProductos) {
+            for(const puja of producto.pujas) {
+                if (puja.usuario == idUsuario) {
+                    listaPujas.push(puja)
+                }
+            }
+        }
 
         res.json(listaPujas);
 
     } catch (error) {
         console.log('Error en la consulta de pujas en la base de datos: ', error)
-        res.status(500).json({ message: 'Error al obtener los productos' })
+        res.status(500).json({ message: 'Error al obtener las pujas' })
     }
 };
 
 // $gt $gte $lt $lte
 //pujas por precio
-export const getPujaPrecio = async (req, res) => {
+export const getPujasPrecio = async (req, res) => {
     try {
-        const {precio} = req.body;
-        const listaPujas = (await Puja.find({precio: {$lte:precio}}));
+        const {idProducto} = req.params
+        const {precio} = req.body
+        const producto = await Producto.findById(idProducto)
+        
+        const listaPujas = []
+        for(const puja of producto.pujas) {
+            if (puja.precio <= precio) {
+                listaPujas.push(puja)
+            }
+        }
 
         res.json(listaPujas);
 

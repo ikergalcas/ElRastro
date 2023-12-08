@@ -1,71 +1,97 @@
-import Comentario from "../models/ComentarioModel.js";
+import Producto from "../models/ProductoModel.js";
+
 
 export const getAllComentarios = async (req, res) => {
     try {
-        const data = await Comentario.find()
-
-        res.json(data)
+        const {idProducto} = req.params
+        const data = await Producto.findById(idProducto)
+        res.json(data.comentarios)
 
     } catch (error) {
-        console.log('Error en la consulta de Comentarios en la base de datos: ', error)
-        res.status(500).json({ message: 'Error al obtener los Comentarios' })
+        console.log('Error en la consulta de comentarios en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener los comentarios' })
     }
 };
 
 export const createComentario = async (req, res) => {
     try {
-        const { texto, producto, usuario } = req.body
+        const {idProducto} = req.params
+        const { usuario, texto } = req.body
 
-        const newComentario = new Comentario({
-            usuario,
-            producto,
-            texto
+        const newComentario = new Object({
+            "usuario": usuario,
+            "texto": texto
         })
 
-        await newComentario.save()
+        const data = await Producto.findById(idProducto)
+        const listaComentarios = data.comentarios
+        listaComentarios.push(newComentario)
 
-        res.send("creando")
+        await Producto.findByIdAndUpdate(idProducto, {comentarios:listaComentarios}, {new:true})
+
+        res.send("añadiendo comentario")
 
     } catch (error) {
-        console.log('Error en la consulta de Comentarios a la base de datos:', error);
-        res.status(500).json({ message: 'Error al crear un Comentario' });
+        console.log('Error en la consulta de comentarios a la base de datos:', error);
+        res.status(500).json({ message: 'Error al crear un comentarios' });
     }
 }
 
+//No se deberia utilizar
 export const editComentario = async (req, res) => {
     try {
-        const { id } = req.params;
-        const updateData = req.body; //la info modificada
+        const { idComentario, idProducto } = req.params;
+        const {texto} = req.body;
 
-        //buscamos user y modificamos
-        const updatedComentario = await Comentario.findByIdAndUpdate(id, updateData, {new: true});
-
-        if(!updatedComentario){
-            return res.status(404).json({message : 'Comentario no encontrado' });
+        const producto = await Producto.findById(idProducto)
+        const listaComentarios = producto.comentarios
+        for (const comentario of listaComentarios ) {
+            if(comentario._id == idComentario){
+                const usuario = comentario.usuario
+                const fecha = comentario.fecha 
+                listaComentarios.pull(comentario);
+                listaComentarios.push(new Object ({
+                    "texto": texto,
+                    "usuario": usuario,
+                    "fecha": fecha
+                }));
+            }    
         }
-        res.json(updatedComentario);
+        const updatedProducto = await Producto.findByIdAndUpdate(idProducto, {comentarios:listaComentarios}, {new:true})
+
+        if(!updatedProducto){
+            return res.status(404).json({message : 'Producto o comentario no encontrado' });
+        }
+        res.json("editando comentario");
 
     } catch (error) {
-        console.log('Error en la consulta de ComentarioS a la base de datos:', error);
-        res.status(500).json({ message: 'Error al editar un Comentario' });
+        console.log('Error en la consulta de comentarios a la base de datos:', error);
+        res.status(500).json({ message: 'Error al editar un comentarios' });
     }
 }
 
 
 export const deleteComentario = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { idComentario, idProducto } = req.params;
+        const {texto} = req.body;
 
-        //buscamos user y borramos
-        const searchedComentario = await Comentario.findByIdAndDelete(id);
-
-        if(!searchedComentario){
-            return res.status(404).json({message : 'Comentario no encontrado' });
+        const producto = await Producto.findById(idProducto)
+        const listaComentarios = producto.comentarios
+        for (const comentario of listaComentarios ) {
+            if(comentario._id == idComentario){
+                listaComentarios.pull(comentario);
+            }    
         }
-        res.send("borrada")
+        const updatedProducto = await Producto.findByIdAndUpdate(idProducto, {comentarios:listaComentarios}, {new:true})
+
+        if(!updatedProducto){
+            return res.status(404).json({message : 'Producto o comentario no encontrado' });
+        }
+        res.json("borrando comentario");
 
     } catch (error) {
-        console.log('Error en la consulta de Comentarios a la base de datos:', error);
-        res.status(500).json({ message: 'Error al editar un Comentario' });
+        console.log('Error en la consulta de comentarios a la base de datos:', error);
+        res.status(500).json({ message: 'Error al editar un comentario' });
     }
 }

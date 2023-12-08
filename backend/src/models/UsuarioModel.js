@@ -4,6 +4,10 @@ const userSchema = new mongoose.Schema({
     contacto: {
         type: String,
     },
+    foto: {
+        type: String,
+        default: ""
+    },
     ubicacion:{
         type: String,
     },
@@ -17,6 +21,10 @@ const userSchema = new mongoose.Schema({
     valoracionMedia: {
         type:Number,
         default: 0
+    },
+    valoraciones: {
+        type:[Number],
+        default: []
     }
 },{ versionKey: false });
 

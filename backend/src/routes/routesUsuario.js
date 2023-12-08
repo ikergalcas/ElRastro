@@ -1,5 +1,7 @@
 import express from 'express'
-import { getUsuarioPorId, getAllUsuarios, createUsuario, editUsuario, deleteUsuario,getUsuarioNombre,getUsuarioValoracion, getUbiUsuario,getCompradores} from '../controllers/UsuarioController.js'
+import { getAllUsuarios, createUsuario, editUsuario, deleteUsuario,getUsuarioNombre,getUsuarioValoracion, getUbiUsuario,getCompradores, getProductosPujados, getUsuarioPorId} from '../controllers/UsuarioController.js'
+
+import { getPujasUsuario } from '../controllers/PujaController.js'
 
 const routerUsuario = express.Router()
 
@@ -10,6 +12,9 @@ routerUsuario.delete('/:id', deleteUsuario)
 routerUsuario.post('/username',getUsuarioNombre)
 routerUsuario.get('/:idUsuario',getUsuarioPorId)
 routerUsuario.post('/valoracion',getUsuarioValoracion)
+routerUsuario.get('/:idUsuario/productosPujados', getProductosPujados)
+routerUsuario.get('/:idUsuario/pujas', getPujasUsuario)
+routerUsuario.get('/:idUsuario/pujas', getPujasUsuario)
 routerUsuario.get('/ubi/:idUsuario', getUbiUsuario)
 routerUsuario.post('/compradores',getCompradores)
 

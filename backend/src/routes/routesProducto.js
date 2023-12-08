@@ -9,8 +9,14 @@ cloudinary.config({
     api_secret: 'Km6kFadj1HOmPf6mYYyyd6KIMeQ'
 });
 
-import { getProductoPorId, getAllProductos, createProducto, editProducto, deleteProducto,getProductosdeUsuario,getProductosDescripcion,
-    getProductosPujados,getHuellaCarbono,getProductosPrecioMax, getProductosDescripcionPrecio } from '../controllers/ProductoController.js'
+import { getAllProductos, createProducto, editProducto, deleteProducto,getProductosdeUsuario,getProductosDescripcion,
+    getHuellaCarbono,getProductosPrecioMax, getProductosDescripcionPrecio, getUbiProducto, getProductoPorId } from '../controllers/ProductoController.js'
+
+import { getAllPujas, createPuja, deletePuja, editPuja, getPujasPrecio } from '../controllers/PujaController.js'
+
+import { createComentario, deleteComentario, editComentario, getAllComentarios } from '../controllers/comentarioController.js';
+ 
+
 
 const routerProducto = express.Router()
 
@@ -23,8 +29,18 @@ routerProducto.get('/usuario/:idUsuario',getProductosdeUsuario)
 routerProducto.post('/descripcion',getProductosDescripcion)
 routerProducto.post('/preciomax',getProductosPrecioMax)
 routerProducto.post('/descripcionPrecio',getProductosDescripcionPrecio)
-routerProducto.get('/pujados/:idUsuario',getProductosPujados)
 routerProducto.post('/huellaCarbono',getHuellaCarbono)
+routerProducto.get('/:idProducto/pujas',getAllPujas)
+routerProducto.put('/:idProducto/crearPuja',createPuja)
+routerProducto.put('/:idProducto/editPuja/:idPuja',editPuja)
+routerProducto.put('/:idProducto/deletePuja/:idPuja',deletePuja)
+routerProducto.get('/:idProducto/pujasPrecio/',getPujasPrecio)
+routerProducto.get('/:idProducto/comentarios',getAllComentarios)
+routerProducto.put('/:idProducto/crearComentario',createComentario)
+routerProducto.put('/:idProducto/editComentario/:idComentario',editComentario)
+routerProducto.put('/:idProducto/deleteComentario/:idComentario',deleteComentario)
+routerProducto.get('/:idProducto/ubicacion', getUbiProducto)
+
 routerProducto.post('/subirFoto', upload.single('foto'), async (req, res) => {
     try {
       const foto = req.file;
@@ -48,6 +64,7 @@ routerProducto.post('/subirFoto', upload.single('foto'), async (req, res) => {
       res.status(500).json({ error: 'Error al subir la foto a Cloudinary' });
     }
   });
+
   
 
 export default routerProducto
