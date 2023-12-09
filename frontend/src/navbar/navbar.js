@@ -19,7 +19,9 @@ function NavbarPage(props) {
         </Nav>
         <Nav>
             <NavDropdown drop='start' className='me-3' title={<img src={fotoUser} style={{ width: '6vh', borderRadius: '50%' }} alt="" />} id="basic-nav-dropdown">
-            <NavDropdown.Item href={`/editUser`}>Editar perfil</NavDropdown.Item>
+            <NavDropdown.Item href={`/userInfo/653fe434b1b1e5d84c3ed746`}>Ver perfil ageno</NavDropdown.Item>
+            <NavDropdown.Divider />
+            <NavDropdown.Item href={`/myUserInfo/653fe434b1b1e5d84c3ed746`}>Ver mi perfil</NavDropdown.Item>
             <NavDropdown.Divider />
             <NavDropdown.Item href="/">Cerrar sesión</NavDropdown.Item>
           </NavDropdown>
