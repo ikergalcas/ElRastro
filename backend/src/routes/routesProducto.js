@@ -15,7 +15,7 @@ import { getAllProductos, createProducto, editProducto, deleteProducto,getProduc
 
 import { getAllPujas, createPuja, deletePuja, editPuja, getPujasPrecio } from '../controllers/PujaController.js'
 
-import { createComentario, deleteComentario, editComentario, getAllComentarios } from '../controllers/ComentarioController.js';
+import { crearRespuestaComentario, createComentario, deleteComentario, editComentario, getAllComentarios } from '../controllers/ComentarioController.js';
  
 
 
