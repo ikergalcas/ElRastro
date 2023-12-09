@@ -3,9 +3,12 @@ import Producto from "../models/ProductoModel.js";
 export const getAllPujas = async (req, res) => {
     try {
         const {idProducto} = req.params
-        const data = await Producto.findById(idProducto)
-        res.json(data.pujas)
+        const data = await Producto.findById(idProducto);
+        
+        const pujasOrdenadas = data.pujas.sort((a, b) => b.precio - a.precio);
 
+        res.json(pujasOrdenadas);
+        
     } catch (error) {
         console.log('Error en la consulta de pujas en la base de datos: ', error)
         res.status(500).json({ message: 'Error al obtener los productos' })
@@ -28,7 +31,7 @@ export const createPuja = async (req, res) => {
 
         await Producto.findByIdAndUpdate(idProducto, {pujas:listaPujas}, {new:true})
 
-        res.send("añadiendo Puja")
+        res.send(listaPujas)
 
     } catch (error) {
         console.log('Error en la consulta de pujas a la base de datos:', error);
