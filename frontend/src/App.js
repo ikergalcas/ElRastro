@@ -10,9 +10,11 @@ import MiProductoBloque from './pages/ProductoBloque.jsx';
 
 import ProductosVendidos from './pages/ShowProductosVendidos.jsx';
 import ProductosSinVender from './pages/ShowProductosSinVender.jsx';
-import EditUsuario from "./usuario/EditUser.js"
+import UserInfo from "./usuario/UserInfo.js"
+import MyUserInfo from "./usuario/MyUserInfo.js"
 import CrearProdcuto from './pages/CrearProducto.jsx'
 import CompEditProducto from './detallesProducto/EditProducto.js';
+import EditarPerfil from './usuario/EditarPerfil.js'
 
 function App() {
   return (
@@ -22,11 +24,14 @@ function App() {
           <Route path="/login" element={<Login/>}/>
           <Route path="/productos" element={<ProductosInicial/>}/>
           <Route path="/detallesProducto/:idUsuario/:idProducto" element={<MiProductoBloque/>}/>
-          <Route path="/ProductosVendidos" element={<ProductosVendidos/>}/>
-          <Route path="/ProductosSinVender" element={<ProductosSinVender/>}/>
+          <Route path="/ProductosVendidos/:idUsuario" element={<ProductosVendidos/>}/>
+          <Route path="/ProductosSinVender/:idUsuario" element={<ProductosSinVender/>}/>
           <Route path="/nuevoProducto/:idUsuario" element={<CrearProdcuto/>}/>
           <Route path="/editarProducto/:idProducto" element={<CompEditProducto/>}/>
-          <Route path="/editUser" element={<EditUsuario/>}/>
+          <Route path="/userInfo/:idUsuario" element={<UserInfo/>}/>
+          <Route path="/myUserInfo/:idUsuario" element={<MyUserInfo/>}/>
+          <Route path="/editarPerfil/:idUsuario" element={<EditarPerfil/>}/>
+
         </Routes>
       </BrowserRouter>
   );

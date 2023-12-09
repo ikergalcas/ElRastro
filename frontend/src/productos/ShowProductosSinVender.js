@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 const ShowProductosSinVender = () => {
 
     const [productos, setProductos] = useState([]); 
-    const idUsuario = '653fe434b1b1e5d84c3ed746';
+    const {idUsuario} = useParams()
     useEffect( () => {getUsuario()}, []);
 
     const getUsuario = async () => {
-        fetch('http://localhost:3001/productos/usuario/653fe434b1b1e5d84c3ed746/sinVender', {
+        fetch(`http://localhost:3001/productos/usuario/${idUsuario}/sinVender`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

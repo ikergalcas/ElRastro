@@ -1,4 +1,4 @@
-import EditUser from "../usuario/EditUser.js";
+import EditUser from "../usuario/UserInfo.js";
 import NavbarPage from "../navbar/navbar.js";
 
 function PerfilUsuario() {

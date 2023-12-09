@@ -185,7 +185,7 @@ export const getUbiUsuario = async (req, res) => {
                 const firstResult = data[0];
                 const latitude = parseFloat(firstResult.lat);
                 const longitude = parseFloat(firstResult.lon);
-                res.json(`Latitud: ${latitude}, Longitud: ${longitude}`);
+                res.json({latitude, longitude});
                 } else {
                 console.log("Ubicación no encontrada");
                 }
@@ -196,8 +196,8 @@ export const getUbiUsuario = async (req, res) => {
         }
 
     } catch (error) {
-        console.log('Error en la consulta de productos en la base de datos: ', error)
-        res.status(500).json({ message: 'Error al obtener los productos' })
+        console.log('Error en la consulta de usuarios en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener la localización' })
     }
 };
 
