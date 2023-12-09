@@ -66,15 +66,6 @@
   justify-content: right;
 }
 
-.buscador-center {
-  margin-top: 2%;
-  margin-bottom: 1%;
-  margin-right: 3%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
 .container1 {
   margin-bottom: 7%;
 }
@@ -87,14 +78,6 @@
   margin-left: 2%;
   margin-right: 2%;
   width: 65%;
-  border: #282c34 2px solid;
-  background-color: #9DB2BF;
-  border-radius: 1vmin;
-}
-.botonBusquedaBig {
-  margin-left: 2%;
-  margin-right: 2%;
-  width: 80%;
   border: #282c34 2px solid;
   background-color: #9DB2BF;
   border-radius: 1vmin;
@@ -117,8 +100,3 @@
   margin-left: 40%;
 }
 
-.barrabusquedabig {
-  height: 5vmin;
-  width: 55vmin;
-  margin-right: 2%;
-}
