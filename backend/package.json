@@ -7,7 +7,6 @@
   "scripts": {
     "dev": "nodemon  src/index.js",
     "dev2": "nodemon src/indexs/indexProducto.js",
-    "dev3": "nodemon src/indexs/indexPuja.js",
     "dev4": "nodemon src/indexs/indexUsuario.js"
   },
   "keywords": [],
