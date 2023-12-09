@@ -2,6 +2,101 @@ import Producto from "../models/ProductoModel.js";
 import Usuario from "../models/UsuarioModel.js";
 
 
+//------------------NUEVO------------------//
+export const cierrePuja = async (req, res) => {
+    try {
+        const { idProducto } = req.params;
+
+        console.log("antes de consulta")
+
+        const producto = await Producto.findById(idProducto);
+
+        if (!producto) {
+            console.error('No se pudo actualizar el producto');
+            return res.status(500).json({ message: 'Error al cerrar la puja', error: 'No se pudo actualizar el producto' });
+        }
+
+        if(Date.now() > producto.fechaCierre && !producto.vendido) {
+            var user = -1
+            for(const puja of producto.pujas) {
+                if(puja.precio === producto.maximaPuja) {
+                    user = puja.usuario
+                }
+            }
+
+            //ASIGNAMOS EL CAMPO COMPRADOR Y PONEMOS VENDIDO A TRUE
+            //Con new: true hago que devuelva el objeto actualizado y de esta manera lo devuelvo en el res.json
+            var actualizado = await Producto.findByIdAndUpdate(idProducto, { comprador: user, vendido: true }, { new: true })
+            res.json(actualizado)
+        } else {
+            res.json(producto)
+        }
+
+    } catch (error) {
+        console.log("error al hacer el cierre de la puja")
+        res.status(500).json({ message: 'Error al cerrar la puja' })
+    }
+}
+
+//------------------NUEVO------------------//
+export const nuevaImagen = async (req, res) => {
+    try {
+        const { idProducto } = req.params;
+        const { imagen } = req.body;  // Supongamos que recibes la URL de la nueva foto en el cuerpo de la solicitud
+
+        const producto = await Producto.findById(idProducto);
+
+        const imagenes = producto.imagenes || [];
+
+        imagenes.push(imagen);
+
+        await Producto.findByIdAndUpdate(idProducto, { imagenes });
+
+        res.json({ message: 'Nueva foto añadida con éxito', imagenes });
+
+    } catch (error) {
+        console.log('Error al añadir una nueva foto al producto:', error);
+        res.status(500).json({ message: 'Error al añadir una nueva foto al producto' });
+    }
+}
+
+//------------------NUEVO------------------//
+//numero de productos valorados de un usuario (VALORACION)
+export const valoracionNueva = async (req, res) => {
+    try {
+        // Obtener parámetros desde query o body
+        const { idVendedor, idProducto, fiabilidad, calidad } = req.body;
+
+        //-------------Actualizar el producto con idProducto a valorado = true-------------
+        const producto = await Producto.findByIdAndUpdate(idProducto, { valorado: true });
+
+        //-------------Obtener el número de productos valorados----------------------------
+        const listaProductos = await Producto.find({ vendedor: idVendedor, valorado: true });
+        const cantidadValorados = listaProductos.length;
+
+        // Obtener el vendedor mediante idVendedor
+        const vendedor = await Usuario.findById(idVendedor);
+
+        if (!vendedor) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        //---------------Calcular la nueva valoracionMedia del usuario//-------------------
+        const valoracionNueva = (fiabilidad + calidad) / 2;
+        var mediaNueva = ((vendedor.valoracionMedia * (cantidadValorados - 1)) + valoracionNueva) / cantidadValorados;
+        mediaNueva = Math.round(mediaNueva)
+        
+        //---------------Actualizar el atributo valoracionMedia del vendedor---------------
+        await Usuario.findByIdAndUpdate(idVendedor, { valoracionMedia: mediaNueva });
+
+        res.json({valMediaNueva: mediaNueva, valNueva: valoracionNueva, fiab: fiabilidad, cal: calidad });
+
+    } catch (error) {
+        console.log('Error en la consulta de obtener productos vendidos de un usuario:', error);
+        res.status(500).json({ message: 'Error al obtener productos vendidos de un usuario' });
+    }
+}
+
 export const getAllProductos = async (req, res) => {
     try {
         const data = await Producto.find()

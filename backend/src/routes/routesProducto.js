@@ -11,7 +11,7 @@ cloudinary.config({
 
 import { getAllProductos, createProducto, editProducto, deleteProducto,getProductosdeUsuario,getProductosDescripcion,
     getHuellaCarbono,getProductosPrecioMax, getProductosDescripcionPrecio, getUbiProducto, getProductoPorId, getProductosSinVenderDeUsuario,
-    getProductosVendidosDeUsuario } from '../controllers/ProductoController.js'
+    getProductosVendidosDeUsuario, valoracionNueva, nuevaImagen, cierrePuja } from '../controllers/ProductoController.js'
 
 import { getAllPujas, createPuja, deletePuja, editPuja, getPujasPrecio } from '../controllers/PujaController.js'
 
@@ -33,6 +33,9 @@ routerProducto.post('/descripcion',getProductosDescripcion)
 routerProducto.post('/preciomax',getProductosPrecioMax)
 routerProducto.post('/descripcionPrecio',getProductosDescripcionPrecio)
 routerProducto.post('/huellaCarbono',getHuellaCarbono)
+routerProducto.put('/valoracion/calculoValoracion', valoracionNueva)  //--NUEVO--
+routerProducto.put('/:idProducto/nuevaImagen', nuevaImagen) //--NUEVO--
+routerProducto.put('/:idProducto/checkeo', cierrePuja) //--NUEVO-- CHECKEAMOS SI HA TERMINADO LA PUJA Y DEVOLVEMOS EL PRODUCTO
 routerProducto.get('/:idProducto/pujas',getAllPujas)
 routerProducto.put('/:idProducto/crearPuja',createPuja)
 routerProducto.put('/:idProducto/editPuja/:idPuja',editPuja)

@@ -40,6 +40,10 @@ const productSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.Boolean, 
         default: false
     },
+    valorado: {
+        type: mongoose.Schema.Types.Boolean, 
+        default: false
+    },
     comentarios: {
         type: [ 
             {usuario: {
