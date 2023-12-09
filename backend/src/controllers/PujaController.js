@@ -29,7 +29,11 @@ export const createPuja = async (req, res) => {
         const listaPujas = data.pujas
         listaPujas.push(newPuja)
 
-        await Producto.findByIdAndUpdate(idProducto, {pujas:listaPujas}, {new:true})
+        if (precio > data.maximaPuja){
+            await Producto.findByIdAndUpdate(idProducto, {pujas:listaPujas , maximaPuja:precio},{new:true})
+        }else{
+            await Producto.findByIdAndUpdate(idProducto, {pujas:listaPujas}, {new:true})
+        }
 
         res.send(listaPujas)
 
@@ -76,12 +80,19 @@ export const deletePuja = async (req, res) => {
 
         const producto = await Producto.findById(idProducto)
         const listaPujas = producto.pujas
+        let newMaxPuja=0;
         for (const puja of listaPujas ) {
             if(puja._id == idPuja){
                 listaPujas.pull(puja);
+                if(producto.maximaPuja==puja.precio){
+                    newMaxPuja=getMaxPuja(listaPujas)
+                }else{
+                    newMaxPuja=producto.maximaPuja
+                }
             }    
         }
-        const updatedProducto = await Producto.findByIdAndUpdate(idProducto, {pujas:listaPujas}, {new:true})
+        
+        const updatedProducto = await Producto.findByIdAndUpdate(idProducto, {pujas:listaPujas,maximaPuja:newMaxPuja}, {new:true})
 
         if(!updatedProducto){
             return res.status(404).json({message : 'Producto o puja no encontrada' });
@@ -92,6 +103,16 @@ export const deletePuja = async (req, res) => {
         console.log('Error en la consulta de Productos a la base de datos:', error);
         res.status(500).json({ message: 'Error al editar un Producto' });
     }
+}
+
+function getMaxPuja(listaPujas){
+    let max=0;
+    for (const puja of listaPujas ) {
+            if (puja.precio>max){
+                max=puja.precio
+            }
+        }    
+    return max;
 }
 
 //pujas usuario
