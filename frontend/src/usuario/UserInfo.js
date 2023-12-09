@@ -51,8 +51,8 @@ const CompEditUser = () => {
                     </div>
                     <div className='col-4'> 
                         <div className= "container-fluid ">
-                            {(usuario.foto == "") ? <img className="card-img-top" src={"http://res.cloudinary.com/dten77l85/image/upload/v1702144932/e3u40bht3yjtycbck0ko.png"} alt={usuario.username} style={{ objectFit: 'contain', height: '20vmin'}} /> :
-                            <img className="card-img-top" src={usuario.foto} alt={usuario.username} style={{ objectFit: 'contain', height: '20vmin'}} /> 
+                            {(usuario.foto == "") ? <img className="card-img-top" src={"http://res.cloudinary.com/dten77l85/image/upload/v1702144932/e3u40bht3yjtycbck0ko.png"} alt={usuario.username} style={{width:'39%'}} /> :
+                            <img className="card-img-top" src={usuario.foto} alt={usuario.username} style={{width:'39%'}} /> 
                             }
                         </div>
                     </div>
@@ -66,9 +66,9 @@ const CompEditUser = () => {
 
                     <div className='col-8'> 
                         <div className= "container-fluid ">
-                            <a href={`../ProductosVendidos/${idUsuario}`} className='btn btn-success'>Productos vendidos</a>
+                            <a href={`../productosUsuario/${idUsuario}/vendidos`} className='btn btn-success'>Productos vendidos</a>
                             <br/>
-                            <a href={`../ProductosSinVender/${idUsuario}`} className='btn btn-primary mt-2'>Productos en venta</a>
+                            <a href={`../productosUsuario/${idUsuario}/enVenta`} className='btn btn-primary mt-2'>Productos en venta</a>
                         </div> 
                     </div>
 

@@ -8,8 +8,7 @@ import Login from "./login/Login.js"
 import ShowUsuario from "./pages/ShowUsuario.jsx"
 import MiProductoBloque from './pages/ProductoBloque.jsx';
 
-import ProductosVendidos from './pages/ShowProductosVendidos.jsx';
-import ProductosSinVender from './pages/ShowProductosSinVender.jsx';
+import ProductosUsuario from './productos/ShowProductosUsuario.js'
 import UserInfo from "./usuario/UserInfo.js"
 import MyUserInfo from "./usuario/MyUserInfo.js"
 import CrearProdcuto from './pages/CrearProducto.jsx'
@@ -24,8 +23,7 @@ function App() {
           <Route path="/login" element={<Login/>}/>
           <Route path="/productos" element={<ProductosInicial/>}/>
           <Route path="/detallesProducto/:idUsuario/:idProducto" element={<MiProductoBloque/>}/>
-          <Route path="/ProductosVendidos/:idUsuario" element={<ProductosVendidos/>}/>
-          <Route path="/ProductosSinVender/:idUsuario" element={<ProductosSinVender/>}/>
+          <Route path="/productosUsuario/:idUsuario/:filtro" element={<ProductosUsuario/>}/>
           <Route path="/nuevoProducto/:idUsuario" element={<CrearProdcuto/>}/>
           <Route path="/editarProducto/:idProducto" element={<CompEditProducto/>}/>
           <Route path="/userInfo/:idUsuario" element={<UserInfo/>}/>

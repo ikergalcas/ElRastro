@@ -10,13 +10,11 @@ cloudinary.config({
 });
 
 import { getAllProductos, createProducto, editProducto, deleteProducto,getProductosdeUsuario,getProductosDescripcion,
-    getHuellaCarbono,getProductosPrecioMax, getProductosDescripcionPrecio, getUbiProducto, getProductoPorId, getProductosSinVenderDeUsuario,
-    getProductosVendidosDeUsuario } from '../controllers/ProductoController.js'
+    getHuellaCarbono,getProductosPrecioMax, getProductosDescripcionPrecio, getUbiProducto, getProductoPorId } from '../controllers/ProductoController.js'
 
 import { getAllPujas, createPuja, deletePuja, editPuja, getPujasPrecio } from '../controllers/PujaController.js'
 
 import { createComentario, deleteComentario, editComentario, getAllComentarios } from '../controllers/ComentarioController.js';
- 
 
 
 const routerProducto = express.Router()
@@ -27,8 +25,6 @@ routerProducto.put('/:id', editProducto)
 routerProducto.delete('/:id', deleteProducto)
 routerProducto.get('/:idProducto', getProductoPorId)
 routerProducto.get('/usuario/:idUsuario',getProductosdeUsuario)
-routerProducto.get('/usuario/:idUsuario/vendidos',getProductosVendidosDeUsuario)
-routerProducto.get('/usuario/:idUsuario/sinVender',getProductosSinVenderDeUsuario)
 routerProducto.post('/descripcion',getProductosDescripcion)
 routerProducto.post('/preciomax',getProductosPrecioMax)
 routerProducto.post('/descripcionPrecio',getProductosDescripcionPrecio)

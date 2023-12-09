@@ -110,35 +110,6 @@ export const getProductosdeUsuario = async (req, res) => {
     }
 };
 
-// operación que devuelva los productos ya vendidos de un usuario ordenados por la fecha
-export const getProductosVendidosDeUsuario = async (req, res) => {
-    try {
-        const { idUsuario } = req.params;
-        const listaProductos = (await Producto.find({vendedor : idUsuario, vendido : true}).sort({fechaCierre: -1}));
-
-        res.json(listaProductos);
-
-    } catch (error) {
-        console.log('Error en la consulta de productos en la base de datos: ', error)
-        res.status(500).json({ message: 'Error al obtener los productos' })
-    }
-};
-
-// operación que devuelva los productos sin vender de un usuario ordenados por la fecha
-export const getProductosSinVenderDeUsuario = async (req, res) => {
-    try {
-        const { idUsuario } = req.params;
-        const listaProductos = (await Producto.find({vendedor : idUsuario, vendido : false}).sort({fechaCierre: -1}));
-
-
-        res.json(listaProductos);
-
-    } catch (error) {
-        console.log('Error en la consulta de productos en la base de datos: ', error)
-        res.status(500).json({ message: 'Error al obtener los productos' })
-    }
-};
-
 //obtener productos por descripcion
 export const getProductosDescripcion = async (req, res) => {
     try {

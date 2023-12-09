@@ -4,11 +4,23 @@ import { useParams, Link } from 'react-router-dom';
 const ShowProductosVendidos = () => {
 
     const [productos, setProductos] = useState([]); 
-    const {idUsuario} = useParams()
+    const {idUsuario, filtro} = useParams()
     useEffect( () => {getProductosDeUsuario()}, []);
 
+    var URL = ``;
+
+    if (filtro == "vendidos") {
+       URL = `http://localhost:3003/usuarios/${idUsuario}/vendidos`;
+    } else if (filtro == "enVenta") {
+        URL = `http://localhost:3003/usuarios/${idUsuario}/enVenta`;
+    } else if (filtro == "comprados") {
+        URL = `http://localhost:3003/usuarios/${idUsuario}/comprados`;
+    } else if (filtro == "pujados") {
+        URL = `http://localhost:3003/usuarios/${idUsuario}/productosPujados`;
+    }
+
     const getProductosDeUsuario = async () => {
-        fetch(`http://localhost:3001/productos/usuario/${idUsuario}/vendidos`, {
+        fetch(`${URL}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
