@@ -14,7 +14,7 @@ const CompShowMapaProducto = () => {
 
     //Consulta para obtener la geolocalizacion del producto
     useEffect(() => {
-        fetch(`http://localhost:3001/productos/${idProducto}/ubi`)
+        fetch(`http://localhost:3001/productos/${idProducto}/ubicacion`)
             .then(response => response.json())
             .then(data => {
                 setGeo(data);

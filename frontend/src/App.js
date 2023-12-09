@@ -11,7 +11,6 @@ import MiProductoBloque from './pages/ProductoBloque.jsx';
 import ProductosVendidos from './pages/ShowProductosVendidos.jsx';
 import ProductosSinVender from './pages/ShowProductosSinVender.jsx';
 import EditUsuario from "./usuario/EditUser.js"
-import MiProductoBloque from './pages/ProductoBloque.jsx'
 import CrearProdcuto from './pages/CrearProducto.jsx'
 import CompEditProducto from './detallesProducto/EditProducto.js';
 
