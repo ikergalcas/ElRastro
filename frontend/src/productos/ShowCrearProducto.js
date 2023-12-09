@@ -10,6 +10,7 @@ const CompShowCrearProducto = () => {
     const [precio,setPrecio]=useState('')
     const [fecha, setFecha]=useState('')
     const [idnuevoProducto,setProducto]=useState('')
+    const [arrayFotos,setArrayFotos]= useState([])
 
     const mostrarParte2 = async(e) => {
         e.preventDefault()
@@ -70,9 +71,7 @@ const CompShowCrearProducto = () => {
                         }).then(response => response.text())
                         .then(result => {
                             console.log(result)
-                            setProducto(result)
-                            alert('Producto Creado');
-                            window.location.href = '/productos';
+                            subirFotos()
                         })
                             .catch(error => {
                                 console.error('Error al subir la imagen:', error);
@@ -81,35 +80,61 @@ const CompShowCrearProducto = () => {
                     .catch(error => {
                         console.error('Error al subir la imagen:', error);
                     });
-        }else{
-            console.error('No se seleccionó ningún archivo.');
-        }
-        
+        }        
     }
 
-    const subirFotos = async(e) => {
-        e.preventDefault()
-        const input = document.getElementById('archivo');
-        const archivos = input.files;
-        if (archivos.length>0){    
-            for (let i = 0; i < archivos.length; i++) {
-                const archivo = archivos[i];
-                console.log(archivo)
+    const subirFotos = async() => {
+            
+        const input2 = document.getElementById('archivo2');
+        const archivos2 = input2.files;
+        console.log(archivos2, archivos2.length)
+        if (archivos2.length>0){
+            for (let i = 0; i < archivos2.length; i++) {
+                const arch = archivos2[i];
+
                 var formdata = new FormData();
-                formdata.append("foto", archivo);
+                formdata.append("foto", arch);
         
                 fetch('http://localhost:3001/productos/subirFoto', {
-                        method: 'POST',
-                        body : formdata
-                    }).then(response => response.text())
-                        .then(result => console.log(result))
-                        .catch(error => {
-                            console.error('Error al subir la imagen:', error);
-                        });
+                    method: 'POST',
+                    body : formdata
+                }).then(response => response.json())
+                    .then(result =>{
+                        arrayFotos.push(result.imageUrl)
+                        setArrayFotos(arrayFotos)
+                        console.log("fuera",i, arrayFotos)
+                        if (i === (archivos2.length-1)){
+                            actualizarElproducto()
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al subir la imagen:', error);
+                    });
             }
-        }else{
-            console.error('No se seleccionó ningún archivo.');
+
         }
+    }
+
+    const actualizarElproducto = async() => {
+        console.log("Al acabar lo otro",arrayFotos)
+        var raw = JSON.stringify({
+            "imagenes" : arrayFotos
+            });
+        fetch(`http://localhost:3001/productos/${idnuevoProducto.replace(/"/g, '')}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: raw
+        }).then(response => response.text())
+        .then(result => {
+            console.log(result)
+            alert('Producto Creado');
+            window.location.href = '/productos';
+        })
+            .catch(error => {
+                console.error('Error al subir la imagen:', error);
+            });
     }
 
 return(
@@ -129,7 +154,7 @@ return(
 
                 <a>Precio base:</a><br/>
                 <input value={precio} onChange={(e) => setPrecio(e.target.value)} 
-                type="number" id="precio" className="form-control" required/><span class="input-group-text">€</span>
+                type="number" id="precio" className="form-control" required/><span className="input-group-text">€</span>
                 <br/>
 
                 <a>Ubicacion:</a><br/>
@@ -149,9 +174,11 @@ return(
         <div id="parte2" className="formularioCrear" style={{display: 'none'}}>
             <h2>Parte 2</h2>
             <form id="formularioParte2" onSubmit={subirFotoIdentificativa}>
-                <a>Añade una foto representativa:</a><br/>
                 <div style={{flexdirection: 'row'}} >
+                    <a>Añade una foto representativa:</a><br/> <br/>
                     <input type="file" className="form-control" id="archivo" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg"/>
+                    <a>Añade las fotos que quieras sobre tu producto:</a><br/> <br/>
+                    <input type="file" className="form-control" id="archivo2" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg" multiple/>
                     <button className="btn btn-secondary" type="submit" >Enviar</button>
                 </div>
             </form>
