@@ -32,7 +32,8 @@ const CompEditUser = () => {
                 <div className='row'>
                     <div className= "col">
                         <div className="container-fluid mt-3 mb-4">
-                            <h1>{usuario.username}, Valoración media = {usuario.valoracionMedia}</h1>
+                            <h1>{usuario.username}</h1>
+                            <h4>Valoración: {usuario.valoracionMedia}</h4>
                         </div>
                     </div>
                 </div>
