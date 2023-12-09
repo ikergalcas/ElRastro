@@ -118,9 +118,32 @@ const CompShowPujas = () => {
         });
     }
 
+    
+    const [usuarios, setUsuarios] = useState([]);
+
+    useEffect(() => {
+        // Obtener información de usuario para cada puja
+        const obtenerUsuarios = async () => {
+            // Verificar si pujas es un array antes de continuar
+            if (Array.isArray(pujas)) {
+                const usuariosPromises = pujas.map((puja) =>
+                    fetch(`http://localhost:3003/usuarios/${puja.usuario}`).then((res) => res.json())
+                );
+    
+                const usuariosData = await Promise.all(usuariosPromises);
+                setUsuarios(usuariosData);
+            } else {
+                console.error('El estado pujas no es un array.');
+                // Puedes agregar lógica adicional aquí si es necesario
+            }
+        };
+    
+        obtenerUsuarios();
+    }, [pujas]);
+
     return (
         <div>
-             {producto.vendedor !== idUsuario && (
+            {producto.vendedor !== idUsuario && (
             <div class="buscador-center col 4">
             <form
                 id="formularioPuja"
@@ -149,7 +172,7 @@ const CompShowPujas = () => {
                         {pujas.map((puja, index) => (
                         <li key={index} class="list-group-item">
                             <p>
-                            <b>Usuario:</b> {puja.usuario}
+                            <b>Usuario:</b> <a href={`https:/localhot:3000/userInfo/${usuarios[index]?._id}`}>{usuarios[index]?.username}</a>
                             </p>
                             <p>
                             <b>Precio:</b> {puja.precio} €

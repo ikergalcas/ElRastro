@@ -170,6 +170,27 @@ const CompShowComentarios = () => {
         });
     }
 
+    const [usuarios, setUsuarios] = useState([]);
+
+    useEffect(() => {
+        // Obtener información de usuario para cada puja
+        const obtenerUsuarios = async () => {
+            if (Array.isArray(comentarios)) {
+        const usuariosPromises = comentarios.map((comentario) =>
+            fetch(`http://localhost:3003/usuarios/${comentario.usuario}`).then((res) => res.json())
+        );
+
+        const usuariosData = await Promise.all(usuariosPromises);
+        setUsuarios(usuariosData);
+            }else{
+                console.error('El estado comentarios no es un array.');
+                // Puedes agregar lógica adicional aquí si es necesario
+            
+            }
+        };
+
+        obtenerUsuarios();
+    }, [comentarios]);
 
     //METER LA LISTITA DE COMENTARIOS
     return (
@@ -203,12 +224,12 @@ const CompShowComentarios = () => {
                     {comentarios.map((comentario, index) => (
                     <li key={index} class="list-group-item">
                         <p>
-                        <b>Usuario:</b> {comentario.usuario}
+                        <b>Usuario:</b>  <a href={`https:/localhot:3000/userInfo/${usuarios[index]?._id}`}>{usuarios[index]?.username}</a>
                         </p>
-                        <p>{comentario.texto}</p>
+                        <p><b>Comentario: </b>{comentario.texto}</p>
                         {comentario.respuesta !== "" && (
                         <p>
-                            <b>Respuesta:</b> {comentario.respuesta}
+                            <b>Respuesta: </b> {comentario.respuesta}
                         </p>
                         )}
                         {producto.vendedor === idUsuario && comentario.respuesta === "" && (
