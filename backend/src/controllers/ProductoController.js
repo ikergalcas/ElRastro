@@ -212,38 +212,6 @@ function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
     
     function deg2rad(deg) {
     return deg * (Math.PI/180)
-} 
-
-export const getUbiProducto = async (req, res) => {
-    try {
-        const {idProducto} = req.params;
-        const producto = await Producto.findById(idProducto);
-        if(producto) {
-            const locationName = producto.ubicacion;
-            
-            const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}`;
-
-            fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.length > 0) {
-                const firstResult = data[0];
-                const latitude = parseFloat(firstResult.lat);
-                const longitude = parseFloat(firstResult.lon);
-                res.json({latitude, longitude});
-                } else {
-                console.log("Ubicación de producto no encontrada");
-                }
-            })
-            .catch(error => {
-                console.error("Error en la solicitud de geocodificación: " + error);
-            });
-        }
-
-    } catch (error) {
-        console.log('Error en la consulta de productos en la base de datos: ', error)
-        res.status(500).json({ message: 'Error al obtener la localización' })
-    }
 };
 
 export const getHuellaCarbono = async (req, res) => {

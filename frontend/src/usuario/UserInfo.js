@@ -68,7 +68,7 @@ const CompEditUser = () => {
                         <div className= "container-fluid ">
                             <a href={`../productosUsuario/${idUsuario}/vendidos`} className='btn btn-success'>Productos vendidos</a>
                             <br/>
-                            <a href={`../productosUsuario/${idUsuario}/enVenta`} className='btn btn-primary mt-2'>Productos en venta</a>
+                            <a href={`../productosUsuario/${idUsuario}/enVenta`} className='btn btn-success mt-2'>Productos en venta</a>
                         </div> 
                     </div>
 

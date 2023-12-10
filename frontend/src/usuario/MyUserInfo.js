@@ -145,10 +145,9 @@ const CompEditUser = () => {
                     <div className='col-4'>
                         <div className='container-fluid'>
                             <form id="formularioParte2" onSubmit={subirFotoIdentificativa}>
-                                <a>Selecciona una foto para actualizar tu perfil:</a><br/>
                                 <div style={{flexdirection: 'row', width:'90%'}} >
                                     <input type="file" className="form-control" id="archivo" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg"/>
-                                    <button className="btn btn-primary mt-1" type="submit" >Cambiar foto</button>
+                                    <button className="btn btn-primary mt-2" type="submit" >Cambiar foto</button>
                                 </div>
                             </form>
                         </div>
