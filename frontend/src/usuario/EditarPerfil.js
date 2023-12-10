@@ -18,6 +18,8 @@ const CompEditProducto = () => {
         }).then(response => response.json())
         .then(data => {
             setUsuario(data);
+            setContacto(data.contacto || '');
+            setUbicacion(data.ubicacion || '');
             console.log("usuario encontrado")
             console.log(data);
         })
@@ -79,13 +81,14 @@ const CompEditProducto = () => {
                                             type="text"
                                             className="form-control"
                                             aria-label="Ingrese la nueva información de contacto"
+                                            style={{width:'30%'}}
                                             />
                                     </div>
                             </div>
                         </div>
                         <div className="mb-3">
                             <div className="row">
-                                    <div className='col-md-6'>
+                                    <div className='col'>
                                         <label className='form-label' tabIndex="0" htmlFor="nombre">Ubicacion</label>
                                             <input
                                             id="ubicacion"
@@ -94,6 +97,7 @@ const CompEditProducto = () => {
                                             type="text"
                                             className="form-control"
                                             aria-label="Ingrese la nueva ubicacion del objeto"
+                                            style={{width:'50%'}}
                                             />
                                     </div>
                             </div>

@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     },
     foto: {
         type: String,
-        default: ""
+        default: "http://res.cloudinary.com/dten77l85/image/upload/v1702144932/e3u40bht3yjtycbck0ko.png"
     },
     ubicacion:{
         type: String,

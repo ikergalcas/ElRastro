@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import NavbarPage from "../navbar/navbar.js";
+
 
 const ShowProductosVendidos = () => {
 
@@ -7,20 +9,8 @@ const ShowProductosVendidos = () => {
     const {idUsuario, filtro} = useParams()
     useEffect( () => {getProductosDeUsuario()}, []);
 
-    var URL = ``;
-
-    if (filtro == "vendidos") {
-       URL = `http://localhost:3003/usuarios/${idUsuario}/vendidos`;
-    } else if (filtro == "enVenta") {
-        URL = `http://localhost:3003/usuarios/${idUsuario}/enVenta`;
-    } else if (filtro == "comprados") {
-        URL = `http://localhost:3003/usuarios/${idUsuario}/comprados`;
-    } else if (filtro == "pujados") {
-        URL = `http://localhost:3003/usuarios/${idUsuario}/productosPujados`;
-    }
-
     const getProductosDeUsuario = async () => {
-        fetch(`${URL}`, {
+        fetch(`http://localhost:3003/usuarios/${idUsuario}/productos/${filtro}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -35,8 +25,105 @@ const ShowProductosVendidos = () => {
         })
     }
 
+    const [busqueda, setBusqueda] = useState('');
+    const [precioMax, setPrecioMax] = useState('');
+    const buscarProductos = async (e) => {
+        e.preventDefault()
+
+        if(busqueda!="" && !precioMax){
+            console.log("desc")
+            let raw = JSON.stringify({
+                "descripcion": busqueda.toString()
+              });
+            console.log(raw);
+            // Hacer la solicitud para obtener productos desde el backend
+            fetch(`http://localhost:3003/usuarios/${idUsuario}/descripcionProductos/${filtro}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body : raw
+            }).then(response => response.json())
+                .then(data => {
+                    // Actualizar el estado con los productos obtenidos
+                    setProductos(data);
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('Error al obtener productos:', error);
+                });
+        }else if (busqueda=="" && precioMax ){
+            console.log("precio")
+            let raw = JSON.stringify({
+                "precio": precioMax
+              });
+            // Hacer la solicitud para obtener productos desde el backend
+            fetch(`http://localhost:3003/usuarios/${idUsuario}/precioProductos/${filtro}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body : raw
+            }).then(response => response.json())
+                .then(data => {
+                    // Actualizar el estado con los productos obtenidos
+                    setProductos(data);
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('Error al obtener productos:', error);
+                });
+            
+        }else if (busqueda!="" && precioMax){
+            console.log("precio y desc");
+            let raw = JSON.stringify({
+                "descripcion": busqueda.toString(),
+                "precio" : precioMax
+              });
+            // Hacer la solicitud para obtener productos desde el backend
+            fetch(`http://localhost:3003/usuarios/${idUsuario}/descripcionPrecioProductos/${filtro}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body : raw
+            }).then(response => response.json())
+                .then(data => {
+                    // Actualizar el estado con los productos obtenidos
+                    setProductos(data);
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error('Error al obtener productos:', error);
+                });
+
+        }else{
+            limpiarSeleccion()
+        }
+    }
+
+    const limpiarSeleccion = async () =>{
+        setBusqueda("");
+        setPrecioMax("");
+        getProductosDeUsuario()
+    }
+
+
     return (
         <div>
+            <NavbarPage></NavbarPage>
+            <div className="row"> 
+                <div class="buscador col 4">
+                    <form class="buscador" onSubmit={buscarProductos}>
+                        <input value={precioMax} className="barrabusqueda col 1" 
+                            onChange={(e) => setPrecioMax(e.target.value)} type="number" placeholder="Precio maximo" />
+                        <input value={busqueda} className="barrabusqueda col 1" 
+                            onChange={(e) => setBusqueda(e.target.value)} type="string" placeholder="Busca aquí ..." />
+                        <button class="botonBusqueda col 1" type="submit" >Buscar</button>
+                        <button onClick={limpiarSeleccion} className="btn btn-outline-dark btn-sm col 1" >Limpiar</button>
+                    </form>
+                </div>
+            </div>
             <div className="row" style={{justifyContent: 'center'}}>  
                 {productos.length==0 ? (
                     <p> No existen productos vendidos.</p> 

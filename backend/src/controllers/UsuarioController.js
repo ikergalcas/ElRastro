@@ -146,70 +146,225 @@ export const getCompradores = async (req, res) => {
     }
 };
 
-// Devuelve una lista de los productos en los que un usuario específico ha pujado
-export const getProductosPujados = async (req, res) => {
+export const getProductosUsuario = async (req, res) => {
     try {
-        const {idUsuario} = req.params;
-        const listaProductos = await Producto.find();
-        
-        const listaFiltrada = []
-        for (const producto of listaProductos) {
-            for(const puja of producto.pujas) {
-                if (puja.usuario == idUsuario) {
-                    listaFiltrada.push(producto)
+        const {idUsuario, filtro} = req.params;
+        var listaProductos = []
+
+        if (filtro == "pujados") {
+            const productos = await Producto.find();
+            for (const producto of productos) {
+                for(const puja of producto.pujas) {
+                    if (puja.usuario == idUsuario && !listaProductos.includes(producto)) {
+                        listaProductos.push(producto)
+                    }
                 }
             }
+        } else if (filtro == "vendidos") {
+            listaProductos = (await Producto.find({vendedor : idUsuario, vendido : true}).sort({fechaCierre: -1}));
+        } else if (filtro == "enVenta") {
+            listaProductos = (await Producto.find({vendedor : idUsuario, vendido : false}).sort({fechaCierre: -1}));
+        } else if (filtro == "comprados") {
+            listaProductos = (await Producto.find({comprador : idUsuario}).sort({fechaCierre: -1}));
         }
 
-        res.json(listaFiltrada);
+        res.json(listaProductos);
+
+    } catch (error) {
+        console.log('Error en la consulta de usuarios en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+};
+
+export const getProductosUsuarioDescripcion = async (req, res) => {
+    try {
+        const {idUsuario, filtro} = req.params;
+        const {descripcion}  = req.body;
+        var listaProductos = []
+
+        if (filtro == "pujados") {
+            const productos = await Producto.find({
+            $or:[
+                {descripcion: {$regex: descripcion, $options:"i"}}, 
+                {titulo:{$regex: descripcion, $options:"i"}}
+            ]});
+            for (const producto of productos) {
+                for(const puja of producto.pujas) {
+                    if (puja.usuario == idUsuario && !listaProductos.includes(producto)) {
+                        listaProductos.push(producto)
+                    }
+                }
+            }
+        } else if (filtro == "vendidos") {
+            listaProductos = (await Producto.find({vendedor : idUsuario, vendido : true, 
+            $or:[
+                {descripcion: {$regex: descripcion, $options:"i"}}, 
+                {titulo:{$regex: descripcion, $options:"i"}}
+            ]}).sort({fechaCierre: -1}));
+        } else if (filtro == "enVenta") {
+            listaProductos = (await Producto.find({vendedor : idUsuario, vendido : false, 
+            $or:[
+                {descripcion: {$regex: descripcion, $options:"i"}}, 
+                {titulo:{$regex: descripcion, $options:"i"}}
+            ]}).sort({fechaCierre: -1}));
+        } else if (filtro == "comprados") {
+            listaProductos = (await Producto.find({comprador : idUsuario, 
+            $or:[
+                {descripcion: {$regex: descripcion, $options:"i"}}, 
+                {titulo:{$regex: descripcion, $options:"i"}}
+            ]}).sort({fechaCierre: -1}));
+        }
+
+        res.json(listaProductos);
+
+    } catch (error) {
+        console.log('Error en la consulta de usuarios en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+};
+
+export const getProductosUsuarioPrecioMax= async (req, res) => {
+    try {
+        const {idUsuario, filtro} = req.params;
+        const {precio}  = req.body;
+        var listaProductos = []
+
+        if (filtro == "pujados") {
+            const productos = await Producto.find({maximaPuja: {$lte: precio}});
+            for (const producto of productos) {
+                for(const puja of producto.pujas) {
+                    if (puja.usuario == idUsuario && !listaProductos.includes(producto)) {
+                        listaProductos.push(producto)
+                    }
+                }
+            }
+        } else if (filtro == "vendidos") {
+            listaProductos = (await Producto.find({vendedor : idUsuario, vendido : true, maximaPuja: {$lte: precio}}).sort({fechaCierre: -1}));
+        } else if (filtro == "enVenta") {
+            listaProductos = (await Producto.find({vendedor : idUsuario, vendido : false, maximaPuja: {$lte: precio}}).sort({fechaCierre: -1}));
+        } else if (filtro == "comprados") {
+            listaProductos = (await Producto.find({comprador : idUsuario, maximaPuja: {$lte: precio}}).sort({fechaCierre: -1}));
+        }
+
+        res.json(listaProductos);
 
     } catch (error) {
         console.log('Error en la consulta de productos en la base de datos: ', error)
         res.status(500).json({ message: 'Error al obtener los productos' })
     }
 };
+
+export const getProductosUsuarioDescripcionPrecioMax = async (req, res) => {
+    try {
+        const {idUsuario, filtro} = req.params;
+        const {descripcion, precio}  = req.body;
+        var listaProductos = []
+
+        if (filtro == "pujados") {
+            const productos = await Producto.find({
+                $or:[
+                {descripcion: {$regex: descripcion, $options:"i"}}, 
+                {titulo:{$regex: descripcion, $options:"i"}}
+            ], maximaPuja: {$lte: precio}});
+            for (const producto of productos) {
+                for(const puja of producto.pujas) {
+                    if (puja.usuario == idUsuario && !listaProductos.includes(producto)) {
+                        listaProductos.push(producto)
+                    }
+                }
+            }
+        } else if (filtro == "vendidos") {
+            listaProductos = (await Producto.find({vendedor : idUsuario, vendido : true, 
+                $or:[
+                {descripcion: {$regex: descripcion, $options:"i"}}, 
+                {titulo:{$regex: descripcion, $options:"i"}}
+            ], maximaPuja: {$lte: precio}}).sort({fechaCierre: -1}));
+        } else if (filtro == "enVenta") {
+            listaProductos = (await Producto.find({vendedor : idUsuario, vendido : false, 
+                $or:[
+                {descripcion: {$regex: descripcion, $options:"i"}}, 
+                {titulo:{$regex: descripcion, $options:"i"}}
+            ], maximaPuja: {$lte: precio}}).sort({fechaCierre: -1}));
+        } else if (filtro == "comprados") {
+            listaProductos = (await Producto.find({comprador : idUsuario, 
+                $or:[
+                {descripcion: {$regex: descripcion, $options:"i"}}, 
+                {titulo:{$regex: descripcion, $options:"i"}}
+            ], maximaPuja: {$lte: precio}}).sort({fechaCierre: -1}));
+        }
+
+        res.json(listaProductos);
+
+    } catch (error) {
+        console.log('Error en la consulta de usuarios en la base de datos: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+};
+
+// Devuelve una lista de los productos en los que un usuario específico ha pujado
+// export const getProductosPujados = async (req, res) => {
+//     try {
+//         const {idUsuario} = req.params;
+//         const listaProductos = await Producto.find();
+        
+//         const listaFiltrada = []
+//         for (const producto of listaProductos) {
+//             for(const puja of producto.pujas) {
+//                 if (puja.usuario == idUsuario) {
+//                     listaFiltrada.push(producto)
+//                 }
+//             }
+//         }
+
+//         res.json(listaFiltrada);
+
+//     } catch (error) {
+//         console.log('Error en la consulta de productos en la base de datos: ', error)
+//         res.status(500).json({ message: 'Error al obtener los productos' })
+//     }
+// };
 
 // operación que devuelva los productos ya vendidos de un usuario ordenados por la fecha
-export const getProductosVendidosDeUsuario = async (req, res) => {
-    try {
-        const { idUsuario } = req.params;
-        const listaProductos = (await Producto.find({vendedor : idUsuario, vendido : true}).sort({fechaCierre: -1}));
+// export const getProductosVendidosDeUsuario = async (req, res) => {
+//     try {
+//         const { idUsuario } = req.params;
+//         const listaProductos = (await Producto.find({vendedor : idUsuario, vendido : true}).sort({fechaCierre: -1}));
 
-        res.json(listaProductos);
+//         res.json(listaProductos);
 
-    } catch (error) {
-        console.log('Error en la consulta de productos en la base de datos: ', error)
-        res.status(500).json({ message: 'Error al obtener los productos' })
-    }
-};
+//     } catch (error) {
+//         console.log('Error en la consulta de productos en la base de datos: ', error)
+//         res.status(500).json({ message: 'Error al obtener los productos' })
+//     }
+// };
 
 // operación que devuelva los productos sin vender de un usuario ordenados por la fecha
-export const getProductosSinVenderDeUsuario = async (req, res) => {
-    try {
-        const { idUsuario } = req.params;
-        const listaProductos = (await Producto.find({vendedor : idUsuario, vendido : false}).sort({fechaCierre: -1}));
+// export const getProductosSinVenderDeUsuario = async (req, res) => {
+//     try {
+//         const { idUsuario } = req.params;
+//         const listaProductos = (await Producto.find({vendedor : idUsuario, vendido : false}).sort({fechaCierre: -1}));
 
 
-        res.json(listaProductos);
+//         res.json(listaProductos);
 
-    } catch (error) {
-        console.log('Error en la consulta de productos en la base de datos: ', error)
-        res.status(500).json({ message: 'Error al obtener los productos' })
-    }
-};
+//     } catch (error) {
+//         console.log('Error en la consulta de productos en la base de datos: ', error)
+//         res.status(500).json({ message: 'Error al obtener los productos' })
+//     }
+// };
 
-export const getProductosComprados = async (req, res) => {
-    try {
-        const { idUsuario } = req.params;
-        const listaProductos = (await Producto.find({comprador : idUsuario}).sort({fechaCierre: -1}));
+// export const getProductosComprados = async (req, res) => {
+//     try {
+//         const { idUsuario } = req.params;
+//         const listaProductos = (await Producto.find({comprador : idUsuario}).sort({fechaCierre: -1}));
 
-        res.json(listaProductos);
+//         res.json(listaProductos);
 
-    } catch (error) {
-        console.log('Error en la consulta de productos en la base de datos: ', error)
-        res.status(500).json({ message: 'Error al obtener los productos' })
-    }
-};
+//     } catch (error) {
+//         console.log('Error en la consulta de productos en la base de datos: ', error)
+//         res.status(500).json({ message: 'Error al obtener los productos' })
+//     }
+// };
 
 export const getUbiUsuario = async (req, res) => {
     try {
