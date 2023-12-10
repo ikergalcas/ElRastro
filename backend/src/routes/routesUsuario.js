@@ -10,9 +10,7 @@ cloudinary.config({
 });
 
 import { getAllUsuarios, createUsuario, editUsuario, deleteUsuario,getUsuarioNombre,getUsuarioValoracion, 
-    getUbiUsuario,getCompradores, getProductosPujados, getUsuarioPorId, getProductosVendidosDeUsuario, 
-    getProductosSinVenderDeUsuario,
-    getProductosComprados} from '../controllers/UsuarioController.js'
+    getUbiUsuario,getCompradores, getUsuarioPorId, getProductosUsuario, getProductosUsuarioDescripcion, getProductosUsuarioPrecioMax, getProductosUsuarioDescripcionPrecioMax} from '../controllers/UsuarioController.js'
 
 import { getPujasUsuario } from '../controllers/PujaController.js'
 
@@ -25,12 +23,12 @@ routerUsuario.delete('/:id', deleteUsuario)
 routerUsuario.post('/username',getUsuarioNombre)
 routerUsuario.get('/:idUsuario',getUsuarioPorId)
 routerUsuario.post('/valoracion',getUsuarioValoracion)
-routerUsuario.get('/:idUsuario/productosPujados', getProductosPujados)
 routerUsuario.get('/:idUsuario/pujas', getPujasUsuario)
 routerUsuario.get('/:idUsuario/pujas', getPujasUsuario)
-routerUsuario.get('/:idUsuario/vendidos',getProductosVendidosDeUsuario)
-routerUsuario.get('/:idUsuario/enVenta',getProductosSinVenderDeUsuario)
-routerUsuario.get('/:idUsuario/comprados',getProductosComprados)
+routerUsuario.get('/:idUsuario/productos/:filtro',getProductosUsuario) //Filtro: pujados, comprados, vendidos, enVenta
+routerUsuario.post('/:idUsuario/descripcionProductos/:filtro',getProductosUsuarioDescripcion)
+routerUsuario.post('/:idUsuario/precioProductos/:filtro',getProductosUsuarioPrecioMax)
+routerUsuario.post('/:idUsuario/descripcionPrecioProductos/:filtro',getProductosUsuarioDescripcionPrecioMax)
 routerUsuario.get('/ubi/:idUsuario', getUbiUsuario)
 routerUsuario.post('/compradores',getCompradores)
 

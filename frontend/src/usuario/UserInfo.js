@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ShowMapaUsuario from './MapaUsuario.js';
+import NavbarPage from "../navbar/navbar.js";
 
 
 const CompEditUser = () => {
@@ -28,6 +29,7 @@ const CompEditUser = () => {
 
     return (
         <div>
+            <NavbarPage></NavbarPage>
             <div className='container-fluid'>
                 <div className='row'>
                     <div className= "col">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ShowMapaUsuario from './MapaUsuario.js';
+import NavbarPage from "../navbar/navbar.js";
 
 
 const CompEditUser = () => {
@@ -70,33 +71,9 @@ const CompEditUser = () => {
         
     }
 
-    const subirFotos = async(e) => {
-        e.preventDefault()
-        const input = document.getElementById('archivo');
-        const archivos = input.files;
-        if (archivos.length>0){    
-            for (let i = 0; i < archivos.length; i++) {
-                const archivo = archivos[i];
-                console.log(archivo)
-                var formdata = new FormData();
-                formdata.append("foto", archivo);
-        
-                fetch('http://localhost:3001/productos/subirFoto', {
-                        method: 'POST',
-                        body : formdata
-                    }).then(response => response.text())
-                        .then(result => console.log(result))
-                        .catch(error => {
-                            console.error('Error al subir la imagen:', error);
-                        });
-            }
-        }else{
-            console.error('No se seleccionó ningún archivo.');
-        }
-    }
-
     return (
         <div>
+            <NavbarPage></NavbarPage>
             <div className='container-fluid'>
                 <div className='row'>
                     <div className= "col">
