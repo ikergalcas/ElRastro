@@ -102,7 +102,7 @@ const CompEditProducto = () => {
                                     </div>
                             </div>
                         </div>
-                        <button type="submit" className='btn btn-primary'>Guardar</button> <br/>
+                        <button type="submit" className='btn btn-outline-secondary'>Guardar</button> <br/>
                         <button onClick={volverAtras} className='btn btn-secondary mt-2'> Volver atrás</button>
                     </form>
             </div>

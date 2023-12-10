@@ -198,13 +198,15 @@ const CompShowDetallesProducto = () => {
                             }
                             <div>
                                 <img src={producto.foto} className="card-img-top" style={{ objectFit: 'contain', height: '25vmin', textAlign: 'left'}}/>
+                                {idUsuario == vendedor._id ? 
                                 <form id="formularioParte2" onSubmit={subirFotoIdentificativa} style={{marginTop: '3%', width: '90%'}}>
                                 <div style={{flexdirection: 'row', width:'90%'}} >
                                     <input type="file" className="form-control" id="archivo" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg,.jpeg"/>
                                     <button className="btn btn-secondary mt-2" type="submit" >Cambiar foto</button>
                                 </div>
                                 </form>
-                            </div>
+                                : null} 
+                            </div> 
                             {/*
                             <Carousel activeIndex={index} onSelect={handleSelect} style={{ maxWidth: '400px' }}>
                                 {producto.imagenes && producto.imagenes.map((foto, idx) => (
@@ -301,7 +303,7 @@ const CompShowDetallesProducto = () => {
                                         {//----------------EDITAR----------------
                                         idUsuario == vendedor._id ? 
                                         <div>
-                                            <Link to={`/editarProducto/${idProducto}`} className="btn btn-secondary">Editar</Link>
+                                            <Link to={`/editarProducto/${idUsuario}/${idProducto}`} className="btn btn-secondary m-2">Editar</Link>
                                         </div>
                                         : null
                                         }

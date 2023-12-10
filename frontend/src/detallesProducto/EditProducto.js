@@ -75,48 +75,32 @@ const CompEditProducto = () => {
         <div>
             <NavbarPage></NavbarPage>
             <div className="container">
-                <p>{producto.titulo}</p>
-                <form onSubmit={editar}>
-                        <div className="mb-3">
-                            <div className="row">
-                                    <div className='col-md-3'></div>
-                                    <div className='col-md-6'>
-                                    <label className='form-label' tabIndex="0" htmlFor="nombre">Descripcion</label>
-                                        
-                                        <input
-                                        id="descripcion"
-                                        value={descripcion}
-                                        onChange={ (e) => setDescripcion(e.target.value)}
-                                        type="text"
-                                        className="form-control"
-                                        aria-label="Ingrese la nueva descripcion"
-                                        />
-                                    </div>
-                                    <div className='col-md-3'></div>
-                            </div>
-                        </div>
-
-                        <div className="mb-3">
-                            <div className="row">
-                                    <div className='col-md-3'></div>
-                                    <div className='col-md-6'>
-                                    <label className='form-label' tabIndex="0" htmlFor="nombre">Ubicacion</label>
-                                        
-                                        <input
-                                        id="ubicacion"
-                                        value={ubicacion}
-                                        onChange={ (e) => setUbicacion(e.target.value)}
-                                        type="text"
-                                        className="form-control"
-                                        aria-label="Ingrese la nueva ubicacion del objeto"
-                                        />
-                                    </div>
-                                    <div className='col-md-3'></div>
-                            </div>
-                        </div>
-                        <button type="submit" className='btn btn-secondary'>Guardar</button> <br/>
+                <div id="parte1" className="formularioCrear">
+                    <h2>Editar {producto.titulo}</h2>
+                    <form onSubmit={editar} id="formularioParte1">
+                        <a>Descripción</a>
+                        <input
+                        id="descripcion"
+                        value={descripcion}
+                        onChange={ (e) => setDescripcion(e.target.value)}
+                        type="text"
+                        className="form-control"
+                        aria-label="Ingrese la nueva descripcion"
+                        />
+                        <br/>
+                        <a>Ubicación</a>
+                        <input
+                        id="ubicacion"
+                        value={ubicacion}
+                        onChange={ (e) => setUbicacion(e.target.value)}
+                        type="text"
+                        className="form-control"
+                        aria-label="Ingrese la nueva ubicacion del objeto"
+                        />
+                        <button type="submit" className='btn btn-outline-secondary  mt-4'>Guardar</button> <br/>
                         <button onClick={volverAtras} className='btn btn-secondary mt-2'> Volver atrás</button>
                     </form>
+                </div>
             </div>
         </div>
     )

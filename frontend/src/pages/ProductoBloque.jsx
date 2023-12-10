@@ -11,7 +11,7 @@ function ProductoBloque() {
         <div>
             <NavbarPage></NavbarPage>
             <div className="container-fluid">
-                <div className="row">
+                <div className="row mb-4">
                     <div className="col">
                         <CompShowDetallesProducto/>   
                     </div>
