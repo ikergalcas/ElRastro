@@ -41,6 +41,7 @@ export const checkeo = async (req, res) => {
 
         const producto = await Producto.findById(idProducto);
 
+        console.log("Despues de consulta: " + producto)
         if (!producto) {
             console.error('No se pudo actualizar el producto');
             return res.status(500).json({ message: 'Error al cerrar la puja', error: 'No se pudo actualizar el producto' });
@@ -48,15 +49,20 @@ export const checkeo = async (req, res) => {
 
         if(Date.now() > producto.fechaCierre && !producto.vendido) {
             var user = -1
+            
             for(const puja of producto.pujas) {
+                console.log("entra en bucle")
                 if(puja.precio === producto.maximaPuja) {
+                    console.log("entra en if [precio, max]:" + puja.precio + " " + producto.maximaPuja)
                     user = puja.usuario
                 }
             }
 
+            console.log("Despues bucle, comprador: " + user)
             //ASIGNAMOS EL CAMPO COMPRADOR Y PONEMOS VENDIDO A TRUE
             //Con new: true hago que devuelva el objeto actualizado y de esta manera lo devuelvo en el res.json
             var actualizado = await Producto.findByIdAndUpdate(idProducto, { comprador: user, vendido: true }, { new: true })
+            console.log("Producto vendido: " + actualizado)
             res.json(actualizado)
         } else {
             res.json(producto)
@@ -184,6 +190,7 @@ export const getAllProductos = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener los productos' })
     }
 };
+
 export const getUbiProducto = async (req, res) => {
     try {
         const {idProducto} = req.params;
@@ -192,7 +199,7 @@ export const getUbiProducto = async (req, res) => {
             const locationName = producto.ubicacion;
             
             const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}`;
-
+            
             fetch(apiUrl)
             .then(response => response.json())
             .then(data => {

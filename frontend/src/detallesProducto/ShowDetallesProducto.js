@@ -153,7 +153,10 @@ const CompShowDetallesProducto = () => {
                             
                             : null
                             }
-                            {
+                            <div>
+                                <img src={producto.foto} className="card-img-top" style={{ objectFit: 'contain', height: '25vmin'}}/>
+                            </div>
+                            {/*
                             <Carousel activeIndex={index} onSelect={handleSelect} style={{ maxWidth: '400px' }}>
                                 {producto.imagenes && producto.imagenes.map((foto, idx) => (
                                     <Carousel.Item key={idx}>
@@ -185,7 +188,8 @@ const CompShowDetallesProducto = () => {
                                     <span className="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span className="visually-hidden">Next</span>
                                 </button>
-                                </Carousel>}
+                                </Carousel>*/
+                                }
 
 
                             {/* CAROUSEL SIN BOTONES ABAJO 

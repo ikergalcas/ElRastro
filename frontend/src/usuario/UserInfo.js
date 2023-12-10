@@ -35,7 +35,12 @@ const CompEditUser = () => {
                     <div className= "col">
                         <div className="container-fluid mt-3 mb-4">
                             <h1>{usuario.username}</h1>
-                            <h4>Valoración: {usuario.valoracionMedia}</h4>
+                            <h4> Valoracion
+                                { /* Mostrar estrellas según la valoracionMedia */
+                                            Array.from({ length: usuario.valoracionMedia }).map((_, index) => (
+                                                <span key={index} className="text-warning">&#9733;</span>
+                                ))}
+                            </h4>
                         </div>
                     </div>
                 </div>

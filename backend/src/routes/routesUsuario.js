@@ -24,7 +24,6 @@ routerUsuario.post('/username',getUsuarioNombre)
 routerUsuario.get('/:idUsuario',getUsuarioPorId)
 routerUsuario.post('/valoracion',getUsuarioValoracion)
 routerUsuario.get('/:idUsuario/pujas', getPujasUsuario)
-routerUsuario.get('/:idUsuario/pujas', getPujasUsuario)
 routerUsuario.get('/:idUsuario/productos/:filtro',getProductosUsuario) //Filtro: pujados, comprados, vendidos, enVenta
 routerUsuario.post('/:idUsuario/descripcionProductos/:filtro',getProductosUsuarioDescripcion)
 routerUsuario.post('/:idUsuario/precioProductos/:filtro',getProductosUsuarioPrecioMax)
