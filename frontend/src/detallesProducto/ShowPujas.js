@@ -172,7 +172,7 @@ const CompShowPujas = () => {
                         {pujas.map((puja, index) => (
                         <li key={index} class="list-group-item">
                             <p>
-                            <b>Usuario:</b> <a href={`https:/localhot:3000/userInfo/${usuarios[index]?._id}`}>{usuarios[index]?.username}</a>
+                            <b>Usuario:</b> <a href={`/userInfo/${idUsuario}/${usuarios[index]?._id}`}>{usuarios[index]?.username}</a>
                             </p>
                             <p>
                             <b>Precio:</b> {puja.precio} €

@@ -6,11 +6,11 @@ import ShowMapaUsuario from './MapaUsuario.js';
 const CompEditUser = () => {
 
     const [usuario, setUsuario] = useState([]); 
-    const {idUsuario} = useParams();
+    const {idUsuarioAjeno} = useParams();
     useEffect( () => {getUsuario()}, []);
 
     const getUsuario = async () => {
-        fetch(`http://localhost:3003/usuarios/${idUsuario}`, {
+        fetch(`http://localhost:3003/usuarios/${idUsuarioAjeno}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -66,9 +66,9 @@ const CompEditUser = () => {
 
                     <div className='col-8'> 
                         <div className= "container-fluid ">
-                            <a href={`../productosUsuario/${idUsuario}/vendidos`} className='btn btn-success'>Productos vendidos</a>
+                            <a href={`/productosUsuario/${idUsuarioAjeno}/vendidos`} className='btn btn-success'>Productos vendidos</a>
                             <br/>
-                            <a href={`../productosUsuario/${idUsuario}/enVenta`} className='btn btn-success mt-2'>Productos en venta</a>
+                            <a href={`/productosUsuario/${idUsuarioAjeno}/enVenta`} className='btn btn-success mt-2'>Productos en venta</a>
                         </div> 
                     </div>
 

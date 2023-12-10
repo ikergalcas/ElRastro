@@ -38,7 +38,7 @@ export const createUsuario = async (req, res) => {
 
         await newUser.save()
 
-        res.send("registrando")
+        res.send(newUser._id)
 
     } catch (error) {
         console.log('Error en la consulta de usuarios a la base de datos:', error);

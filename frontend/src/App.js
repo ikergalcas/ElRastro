@@ -21,12 +21,12 @@ function App() {
         <Routes>
           <Route path="/" element={<ProductosInicial/>}/>
           <Route path="/login" element={<Login/>}/>
-          <Route path="/productos" element={<ProductosInicial/>}/>
+          <Route path="/productos/:idUsuario" element={<ProductosInicial/>}/>
           <Route path="/detallesProducto/:idUsuario/:idProducto" element={<MiProductoBloque/>}/>
           <Route path="/productosUsuario/:idUsuario/:filtro" element={<ProductosUsuario/>}/>
           <Route path="/nuevoProducto/:idUsuario" element={<CrearProdcuto/>}/>
           <Route path="/editarProducto/:idProducto" element={<CompEditProducto/>}/>
-          <Route path="/userInfo/:idUsuario" element={<UserInfo/>}/>
+          <Route path="/userInfo/:idUsuario/:idUsuarioAjeno" element={<UserInfo/>}/>
           <Route path="/myUserInfo/:idUsuario" element={<MyUserInfo/>}/>
           <Route path="/editarPerfil/:idUsuario" element={<EditarPerfil/>}/>
 
