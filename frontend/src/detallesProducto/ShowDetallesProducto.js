@@ -12,6 +12,7 @@ const CompShowDetallesProducto = () => {
     const [mostrarValoracion, setMostrarValoracion] = useState(false)
     const [calidad, setCalidad] = useState(1)
     const [fiabilidad, setFiabilidad] = useState(1)
+    const [valoracionComprador, setValoracionComprador] = useState(1)
 
     //CARRUSEL
     const [index, setIndex] = useState(0);
@@ -95,10 +96,11 @@ const CompShowDetallesProducto = () => {
     //---VALORACION---
     const valorar = () => {
         var raw = JSON.stringify({
-            "idVendedor": vendedor._id,
+            "idUsuario": idUsuario,
             "idProducto": idProducto,
             "fiabilidad": Number(fiabilidad),
-            "calidad": Number(calidad)
+            "calidad": Number(calidad),
+            "valorComprador": Number(valoracionComprador),
         });
     
         console.log("Antes de la solicitud PUT");
@@ -112,6 +114,20 @@ const CompShowDetallesProducto = () => {
         })
     }
     
+    //---CERRAR PUJA---
+    const cerrarPuja = () => {
+        var raw = JSON.stringify({
+            "idProducto": idProducto,
+        });
+
+        fetch(`http://localhost:3001/productos/${idProducto}/cerrarPuja`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: raw
+        })
+    }
 
     return (
         <div className='container'>
@@ -232,56 +248,106 @@ const CompShowDetallesProducto = () => {
                                         Ubicación: {producto.ubicacion}
                                     </h5>
                                 </div>
-                                
-                                {//----------------EDITAR----------------
-                                idUsuario == vendedor._id ? 
-                                <div>
-                                    <Link to={`/editarProducto/${idProducto}`} className="btn btn-secondary">Editar</Link>
-                                </div>
-                                : null
-                                }
-                                {//----------------VALORACION----------------
-                                idUsuario == producto.comprador && !producto.valorado ?
-                                <div>
-                                    <button className="btn btn-secondary" onClick={() => setMostrarValoracion(true)}>
-                                    Dejar Valoración
-                                    </button>
+                                <div className='row'>
+                                    <div className='col'>
+                                        {//----------------EDITAR----------------
+                                        idUsuario == vendedor._id ? 
+                                        <div>
+                                            <Link to={`/editarProducto/${idProducto}`} className="btn btn-secondary">Editar</Link>
+                                        </div>
+                                        : null
+                                        }
+                                    </div>
+                                    <div className='col'>
+                                        {//--VALORACION--
+                                        //----------------Comprador Valora Vendedor----------------
+                                        idUsuario == producto.comprador && !producto.valoracionVendedor ?
+                                        <div>
+                                            <button className="btn btn-secondary" onClick={() => setMostrarValoracion(true)}>
+                                            Dejar Valoración
+                                            </button>
 
-                                    {mostrarValoracion && (
-                                        <form onSubmit={valorar}>
-                                            <label className='form-label'>Valora del 1 al 5 estos aspectos</label>
-                                            <br/>
+                                            {mostrarValoracion && (
+                                                <form onSubmit={valorar}>
+                                                    <label className='form-label'>Valora del 1 al 5 estos aspectos</label>
+                                                    <br/>
+                                                    
+                                                    <a>Calidad del producto</a>
+                                                    <input 
+                                                    value={calidad} 
+                                                    onChange={(e) => setCalidad(e.target.value)}
+                                                    type="number" 
+                                                    id="calidad" 
+                                                    className='form-control' 
+                                                    min="1"
+                                                    max="5"
+                                                    required
+                                                    />
+                                                    <br/>
+
+                                                    <a>¿Te ha parecido confiable este vendedor?</a>
+                                                    <input 
+                                                    value={fiabilidad} 
+                                                    onChange={(e) => setFiabilidad(e.target.value)}
+                                                    type="number" 
+                                                    id="fiabilidad" 
+                                                    className='form-control'
+                                                    min="1"
+                                                    max="5" 
+                                                    required/>
+                                                    <br/>
+                                                    <button className="btn btn-secondary" type="submit" >Enviar valoracion</button>
+                                                </form>
+                                            )}
                                             
-                                            <a>Calidad del producto</a>
-                                            <input 
-                                            value={calidad} 
-                                            onChange={(e) => setCalidad(e.target.value)}
-                                            type="number" 
-                                            id="calidad" 
-                                            className='form-control' 
-                                            min="1"
-                                            max="5"
-                                            required
-                                            />
-                                            <br/>
+                                        </div>
+                                        : null
+                                        }
+                                        {//--Vendedor valora comprador--
+                                        idUsuario == producto.vendedor && !producto.valoracionComprador && producto.vendido ?
+                                        <div>
+                                            <button className="btn btn-secondary" onClick={() => setMostrarValoracion(true)}>
+                                            Dejar Valoración
+                                            </button>
 
-                                            <a>¿Te ha parecido confiable este vendedor?</a>
-                                            <input 
-                                            value={fiabilidad} 
-                                            onChange={(e) => setFiabilidad(e.target.value)}
-                                            type="number" 
-                                            id="fiabilidad" 
-                                            className='form-control'
-                                            min="1"
-                                            max="5" 
-                                            required/>
-                                            <br/>
-                                            <button className="btn btn-secondary" type="submit" >Enviar valoracion</button>
+                                            {mostrarValoracion && (
+                                                <form onSubmit={valorar}>
+                                                    <label className='form-label'>Valora del 1 al 5 estos aspectos</label>
+                                                    <br/>
+                                                    
+                                                    <a>¿Cual ha sido tu experiencia con este comprador?</a>
+                                                    <input 
+                                                    value={valoracionComprador} 
+                                                    onChange={(e) => setValoracionComprador(e.target.value)}
+                                                    type="number" 
+                                                    id="valComp" 
+                                                    className='form-control' 
+                                                    min="1"
+                                                    max="5"
+                                                    required
+                                                    />
+                                                    <br/>
+
+                                                    <button className="btn btn-secondary" type="submit" >Enviar valoracion</button>
+                                                </form>
+                                            )}
+                                            
+                                        </div>
+                                        : null
+                                        }
+                                    </div>
+                                    <div className='col'>
+                                        {//---Cerrar Puja
+                                        idUsuario == producto.vendedor && !producto.vendido ? 
+                                        <form onSubmit={cerrarPuja}>
+                                            <button className='btn btn-secondary' type='submit'>Cerrar Puja</button>
                                         </form>
-                                    )}
+                                        : null
+                                        }
+                                    </div>
                                 </div>
-                                : null
-                                }
+                                
+                                
                             </div>
                         </div>
                     </div>

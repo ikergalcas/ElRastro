@@ -40,7 +40,11 @@ const productSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.Boolean, 
         default: false
     },
-    valorado: {
+    valoracionVendedor: {
+        type: mongoose.Schema.Types.Boolean, 
+        default: false
+    },
+    valoracionComprador: {
         type: mongoose.Schema.Types.Boolean, 
         default: false
     },
