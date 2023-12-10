@@ -224,10 +224,14 @@ const CompShowComentarios = () => {
                     {comentarios.map((comentario, index) => (
                     <li key={index} class="list-group-item">
                         <p>
-                        <b>Usuario:</b>  <a href={`https:/localhot:3000/userInfo/${usuarios[index]?._id}`}>{usuarios[index]?.username}</a>
+                        {comentario.usuario === idUsuario ? (
+                            <b>Usuario: Yo</b> 
+                        ) : (
+                            <b>Usuario: Anonymous</b> 
+                        )}
                         </p>
                         <p><b>Comentario: </b>{comentario.texto}</p>
-                        {comentario.respuesta !== "" && (
+                        {comentario.respuesta !== "" && ((producto.vendedor === idUsuario) || (comentario.usuario === idUsuario))&& (
                         <p>
                             <b>Respuesta: </b> {comentario.respuesta}
                         </p>
