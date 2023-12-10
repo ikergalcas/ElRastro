@@ -3,7 +3,7 @@ import { redirect, useParams } from 'react-router-dom';
 
 const CompShowCrearProducto = () => {
 
-    const idUsuario='653fe434b1b1e5d84c3ed746';
+    const {idUsuario} = useParams()
     const [titulo,setTitulo]=useState('')
     const [descripcion,setDescripcion]=useState('')
     const [ubicacion,setUbicacion]=useState('')

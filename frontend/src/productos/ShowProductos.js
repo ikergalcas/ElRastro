@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom'
 
 const ShowProductos = () => {
 
     const [productos, setProductos] = useState([]);
-    const idUsuario='653fe434b1b1e5d84c3ed746';
-    const [maxPuja,setMaxPuja]= useState('');
+    const {idUsuario} = useParams()
     useEffect(() => {
         getProductos()
     }, []);
-
-    const getMaxPuja = async (id) => {
-
-    }
 
     const getProductos = async () => {
         // Hacer la solicitud para obtener productos desde el backend
@@ -140,7 +136,10 @@ return(
                         <h5 className="card-title">{producto.titulo}</h5>
                         <p className="card-text">{producto.descripcion}</p>
                         <p className="card-text">Maxima puja: {producto.maximaPuja}</p>
-                        <a href={`/detallesProducto/${idUsuario}/${producto._id}`} className='btn btn-secondary'>Ver mas informacion</a>
+                        {idUsuario!=undefined ?
+                        (<a href={`/detallesProducto/${idUsuario}/${producto._id}`} className='btn btn-secondary'>Ver mas informacion</a>) :
+                        (<a className='btn btn-secondary' disabled>Inicia sesion para ver mas informacion</a>)
+                        }
                     </div>
                 </div>
             ))}
