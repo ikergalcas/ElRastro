@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Carousel, CarouselItem, CarouselControl, CarouselIndicators, CarouselCaption } from 'react-bootstrap';
 
 
 const CompShowDetallesProducto = () => {
@@ -8,66 +9,197 @@ const CompShowDetallesProducto = () => {
     // Obtenemos el producto y el vendedor
     const [producto, setProducto] = useState({});
     const [vendedor, setVendedor] = useState({});
-    const [descripcion, setDescripcion] = useState('');
+    const [mostrarValoracion, setMostrarValoracion] = useState(false)
+    const [calidad, setCalidad] = useState(1)
+    const [fiabilidad, setFiabilidad] = useState(1)
+    const [valoracionComprador, setValoracionComprador] = useState(1)
+
+    //CARRUSEL
+    const [index, setIndex] = useState(0);
+    
+    const handleSelect = (selectedIndex) => {
+        setIndex(selectedIndex);
+    };
 
     //Dentro de un useEffect hacemos las 2 consultas porque las solicitudes http son asincronas y en la
     //segunda consulta uso el atributo vendedor de la primera
     useEffect(() => {
-        // Hacer la solicitud para obtener productos desde el backend
-        fetch(`http://localhost:3001/productos/${idProducto}`)
-            .then(response => response.json())
-            .then(data => {
-                // Actualizar el estado con los productos obtenidos
-                setProducto(data);
+        // Hacer la solicitud para obtener un producto desde el backend 
+        fetch(`http://localhost:3001/productos/${idProducto}/checkeo`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response => response.json())
+        .then(data => {
+            // Actualizar el estado con los productos obtenidos
+            setProducto(data);
 
-                // Hacer la solicitud para obtener el vendedor
-                return fetch(`http://localhost:3003/usuarios/${data.vendedor}`);
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Actualizar el estado con el vendedor obtenido
-                setVendedor(data);
-            })
-            .catch(error => {
-                console.error('Error al obtener producto o vendedor:', error);
-            });
+            // Hacer la solicitud para obtener el vendedor
+            return fetch(`http://localhost:3003/usuarios/${data.vendedor}`);
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Actualizar el estado con el vendedor obtenido
+            setVendedor(data);
+        })
+        .catch(error => {
+            console.error('Error al obtener producto o vendedor:', error);
+        });
     }, [idProducto]);
+
 
     
     const [fotoNueva, setFotoNueva] = useState(null);
     
-    const nuevaFoto = (event) => {
-        const file = event.target.files[0];
+    const nuevaFoto = async (foto) => {
+        const archivos = foto ? [foto] : [];
+        if (archivos.length>0){    
+            const archivo = archivos[0];
+            
+            var formdata = new FormData();
+            formdata.append("foto", archivo);
     
-        setFotoNueva(file);
-    
+            fetch('http://localhost:3001/productos/subirFoto', {
+                    method: 'POST',
+                    body : formdata
+                }).then(response => response.json())
+                    .then(result =>{
+                        var raw = JSON.stringify({
+                            "foto" : result.imageUrl
+                          });
+                        fetch(`http://localhost:3001/productos/${idProducto}/nuevaImagen`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: raw
+                        }).then(response => response.text())
+                        .then(result => {
+                            console.log(result)
+                            setProducto(result)
+                            alert('Imagen Añadida');
+                            window.location.reload();
+                        })
+                            .catch(error => {
+                                console.error('Error al subir la imagen:', error);
+                            });
+                            })
+                    .catch(error => {
+                        console.error('Error al subir la imagen:', error);
+                    });
+        }else{
+            console.error('No se seleccionó ningún archivo.');
+        }
     };
+
+    //---VALORACION---
+    const valorar = () => {
+        var raw = JSON.stringify({
+            "idUsuario": idUsuario,
+            "idProducto": idProducto,
+            "fiabilidad": Number(fiabilidad),
+            "calidad": Number(calidad),
+            "valorComprador": Number(valoracionComprador),
+        });
     
+        console.log("Antes de la solicitud PUT");
+        // Pongo el producto como valorado, recalculo la media de valoración y la actualizo
+        fetch('http://localhost:3001/productos/valoracion/calculoValoracion', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: raw
+        })
+    }
+    
+    //---CERRAR PUJA---
+    const cerrarPuja = () => {
+        var raw = JSON.stringify({
+            "idProducto": idProducto,
+        });
+
+        fetch(`http://localhost:3001/productos/${idProducto}/cerrarPuja`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: raw
+        })
+    }
+
     return (
         <div className='container'>
             <div className='row'>
                 <div className='col 4'>
                     <div className='row'>
                         <div className='col'>
-                            { 
-                            idUsuario == vendedor._id ? 
-                                <div>
+                            {idUsuario == vendedor._id ? 
+                            <div>
+                                {/* CAMBIAR IMAGEN PRINCIPAL */}
+                                <div className='row'>
+
+                                </div>
+                                {/* AÑADIR IMAGEN A LAS SECUNDARIAS */}
+                                <div className='row'>   
                                     <input
                                         type="file"
-                                        accept="image/*" // Para aceptar solo archivos de imagen
-                                        onChange={nuevaFoto}
-                                    />
-
-                                    {fotoNueva && (
-                                        <div>
-                                            <img src={URL.createObjectURL(fotoNueva)}/>
-                                        </div>
-                                    )}
+                                        accept="image/*"
+                                        onChange={(e) => nuevaFoto(e.target.files[0])}
+                                    />                                  
                                 </div>
+                            </div>
+                            
                             : null
                             }
+                            {
+                            <Carousel activeIndex={index} onSelect={handleSelect} style={{ maxWidth: '400px' }}>
+                                {producto.imagenes && producto.imagenes.map((foto, idx) => (
+                                    <Carousel.Item key={idx}>
+                                    <img
+                                        className="d-block w-100"
+                                        src={foto}
+                                        alt={`Foto ${idx + 1}`}
+                                        style={{ maxHeight: '200px', objectFit: 'contain' }}
+                                    />
+                                    </Carousel.Item>
+                                ))}
+                                
+                                <button
+                                    className="carousel-control-prev"
+                                    type="button"
+                                    data-bs-target="#carouselExampleIndicators"
+                                    data-bs-slide="prev"
+                                >
+                                    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span className="visually-hidden">Previous</span>
+                                </button>
+                                
+                                <button
+                                    className="carousel-control-next"
+                                    type="button"
+                                    data-bs-target="#carouselExampleIndicators"
+                                    data-bs-slide="next"
+                                >
+                                    <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span className="visually-hidden">Next</span>
+                                </button>
+                                </Carousel>}
 
-                            <img src={producto.foto} style={{width: '30%', borderRadius:'5px'}} className="card-img-top img-fluid"></img>
+
+                            {/* CAROUSEL SIN BOTONES ABAJO 
+                            <Carousel activeIndex={index} onSelect={handleSelect}>
+                                {producto.imagenes && producto.imagenes.map((foto, idx) => (
+                                    <Carousel.Item key={idx}>
+                                        <img
+                                            className="d-block w-50"
+                                            src={foto}
+                                            alt={`Foto ${idx + 1}`}
+                                        />
+                                    </Carousel.Item>
+                                ))
+                            </Carousel>*/}
                         </div>
                     </div>
                     
@@ -75,14 +207,21 @@ const CompShowDetallesProducto = () => {
                         <div className='col 2'>
                             <div className='card text-center mt-3'>
                                 <div className='card-body'>
-                                    <h2 className='card-title'>
-                                        {vendedor.username}
+                                    <h4 className='card-title'>
+                                        {/* PROVISIONAL VISTA USUARIO*/}
+                                        <Link to={`/vistaUser/${vendedor._id}`} >{vendedor.username}</Link>
+                                        </h4>
+                                </div>
+                            </div>
+                            <div className='card text-center mt-3'>
+                                <div className='card-body'>
+                                    <h4 className='card-title'>
+                                        Valoracion
                                         { /* Mostrar estrellas según la valoracionMedia */
                                         Array.from({ length: vendedor.valoracionMedia }).map((_, index) => (
                                             <span key={index} className="text-warning">&#9733;</span>
                                         ))}
-                                    </h2>
-                                    
+                                    </h4>
                                 </div>
                             </div>
                         </div>
@@ -92,7 +231,9 @@ const CompShowDetallesProducto = () => {
                 <div className='col 8'>
                     <div className='row'>
                         <div className='col 6'>
-                            <h2 className='card-title'>{producto.titulo}</h2>
+                            <h2 className='card-title'>
+                                Producto: {producto.titulo}
+                            </h2>
                         </div>
                         <div className='col 2'>
                             <h2 className='card-title'>Puja mas alta: {producto.maximaPuja}</h2>
@@ -107,13 +248,106 @@ const CompShowDetallesProducto = () => {
                                         Ubicación: {producto.ubicacion}
                                     </h5>
                                 </div>
-                                
-                                {idUsuario == vendedor._id ? 
-                                <div>
-                                    <Link to={`/editarProducto/${idProducto}`} className="btn btn-secondary">Editar</Link>
+                                <div className='row'>
+                                    <div className='col'>
+                                        {//----------------EDITAR----------------
+                                        idUsuario == vendedor._id ? 
+                                        <div>
+                                            <Link to={`/editarProducto/${idProducto}`} className="btn btn-secondary">Editar</Link>
+                                        </div>
+                                        : null
+                                        }
+                                    </div>
+                                    <div className='col'>
+                                        {//--VALORACION--
+                                        //----------------Comprador Valora Vendedor----------------
+                                        idUsuario == producto.comprador && !producto.valoracionVendedor ?
+                                        <div>
+                                            <button className="btn btn-secondary" onClick={() => setMostrarValoracion(true)}>
+                                            Dejar Valoración
+                                            </button>
+
+                                            {mostrarValoracion && (
+                                                <form onSubmit={valorar}>
+                                                    <label className='form-label'>Valora del 1 al 5 estos aspectos</label>
+                                                    <br/>
+                                                    
+                                                    <a>Calidad del producto</a>
+                                                    <input 
+                                                    value={calidad} 
+                                                    onChange={(e) => setCalidad(e.target.value)}
+                                                    type="number" 
+                                                    id="calidad" 
+                                                    className='form-control' 
+                                                    min="1"
+                                                    max="5"
+                                                    required
+                                                    />
+                                                    <br/>
+
+                                                    <a>¿Te ha parecido confiable este vendedor?</a>
+                                                    <input 
+                                                    value={fiabilidad} 
+                                                    onChange={(e) => setFiabilidad(e.target.value)}
+                                                    type="number" 
+                                                    id="fiabilidad" 
+                                                    className='form-control'
+                                                    min="1"
+                                                    max="5" 
+                                                    required/>
+                                                    <br/>
+                                                    <button className="btn btn-secondary" type="submit" >Enviar valoracion</button>
+                                                </form>
+                                            )}
+                                            
+                                        </div>
+                                        : null
+                                        }
+                                        {//--Vendedor valora comprador--
+                                        idUsuario == producto.vendedor && !producto.valoracionComprador && producto.vendido ?
+                                        <div>
+                                            <button className="btn btn-secondary" onClick={() => setMostrarValoracion(true)}>
+                                            Dejar Valoración
+                                            </button>
+
+                                            {mostrarValoracion && (
+                                                <form onSubmit={valorar}>
+                                                    <label className='form-label'>Valora del 1 al 5 estos aspectos</label>
+                                                    <br/>
+                                                    
+                                                    <a>¿Cual ha sido tu experiencia con este comprador?</a>
+                                                    <input 
+                                                    value={valoracionComprador} 
+                                                    onChange={(e) => setValoracionComprador(e.target.value)}
+                                                    type="number" 
+                                                    id="valComp" 
+                                                    className='form-control' 
+                                                    min="1"
+                                                    max="5"
+                                                    required
+                                                    />
+                                                    <br/>
+
+                                                    <button className="btn btn-secondary" type="submit" >Enviar valoracion</button>
+                                                </form>
+                                            )}
+                                            
+                                        </div>
+                                        : null
+                                        }
+                                    </div>
+                                    <div className='col'>
+                                        {//---Cerrar Puja
+                                        idUsuario == producto.vendedor && !producto.vendido ? 
+                                        <form onSubmit={cerrarPuja}>
+                                            <button className='btn btn-secondary' type='submit'>Cerrar Puja</button>
+                                        </form>
+                                        : null
+                                        }
+                                    </div>
                                 </div>
-                                : null
-                                }
+                                
+                                
                             </div>
                         </div>
                     </div>

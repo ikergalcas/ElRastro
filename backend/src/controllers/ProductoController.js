@@ -2,6 +2,177 @@ import Producto from "../models/ProductoModel.js";
 import Usuario from "../models/UsuarioModel.js";
 
 
+//------------------NUEVO------------------//
+export const cerrarPuja = async (req, res) => {
+    try {
+        const { idProducto } = req.params
+
+        const producto = await Producto.findById(idProducto);
+
+        if (!producto) {
+            console.error('No se pudo actualizar el producto');
+            return res.status(500).json({ message: 'Error al cerrar la puja', error: 'No se pudo actualizar el producto' });
+        }
+
+        var user = -1
+            for(const puja of producto.pujas) {
+                if(puja.precio === producto.maximaPuja) {
+                    user = puja.usuario
+                }
+            }
+
+            //ASIGNAMOS EL CAMPO COMPRADOR Y PONEMOS VENDIDO A TRUE
+            //Con new: true hago que devuelva el objeto actualizado y de esta manera lo devuelvo en el res.json
+            var actualizado = await Producto.findByIdAndUpdate(idProducto, { comprador: user, vendido: true }, { new: true })
+            res.json(actualizado)
+
+    } catch (error) {
+        console.log("error al cerrar puja")
+        res.status(500).json({ message: 'Error al cerrar puja' })
+    }
+}
+
+//------------------NUEVO------------------//
+export const checkeo = async (req, res) => {
+    try {
+        const { idProducto } = req.params;
+
+        console.log("antes de consulta")
+
+        const producto = await Producto.findById(idProducto);
+
+        if (!producto) {
+            console.error('No se pudo actualizar el producto');
+            return res.status(500).json({ message: 'Error al cerrar la puja', error: 'No se pudo actualizar el producto' });
+        }
+
+        if(Date.now() > producto.fechaCierre && !producto.vendido) {
+            var user = -1
+            for(const puja of producto.pujas) {
+                if(puja.precio === producto.maximaPuja) {
+                    user = puja.usuario
+                }
+            }
+
+            //ASIGNAMOS EL CAMPO COMPRADOR Y PONEMOS VENDIDO A TRUE
+            //Con new: true hago que devuelva el objeto actualizado y de esta manera lo devuelvo en el res.json
+            var actualizado = await Producto.findByIdAndUpdate(idProducto, { comprador: user, vendido: true }, { new: true })
+            res.json(actualizado)
+        } else {
+            res.json(producto)
+        }
+
+    } catch (error) {
+        console.log("error al hacer el checkeo de producto")
+        res.status(500).json({ message: 'Error al hacer checkeo de producto' })
+    }
+}
+
+//------------------NUEVO------------------//
+export const nuevaImagen = async (req, res) => {
+    try {
+        const { idProducto } = req.params;
+        const { imagen } = req.body;  // Supongamos que recibes la URL de la nueva foto en el cuerpo de la solicitud
+
+        const producto = await Producto.findById(idProducto);
+
+        const imagenes = producto.imagenes || [];
+
+        imagenes.push(imagen);
+
+        await Producto.findByIdAndUpdate(idProducto, { imagenes });
+
+        res.json({ message: 'Nueva foto añadida con éxito', imagenes });
+
+    } catch (error) {
+        console.log('Error al añadir una nueva foto al producto:', error);
+        res.status(500).json({ message: 'Error al añadir una nueva foto al producto' });
+    }
+}
+
+//------------------NUEVO------------------//
+//numero de productos valorados de un usuario (VALORACION)
+export const valoracion = async (req, res) => {
+    try {
+        // Obtener parámetros desde query o body
+        const { idUsuario, idProducto, fiabilidad, calidad, valorComprador } = req.body;
+
+        //-------------Actualizar el producto con idProducto a valorado = true-------------
+        var producto = await Producto.findById(idProducto);
+        
+        var valoracionNueva
+        var mediaNueva
+        var valoraciones
+
+        //--Dependiendo de si es el comprador o vendedor calculare la nueva valoracion de una forma distinta--
+        if(idUsuario == producto.comprador) {      //Soy el comprador, valoro al vendedor  
+
+            //---Actualizo atributo valoracion para el vendedor---
+            await Producto.findByIdAndUpdate(idProducto, { valoracionVendedor: true })
+
+            //---Calculo valoracion nueva---
+            valoracionNueva = (fiabilidad + calidad) / 2;
+
+            //-------------Obtener el número de productos valorados del vendedor de idProducto-------------------
+            const vendidos = await Producto.find({ vendedor: producto.vendedor, valoracionVendedor: true });
+            const comprados = await Producto.find({ comprador: producto.vendedor, valoracionComprador: true });
+            valoraciones = vendidos.length + comprados.length;
+
+
+            // Obtener el usuario a valorar mediante su id
+            const vendedor = await Usuario.findById(producto.vendedor);
+            
+            if (!vendedor) {
+                return res.status(404).json({ message: 'Vendedor no encontrado' });
+            }
+
+            //---------------Calcular la nueva valoracionMedia del usuario (en este caso el comprador)----
+            mediaNueva = ((vendedor.valoracionMedia * (valoraciones-1)) + valoracionNueva) / (valoraciones);
+            mediaNueva = Math.round(mediaNueva)
+       
+            //---------------Actualizar el atributo valoracionMedia del vendedor---------------
+            await Usuario.findByIdAndUpdate(vendedor._id, { valoracionMedia: mediaNueva });
+
+        } else if(idUsuario == producto.vendedor){    //Viceversa
+            //---Actualizo atributo valoracion para el comprador
+            await Producto.findByIdAndUpdate(idProducto, { valoracionComprador: true })
+            valoracionNueva = valorComprador 
+
+            //-------------Obtener el número de productos valorados del comprador de idProducto-------------------
+            const vendidos = await Producto.find({ vendedor: producto.comprador, valoracionVendedor: true });
+            const comprados = await Producto.find({ comprador: producto.comprador, valoracionComprador: true });
+            valoraciones = vendidos.length + comprados.length;
+
+            // Obtener el usuario a valorar mediante su id
+            const comprador = await Usuario.findById(producto.comprador);
+            
+            if (!comprador) {
+                return res.status(404).json({ message: 'Comprador no encontrado' });
+            }
+
+            if(valoraciones == 0) {
+                mediaNueva = valoracionNueva
+            } else {
+                //---------------Calcular la nueva valoracionMedia del usuario (en este caso el comprador)----
+                mediaNueva = ((comprador.valoracionMedia * (valoraciones-1)) + valoracionNueva) / (valoraciones);
+                mediaNueva = Math.round(mediaNueva)
+            }
+
+            //---------------Actualizar el atributo valoracionMedia del vendedor---------------
+            await Usuario.findByIdAndUpdate(comprador._id, { valoracionMedia: mediaNueva });
+        }else {
+            res.json({mensaje: "sa rallao", user: idUsuario, comprador: producto.comprador})
+        }
+
+
+        res.json({MediaNueva: mediaNueva, ValoracionNueva: valoracionNueva, fiab: fiabilidad, cal: calidad, valoracionComprador: valorComprador, Valoraciones: valoraciones });
+
+    } catch (error) {
+        console.log('Error en la consulta de obtener productos vendidos de un usuario:', error);
+        res.status(500).json({ message: 'Error al obtener productos vendidos de un usuario' });
+    }
+}
+
 export const getAllProductos = async (req, res) => {
     try {
         const data = await Producto.find()
