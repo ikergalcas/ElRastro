@@ -80,6 +80,8 @@ const CompShowCrearProducto = () => {
                     .catch(error => {
                         console.error('Error al subir la imagen:', error);
                     });
+        }else{
+            subirFotos()
         }        
     }
 
@@ -112,6 +114,9 @@ const CompShowCrearProducto = () => {
                     });
             }
 
+        }else{
+            alert('Producto Creado');
+            window.location.href = `/productos/${idUsuario}`;
         }
     }
 
@@ -130,7 +135,7 @@ const CompShowCrearProducto = () => {
         .then(result => {
             console.log(result)
             alert('Producto Creado');
-            window.location.href = '/productos';
+            window.location.href = `/productos/${idUsuario}`;
         })
             .catch(error => {
                 console.error('Error al subir la imagen:', error);
@@ -179,7 +184,7 @@ return(
                     <input type="file" className="form-control" id="archivo" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg"/>
                     <a>Añade las fotos que quieras sobre tu producto:</a><br/> <br/>
                     <input type="file" className="form-control" id="archivo2" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg" multiple/>
-                    <button className="btn btn-secondary" type="submit" >Enviar</button>
+                    <button className="btn btn-secondary" type="submit">Enviar</button>
                 </div>
             </form>
         </div>        
