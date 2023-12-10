@@ -138,7 +138,7 @@ return(
                         <p className="card-text">Maxima puja: {producto.maximaPuja}</p>
                         {idUsuario!=undefined ?
                         (<a href={`/detallesProducto/${idUsuario}/${producto._id}`} className='btn btn-secondary'>Ver mas informacion</a>) :
-                        (<a className='btn btn-secondary' disabled>Inicia sesion para ver mas informacion</a>)
+                        (<a href={'/login'} className='btn btn-secondary'>Inicia sesion para ver mas informacion</a>)
                         }
                     </div>
                 </div>

@@ -29,9 +29,9 @@ const CompShowMapaProducto = () => {
 
     return (
       <div className='container mb-4'>
-        <div className='card'>
+        <div className='card' style={{marginRight: '10%'}}>
           <div className='card-body'>
-            <h2 className='card-title'> Ubicacion del producto </h2>
+            <h3 className='card-title'> Ubicacion del producto </h3>
             {position[0] !== 0 && position[1] !== 0 && (
             <MapContainer center={position} zoom={16} style={{ height: '400px', width: '100%' }}>
                 <TileLayer

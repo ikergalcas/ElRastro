@@ -32,28 +32,6 @@ const CompShowPujas = () => {
             });
     }
 
-
-    const [vendedor, setVendedor] = useState({});
-    useEffect(() => {
-        console.log(idUsuario);
-        // Hacer la solicitud para obtener productos desde el backend
-        fetch(`http://localhost:3003/usuarios/${producto.vendedor}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(response => response.json())
-            .then(data => {
-                // Actualizar el estado con los productos obtenidos
-                setVendedor(data);
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error al obtener vendedor:', error);
-            });
-    },[]);
-
     const [pujas, setPujas] = useState({});
     useEffect(() => {
         // Hacer la solicitud para obtener productos desde el backend
@@ -86,38 +64,42 @@ const CompShowPujas = () => {
         // Obtener el valor del precio del formulario
         const precioPuja = document.getElementById("precio").value;
         console.log('Precio de la puja:', precioPuja);
-    
-        // Crear el objeto de datos para la solicitud
-        const datosPuja = {
-            "precio": parseFloat(precioPuja), // Convertir el valor a número si es necesario
-            "usuario": idUsuario
-        };
-        console.log('Datos de la puja:', datosPuja);
-    
-           // Convertir los datos a formato raw
+        
+        if(precioPuja>=producto.precioInicial){
+            // Crear el objeto de datos para la solicitud
+            const datosPuja = {
+                "precio": parseFloat(precioPuja), // Convertir el valor a número si es necesario
+                "usuario": idUsuario
+            };
+            console.log('Datos de la puja:', datosPuja);
+        
+            // Convertir los datos a formato raw
             const rawDatosPuja = JSON.stringify(datosPuja);
 
-        // Realizar la solicitud al backend
-        fetch(`http://localhost:3001/productos/${idProducto}/crearPuja`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: rawDatosPuja, // Enviar datos en formato raw
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Puja realizada con éxito:', data);
-            // Aquí puedes manejar la respuesta del servidor, por ejemplo, mostrar un mensaje al usuario7
-            window.location.reload();
-        })
-        .catch(error => {
-            console.error('Error al realizar la puja:', error);
-            // Aquí puedes manejar los errores, por ejemplo, mostrar un mensaje de error al usuario
+            // Realizar la solicitud al backend
+            fetch(`http://localhost:3001/productos/${idProducto}/crearPuja`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: rawDatosPuja, // Enviar datos en formato raw
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Puja realizada con éxito:', data);
+                // Aquí puedes manejar la respuesta del servidor, por ejemplo, mostrar un mensaje al usuario7
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error al realizar la puja:', error);
+                // Aquí puedes manejar los errores, por ejemplo, mostrar un mensaje de error al usuario
 
-        });
+            });
+        }else{
+            alert("No puedes pujar con un precio menor al inicial")
+            document.getElementById("precio").value="" 
+        }
     }
-
     
     const [usuarios, setUsuarios] = useState([]);
 
@@ -144,7 +126,7 @@ const CompShowPujas = () => {
     return (
         <div>
             {producto.vendedor !== idUsuario && (
-            <div class="buscador-center col 4">
+            <div class="buscador-center col 4" style={{marginLeft: '10%'}}>
             <form
                 id="formularioPuja"
                 className="buscador-center"
@@ -164,8 +146,8 @@ const CompShowPujas = () => {
             )}
 
 
-            <b>FECHA FINAL DE PUJA:</b> {fechaFormateada}
-            <div class="card">
+            <b style={{marginLeft: '10%'}}>FECHA FINAL DE PUJA:</b> {fechaFormateada}
+            <div class="card" style={{width: '70%', marginLeft: '10%'}}>
                 <div class="card body">
                     {Array.isArray(pujas) && pujas.length > 0 ? (
                     <ul class="list-group list-group-flush">

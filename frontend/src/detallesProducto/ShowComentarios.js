@@ -32,28 +32,6 @@ const CompShowComentarios = () => {
             });
     }
 
-
-    const [vendedor, setVendedor] = useState({});
-    useEffect(() => {
-        console.log(idUsuario);
-        // Hacer la solicitud para obtener productos desde el backend
-        fetch(`http://localhost:3003/usuarios/${producto.vendedor}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then(response => response.json())
-            .then(data => {
-                // Actualizar el estado con los productos obtenidos
-                setVendedor(data);
-                console.log(data);
-            })
-            .catch(error => {
-                console.error('Error al obtener vendedor:', error);
-            });
-    },[]);
-
     //conseguimos los comentarios de un producto
     const [comentarios, setComentarios] = useState({});
     useEffect(() => {
@@ -217,8 +195,8 @@ const CompShowComentarios = () => {
             </div>
             )}
         <b>COMENTARIOS</b>
-                <div class="card">
-            <div class="card body">
+                <div class="card" style={{width: '70%'}}>
+            <div class="card body" >
                 {Array.isArray(comentarios) && comentarios.length > 0 ? (
                 <ul class="list-group list-group-flush">
                     {comentarios.map((comentario, index) => (

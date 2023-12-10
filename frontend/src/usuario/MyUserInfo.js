@@ -116,13 +116,13 @@ const CompEditUser = () => {
                 <div className='row'>
                 <div className='col-8'>
                         <div className= "container-fluid ">
-                            <a href={`../productosUsuario/${idUsuario}/vendidos`} className='btn btn-success'>Productos vendidos</a>
-                            <br/>
-                            <a href={`../productosUsuario/${idUsuario}/enVenta`} className='btn btn-success mt-2'>Productos en venta</a>
-                            <br/>
-                            <a href={`../productosUsuario/${idUsuario}/pujados`} className='btn btn-info mt-2'>Productos pujados</a>
-                            <br/>
-                            <a href={`../productosUsuario/${idUsuario}/comprados`} className='btn btn-info mt-2'>Productos comprados</a>
+                            <a  style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/vendidos`} className='btn btn-outline-secondary mt-2'>Productos vendidos</a>
+                            
+                            <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/enVenta`} className='btn btn-outline-secondary mt-2'>Productos en venta</a>
+                            
+                            <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/pujados`} className='btn btn-outline-secondary mt-2'>Productos pujados</a>
+                            
+                            <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/comprados`} className='btn btn-outline-secondary mt-2'>Productos comprados</a>
                         </div> 
                     </div>
                     <div className='col-4'>
@@ -130,7 +130,7 @@ const CompEditUser = () => {
                             <form id="formularioParte2" onSubmit={subirFotoIdentificativa}>
                                 <div style={{flexdirection: 'row', width:'90%'}} >
                                     <input type="file" className="form-control" id="archivo" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg"/>
-                                    <button className="btn btn-primary mt-2" type="submit" >Cambiar foto</button>
+                                    <button className="btn btn-secondary mt-2" type="submit" >Cambiar foto</button>
                                 </div>
                             </form>
                         </div>

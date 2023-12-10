@@ -129,8 +129,52 @@ const CompShowDetallesProducto = () => {
         })
     }
 
+    const subirFotoIdentificativa = async(e) => {
+        e.preventDefault()
+        const input = document.getElementById('archivo');
+        const archivos = input.files;
+        if (archivos.length>0){    
+            const archivo = archivos[0];
+            
+            var formdata = new FormData();
+            formdata.append("foto", archivo);
+    
+            fetch('http://localhost:3003/usuarios/subirFoto', {
+                    method: 'POST',
+                    body : formdata
+                }).then(response => response.json())
+                    .then(result =>{
+                        var raw = JSON.stringify({
+                            "foto" : result.imageUrl
+                          });
+                        console.log(result.imageUrl)
+                        fetch(`http://localhost:3001/productos/${producto._id}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: raw
+                        }).then(response => response.text())
+                        .then(result => {
+                            console.log(result)
+                            window.location.reload();
+                        })
+                            .catch(error => {
+                                console.error('Error al subir la imagen:', error);
+                            });
+                            })
+                    .catch(error => {
+                        console.error('Error al subir la imagen:', error);
+                    });
+        }else{
+            alert("Selecciona una foto");   
+            console.error('No se seleccionó ningún archivo.');
+        }
+        
+    }
+
     return (
-        <div className='container'>
+        <div className='container' style={{marginTop: '3%'}}>
             <div className='row'>
                 <div className='col 4'>
                     <div className='row'>
@@ -138,10 +182,8 @@ const CompShowDetallesProducto = () => {
                             {idUsuario == vendedor._id ? 
                             <div>
                                 {/* CAMBIAR IMAGEN PRINCIPAL */}
-                                <div className='row'>
-
-                                </div>
-                                {/* AÑADIR IMAGEN A LAS SECUNDARIAS */}
+                               
+                                {/* AÑADIR IMAGEN A LAS SECUNDARIAS 
                                 <div className='row'>   
                                     <input
                                         type="file"
@@ -149,12 +191,19 @@ const CompShowDetallesProducto = () => {
                                         onChange={(e) => nuevaFoto(e.target.files[0])}
                                     />                                  
                                 </div>
+                                */}
                             </div>
                             
                             : null
                             }
                             <div>
-                                <img src={producto.foto} className="card-img-top" style={{ objectFit: 'contain', height: '25vmin'}}/>
+                                <img src={producto.foto} className="card-img-top" style={{ objectFit: 'contain', height: '25vmin', textAlign: 'left'}}/>
+                                <form id="formularioParte2" onSubmit={subirFotoIdentificativa} style={{marginTop: '3%', width: '90%'}}>
+                                <div style={{flexdirection: 'row', width:'90%'}} >
+                                    <input type="file" className="form-control" id="archivo" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg,.jpeg"/>
+                                    <button className="btn btn-secondary mt-2" type="submit" >Cambiar foto</button>
+                                </div>
+                                </form>
                             </div>
                             {/*
                             <Carousel activeIndex={index} onSelect={handleSelect} style={{ maxWidth: '400px' }}>
@@ -211,21 +260,15 @@ const CompShowDetallesProducto = () => {
                         <div className='col 2'>
                             <div className='card text-center mt-3'>
                                 <div className='card-body'>
-                                    <h4 className='card-title'>
+                                    <h3 className='card-title'>
                                         {/* PROVISIONAL VISTA USUARIO*/}
                                         <Link to={`/vistaUser/${vendedor._id}`} >{vendedor.username}</Link>
-                                        </h4>
-                                </div>
-                            </div>
-                            <div className='card text-center mt-3'>
-                                <div className='card-body'>
-                                    <h4 className='card-title'>
-                                        Valoracion
+                                    </h3>
+                                    Valoracion
                                         { /* Mostrar estrellas según la valoracionMedia */
                                         Array.from({ length: vendedor.valoracionMedia }).map((_, index) => (
                                             <span key={index} className="text-warning">&#9733;</span>
                                         ))}
-                                    </h4>
                                 </div>
                             </div>
                         </div>
@@ -235,22 +278,23 @@ const CompShowDetallesProducto = () => {
                 <div className='col 8'>
                     <div className='row'>
                         <div className='col 6'>
-                            <h2 className='card-title'>
+                            <h3 className='card-title'>
                                 Producto: {producto.titulo}
-                            </h2>
+                            </h3>
                         </div>
                         <div className='col 2'>
-                            <h2 className='card-title'>Puja mas alta: {producto.maximaPuja}</h2>
+                            <h3 className='card-title'>Puja mas alta: {producto.maximaPuja}</h3>
                         </div>
                     </div>
                     <div className='row'>
                         <div className='col'>
-                            <div className="card mb-4 h-100 w-100">
+                            <div className="card mb-4 h-100 w-100" style={{marginTop: '5%'}}>
                                 <div className='card-body overflow-auto'>
-                                    <h5 className='card-title'>
+                                    <h6 className='card-title'>
                                         {producto.descripcion} <br/> <br/>
-                                        Ubicación: {producto.ubicacion}
-                                    </h5>
+                                        Ubicación: {producto.ubicacion} <br/>  <br/>
+                                        Precio Inicial: {producto.precioInicial}
+                                    </h6>
                                 </div>
                                 <div className='row'>
                                     <div className='col'>

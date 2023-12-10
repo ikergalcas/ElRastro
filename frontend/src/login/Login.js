@@ -1,11 +1,13 @@
 
 import {useState, useEffect} from 'react'
 import { Link} from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const CompLogin = () => {
     const[nombreUsuario,setNombreUsuario]=useState('')
     const[contacto,setContacto]=useState('')
     const[ubicacion,setUbicacion]=useState('')
+    const navigate = useNavigate()
 
     const comprobarCredenciales = async (e) =>{
         e.preventDefault()
@@ -67,8 +69,14 @@ const CompLogin = () => {
             });
     }
 
+    const volverAtras = (e) => {
+        e.preventDefault()
+        navigate(-1)
+    }
+
     return (
         <div className="container">
+                <button onClick={volverAtras} className='btn btn-secondary mt-2'> Volver atrás</button>
                 <img src='http://res.cloudinary.com/dten77l85/image/upload/v1702032986/ebo5yzb1nfkgr57wqct5.jpg' 
                      style={{display : 'block', height: '60vmin' , width: '100%'}}></img>
 
