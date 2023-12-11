@@ -2,7 +2,7 @@ import mongoose from 'mongoose' //Mongoose nos permite conectarnos a mongodb y t
 
 export const connectDB = async () => {
     try {
-        await mongoose.connect('mongodb+srv://rastroAdmin:adminadmin@ingweb.xdloocr.mongodb.net/elRastro2')
+        await mongoose.connect('mongodb+srv://rastroAdmin3:adminadmin@ingweb.xdloocr.mongodb.net/elRastro3')
         console.log("Conexión establecida")        
     } catch (error) {
         console.log(error)
