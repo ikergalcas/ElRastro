@@ -28,7 +28,10 @@ export const cerrarPuja = async (req, res) => {
         //ASIGNAMOS EL CAMPO COMPRADOR Y PONEMOS VENDIDO A TRUE
         //Con new: true hago que devuelva el objeto actualizado y de esta manera lo devuelvo en el res.json
         var actualizado = await Producto.findByIdAndUpdate(idProducto, { vendido: true }, { new: true })
-        res.json(user)
+        var comprador = await Usuario.findById(user)
+        console.log("Objeto comprador: " + comprador)
+        console.log("Id comprador: " + user)
+        res.json({id : user, comprador : comprador })
 
     } catch (error) {
         console.log("error al cerrar puja")
@@ -37,6 +40,7 @@ export const cerrarPuja = async (req, res) => {
 }
 
 //------------------NUEVO------------------//
+//HAY QUE MANDAR CORREO A COMPRADOR Y VENDEDOR
 export const checkeo = async (req, res) => {
     try {
         const { idProducto } = req.params;
@@ -52,6 +56,7 @@ export const checkeo = async (req, res) => {
         }
 
         var user = -1
+        console.log("Pujas: " + producto.pujas)
         //Conseguimos el id del usuario con la mayor puja
         for(const puja of producto.pujas) {
             if(puja.precio === producto.maximaPuja) {
@@ -60,15 +65,21 @@ export const checkeo = async (req, res) => {
         }
 
         if(Date.now() > producto.fechaCierre && !producto.vendido) {
+            //SE HA CERRADO LA SUBASTA -> DEVUELVO EL OBJETO COMPRADOR
+            
             console.log("Id user: " + user)
-
+            var comprador = await Usuario.findById(user)
+            
             //ASIGNAMOS PONEMOS VENDIDO A TRUE
             //Con new: true hago que devuelva el objeto actualizado y de esta manera lo devuelvo en el res.json
             var actualizado = await Producto.findByIdAndUpdate(idProducto, { vendido: true }, { new: true })
             console.log("Producto vendido: " + actualizado)
-            res.json({producto : actualizado, idUserMaxPuja : user})
+            
+            res.json({producto : actualizado, idUserMaxPuja : user, comprador : comprador})
         } else {
-            res.json({producto : producto, idUserMaxPuja : user})
+            //NO SE HA CERRADO LA SUBASTA -> DEVUELVO COMPRADOR A NULL
+            console.log("Usuario: " + user)
+            res.json({producto : producto, idUserMaxPuja : user, comprador : null})
         }
 
     } catch (error) {
@@ -459,6 +470,104 @@ export const getHuellaCarbono = async (req, res) => {
                 .then(response => response.json())
                 .then(data => {
                     res.json(data.data.attributes.carbon_g)
+                })  
+                .catch(error => {
+                    console.error("Error en la solicitud de huella de carbono: " + error);
+                });
+            })
+            .catch(error => {
+                console.error("Error en la solicitud de geocodificación1: " + error);
+            });
+        })
+        .catch(error => {
+            console.error("Error en la solicitud de geocodificación2: " + error);
+        });
+
+    } catch (error) {
+        
+    }
+};
+
+export const getHuellaCarbonoNuevo = async (req, res) => {
+    try {
+        const {idComprador} = req.body;
+        const {idProducto} =req.body;
+        //const {peso} = req.body;
+        //const {transporte} = req.body;
+        const peso = 400
+        const transporte = "plane"
+
+        const comprador = await Usuario.findById(idComprador)
+        const ubicacionOrigen = comprador.ubicacion
+
+        const producto = await Producto.findById(idProducto)
+        const ubicacionDestino = producto.ubicacion
+
+        const vendedor = await Usuario.findById(producto.vendedor)
+
+
+        var latO;
+        var lonO;
+        var latD;
+        var lonD;
+        var distancia;
+
+        //const locationName = "Calle babor, 13, Malaga";
+        const apiUrl1 = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(ubicacionOrigen)}`;
+        const apiUrl2 = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(ubicacionDestino)}`;
+
+        fetch(apiUrl1) //peticion ubicacion Origen
+        .then(response => response.json())
+        .then(dataU1 => {
+            if (dataU1 && dataU1.length > 0) {
+            const firstResult = dataU1[0];
+            latO = parseFloat(firstResult.lat);
+            lonO = parseFloat(firstResult.lon);
+            } else {
+            console.log("Ubicación1 no encontrada");
+            }
+            ///////////
+            fetch(apiUrl2)//peticion ubicacion Destino
+            .then(response => response.json())
+            .then(dataU2 => {
+                if (dataU2 && dataU2.length > 0) {
+                const firstResult2 = dataU2[0];
+                latD= parseFloat(firstResult2.lat);
+                lonD = parseFloat(firstResult2.lon);
+                } else {
+                console.log("Ubicación2 no encontrada");
+                }
+                
+                distancia=getDistanceFromLatLonInKm (latO,lonO,latD,lonD);
+                
+                //Datos para la peticion huella carbono
+                const dataHC = {
+                    "type": "shipping",
+                    "weight_value": peso,
+                    "weight_unit": "g",
+                    "distance_value": distancia,
+                    "distance_unit": "km",
+                    "transport_method": `${transporte}`
+                };
+                  
+                const options = {
+                  method: 'POST',
+                  body: JSON.stringify(dataHC),
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer wxfLsXHV9f8w4hmXKSxA'
+                  }
+                };
+                const apiUrl = `https://www.carboninterface.com/api/v1/estimates`;
+        
+                fetch(apiUrl,options) //peticion huella carbono
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Huella de carbono: " + data.data.attributes.carbon_g)
+                    console.log("Vendedor: " + vendedor) 
+                    console.log("Producto: " + producto)
+
+                    res.json({"huellaCarbono" : data.data.attributes.carbon_g, "vendedor" : vendedor, "producto" : producto})
                 })  
                 .catch(error => {
                     console.error("Error en la solicitud de huella de carbono: " + error);

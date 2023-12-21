@@ -10,11 +10,13 @@ const CompShowDetallesProducto = () => {
     // Obtenemos el producto y el vendedor
     const [producto, setProducto] = useState({});
     const [vendedor, setVendedor] = useState({});
+    const [comprador, setComprador] = useState(null)
     const [mostrarValoracion, setMostrarValoracion] = useState(false)
     const [calidad, setCalidad] = useState(1)
     const [fiabilidad, setFiabilidad] = useState(1)
     const [valoracionComprador, setValoracionComprador] = useState(1)
     const [idUserMaxPuja, setIdUserMaxPuja] = useState()
+    const [precioEnvio, setPrecioEnvio] = useState()
 
     //CARRUSEL
     const [index, setIndex] = useState(0);
@@ -37,6 +39,9 @@ const CompShowDetallesProducto = () => {
             // Actualizar el estado con los productos obtenidos
             setProducto(data.producto);
             setIdUserMaxPuja(data.idUserMaxPuja)
+            if(data.comprador != null) {
+                setComprador(data.comprador)
+            }
 
             // Hacer la solicitud para obtener el vendedor
             return fetch(`http://localhost:3003/usuarios/${data.producto.vendedor}`);
@@ -51,7 +56,10 @@ const CompShowDetallesProducto = () => {
         });
     }, [idProducto]);
 
+    //SUBASTA CERRADA + YO HE HECHO LA MAX PUJA     +   NO HE PAGADO
+    if(producto.vendido && idUsuario == idUserMaxPuja && producto.comprador == null) {
 
+    }
     
     const [fotoNueva, setFotoNueva] = useState(null);
     
@@ -120,18 +128,8 @@ const CompShowDetallesProducto = () => {
 
     //---CANCELAR SUBASTA (BORRAR OBJETO)---
     const cancelarSubasta = () => {
-        fetch(`http://localhost:3001/productos/${idProducto}`, {
-            method: 'DELETE',
-        }).then(data => {
-            // Aquí puedes verificar si la eliminación fue exitosa antes de redirigir
-            if (data.success) {
-                // Utiliza navigate para redirigir a la nueva ruta después de la cancelación
-                navigate(`/productos/${idUsuario}`);
-            } else {
-                // Manejar el caso en que la eliminación no fue exitosa
-                console.error('Error al cancelar la subasta:', data.error);
-            }
-        })
+        navigate(`/borrarSubasta/${idProducto}/${idUsuario}`)
+        
     }
 
     //---CERRAR PUJA---
@@ -148,7 +146,8 @@ const CompShowDetallesProducto = () => {
             body: raw
         }).then(response => response.json())
         .then(data => {
-            setIdUserMaxPuja(data)
+            setIdUserMaxPuja(data.id)
+            setComprador(data.comprador)
         })
     }
 
@@ -349,7 +348,7 @@ const CompShowDetallesProducto = () => {
                                         {//--COMPRA--
                                         producto.vendido && idUsuario == idUserMaxPuja && (
                                         <div>
-                                            <h2>COMPRAR</h2>
+                                            <Link className='btn btn-secondary' to={`/pago/${idUsuario}/${idProducto}`}>Comprar</Link>
                                         </div>
                                         )}
 
@@ -398,7 +397,7 @@ const CompShowDetallesProducto = () => {
                                         : null
                                         }
                                         {//--Vendedor valora comprador--
-                                        idUsuario == producto.vendedor && !producto.valoracionComprador && producto.vendido ?
+                                        idUsuario == producto.vendedor && producto.comprador != null && !producto.valoracionComprador && producto.vendido ?
                                         <div>
                                             <button className="btn btn-secondary" onClick={() => setMostrarValoracion(true)}>
                                             Dejar Valoración
