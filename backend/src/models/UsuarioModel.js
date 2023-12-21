@@ -21,6 +21,16 @@ const userSchema = new mongoose.Schema({
     valoracionMedia: {
         type:Number,
         default: 0
+    },
+    correo: {
+        type: String,
+        unique: true
+    },
+    expiracionToken:{
+        type: Date
+    },
+    tokenId: {
+        type: String
     }
 },{ versionKey: false });
 

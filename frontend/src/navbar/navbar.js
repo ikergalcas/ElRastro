@@ -8,9 +8,30 @@ function NavbarPage(props) {
   const [nombreUsuario,setNombreUsuario]=useState([])
   useEffect(() => {
     if(idUsuario!=undefined){
+      comprobarConexion()
       getUsuario()
     } 
 }, []);
+
+const comprobarConexion = async () => {
+  fetch(`http://localhost:3003/usuarios/conexion/${idUsuario}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }).then(response => response.text())
+      .then(data => {
+            console.log(data)
+            if(data=="expired"){
+              
+              alert("Tu sesion ha expirado")
+              window.location.href = '/login'
+            }
+        })
+        .catch(error => {
+            console.error('Error al obtener productos:', error);
+        });
+}
 
 const getUsuario = async () => {
     // Hacer la solicitud para obtener productos desde el backend

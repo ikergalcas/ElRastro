@@ -1,6 +1,5 @@
 import Producto from "../models/ProductoModel.js";
 
-
 export const getAllComentarios = async (req, res) => {
     try {
         const {idProducto} = req.params

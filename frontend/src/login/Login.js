@@ -1,7 +1,6 @@
-
 import {useState, useEffect} from 'react'
-import { Link} from 'react-router-dom'
 import { useNavigate, useParams } from 'react-router-dom'
+import { jwtDecode } from 'jwt-decode';
 
 const CompLogin = () => {
     const[nombreUsuario,setNombreUsuario]=useState('')
@@ -38,7 +37,6 @@ const CompLogin = () => {
                 console.error('Error al obtener productos:', error);
             });
     }
-
     
     function miMetodo() {
         document.getElementById('formInicioSesion').style.display = 'none';
@@ -74,11 +72,57 @@ const CompLogin = () => {
         navigate(-1)
     }
 
+    function handleCallBackResponse (response){
+        console.log("Encode JWT: "+  response.credential)
+        fetch(`http://localhost:3003/usuarios/loginToken/${response.credential}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then(response => response.json())
+          .then(data => {
+                // Actualizar el estado con los productos obtenidos
+                if (data){
+                    alert("Nombre de usuario existente")
+                    window.location.href = `/productos/${data}`
+                }else{
+                    alert("Nombre de usuario incorrecto")
+                    window.location.href = '/login'
+                }
+            })
+            .catch(error => {
+                console.error('Error al obtener productos:', error);
+            });
+    }
+
+    function handleSingOut (e) {
+        google.accounts.id.signOut().then(function () {
+            console.log('User signed out.');
+            });
+    }
+
+
+    useEffect (() => {
+        /* global google */
+        google.accounts.id.initialize({
+            client_id: "1052996471072-3kmbovt9r51s48npcmqenmt0pd3qu3ip.apps.googleusercontent.com",
+            callback: handleCallBackResponse
+        });
+
+        google.accounts.id.renderButton(
+            document.getElementById("singInDiv"),
+            {theme: "outline", size:"large"}
+
+        );
+    }, []);
+
     return (
         <div className="container">
-                <button onClick={volverAtras} className='btn btn-secondary mt-2'> Volver atrás</button>
-                <img src='http://res.cloudinary.com/dten77l85/image/upload/v1702032986/ebo5yzb1nfkgr57wqct5.jpg' 
+            <button onClick={volverAtras} className='btn btn-secondary mt-2'> Volver atrás</button>
+            <img src='http://res.cloudinary.com/dten77l85/image/upload/v1702032986/ebo5yzb1nfkgr57wqct5.jpg' 
                      style={{display : 'block', height: '60vmin' , width: '100%'}}></img>
+            
+            <div id='singInDiv'></div>
 
             <form id="formInicioSesion" onSubmit={comprobarCredenciales} style={{display: 'block'}}>
                 <a>Nombre de usuario:</a><br/>
