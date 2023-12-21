@@ -37,6 +37,8 @@ const CompEditProducto = () => {
 
     const [descripcion, setDescripcion] = useState('')
     const [ubicacion, setUbicacion] = useState('')
+    const [fechaCierre, setFechaCierre] = useState()
+    const [precio, setPrecio] = useState()
 
     const volverAtras = (e) => {
         e.preventDefault()
@@ -46,6 +48,20 @@ const CompEditProducto = () => {
     const editar = async (e) => {
         e.preventDefault();
 
+        var raw = JSON.stringify({
+            descripcion: descripcion,
+            ubicacion: ubicacion,
+        })
+
+        if (producto.pujas && producto.pujas.length === 0) {
+            // Agregar campos adicionales si se cumple la condición
+            raw = {
+                ...raw,
+                precio: precio,
+                fechaCierre: fechaCierre,
+            };
+        }
+
         try {
             // Hacer la solicitud PUT al backend
             const response = await fetch(`http://localhost:3001/productos/${idProducto}`, {
@@ -53,10 +69,8 @@ const CompEditProducto = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    descripcion: descripcion,
-                    ubicacion: ubicacion,
-                }),
+                body: raw
+                ,
             });
 
             if (response.ok) {
@@ -77,6 +91,7 @@ const CompEditProducto = () => {
             <div className="container">
                 <div id="parte1" className="formularioCrear">
                     <h2>Editar {producto.titulo}</h2>
+
                     <form onSubmit={editar} id="formularioParte1">
                         <a>Descripción</a>
                         <input
@@ -88,6 +103,7 @@ const CompEditProducto = () => {
                         aria-label="Ingrese la nueva descripcion"
                         />
                         <br/>
+
                         <a>Ubicación</a>
                         <input
                         id="ubicacion"
@@ -97,6 +113,32 @@ const CompEditProducto = () => {
                         className="form-control"
                         aria-label="Ingrese la nueva ubicacion del objeto"
                         />
+                        <br/>
+                        {producto.pujas && producto.pujas.length == 0 && (
+                        <div>
+                            <a>Precio inicial</a>
+                            <input
+                            id="precio"
+                            value={precio}
+                            onChange={ (e) => setPrecio(e.target.value)}
+                            type="number"
+                            className="form-control"
+                            aria-label="Ingrese el precio inicial de la subasta"
+                            />
+                            <br/>
+
+                            <a>Fecha de cierre</a>
+                            <input
+                            id="fechaCierre"
+                            value={fechaCierre}
+                            onChange={ (e) => setFechaCierre(e.target.value)}
+                            type="date"
+                            className="form-control"
+                            aria-label="Ingrese la fecha de cierre de la subasta"
+                            />
+                            <br/>
+                        </div>   
+                        )}
                         <button type="submit" className='btn btn-outline-secondary  mt-4'>Guardar</button> <br/>
                         <button onClick={volverAtras} className='btn btn-secondary mt-2'> Volver atrás</button>
                     </form>

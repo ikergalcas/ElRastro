@@ -15,16 +15,20 @@ export const cerrarPuja = async (req, res) => {
         }
 
         var user = -1
-            for(const puja of producto.pujas) {
-                if(puja.precio === producto.maximaPuja) {
-                    user = puja.usuario
-                }
-            }
 
-            //ASIGNAMOS EL CAMPO COMPRADOR Y PONEMOS VENDIDO A TRUE
-            //Con new: true hago que devuelva el objeto actualizado y de esta manera lo devuelvo en el res.json
-            var actualizado = await Producto.findByIdAndUpdate(idProducto, { comprador: user, vendido: true }, { new: true })
-            res.json(actualizado)
+        //Conseguimos el id del usuario con la mayor puja
+        for(const puja of producto.pujas) {
+            if(puja.precio === producto.maximaPuja) {
+                user = puja.usuario
+            }
+        }
+        
+        console.log("CIERRE DE PUJA: " + user)
+
+        //ASIGNAMOS EL CAMPO COMPRADOR Y PONEMOS VENDIDO A TRUE
+        //Con new: true hago que devuelva el objeto actualizado y de esta manera lo devuelvo en el res.json
+        var actualizado = await Producto.findByIdAndUpdate(idProducto, { vendido: true }, { new: true })
+        res.json(user)
 
     } catch (error) {
         console.log("error al cerrar puja")
@@ -47,25 +51,24 @@ export const checkeo = async (req, res) => {
             return res.status(500).json({ message: 'Error al cerrar la puja', error: 'No se pudo actualizar el producto' });
         }
 
-        if(Date.now() > producto.fechaCierre && !producto.vendido) {
-            var user = -1
-            
-            for(const puja of producto.pujas) {
-                console.log("entra en bucle")
-                if(puja.precio === producto.maximaPuja) {
-                    console.log("entra en if [precio, max]:" + puja.precio + " " + producto.maximaPuja)
-                    user = puja.usuario
-                }
+        var user = -1
+        //Conseguimos el id del usuario con la mayor puja
+        for(const puja of producto.pujas) {
+            if(puja.precio === producto.maximaPuja) {
+                user = puja.usuario
             }
+        }
 
-            console.log("Despues bucle, comprador: " + user)
-            //ASIGNAMOS EL CAMPO COMPRADOR Y PONEMOS VENDIDO A TRUE
+        if(Date.now() > producto.fechaCierre && !producto.vendido) {
+            console.log("Id user: " + user)
+
+            //ASIGNAMOS PONEMOS VENDIDO A TRUE
             //Con new: true hago que devuelva el objeto actualizado y de esta manera lo devuelvo en el res.json
-            var actualizado = await Producto.findByIdAndUpdate(idProducto, { comprador: user, vendido: true }, { new: true })
+            var actualizado = await Producto.findByIdAndUpdate(idProducto, { vendido: true }, { new: true })
             console.log("Producto vendido: " + actualizado)
-            res.json(actualizado)
+            res.json({producto : actualizado, idUserMaxPuja : user})
         } else {
-            res.json(producto)
+            res.json({producto : producto, idUserMaxPuja : user})
         }
 
     } catch (error) {

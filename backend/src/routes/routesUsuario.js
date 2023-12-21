@@ -14,6 +14,10 @@ import { getAllUsuarios, createUsuario, editUsuario, deleteUsuario,getUsuarioNom
 
 import { getPujasUsuario } from '../controllers/PujaController.js'
 
+//----NUEVO - TEMPORAL----//
+import { verificarConexion, verificarTokenGoogle } from '../controllers/LoginController.js';
+//----NUEVO - TEMPORAL----//
+
 const routerUsuario = express.Router()
 
 routerUsuario.get('/', getAllUsuarios)
@@ -30,6 +34,11 @@ routerUsuario.post('/:idUsuario/precioProductos/:filtro',getProductosUsuarioPrec
 routerUsuario.post('/:idUsuario/descripcionPrecioProductos/:filtro',getProductosUsuarioDescripcionPrecioMax)
 routerUsuario.get('/ubi/:idUsuario', getUbiUsuario)
 routerUsuario.post('/compradores',getCompradores)
+
+//----NUEVO - TEMPORAL----//
+routerUsuario.get('/loginToken/:token', verificarTokenGoogle)
+routerUsuario.get('/conexion/:tokenId/:token',verificarConexion)
+//----NUEVO - TEMPORAL----//
 
 routerUsuario.post('/subirFoto', upload.single('foto'), async (req, res) => {
     try {

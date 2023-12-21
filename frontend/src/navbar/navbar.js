@@ -5,32 +5,47 @@ import React, { useState, useEffect } from 'react';
 
 function NavbarPage(props) {
   const {idUsuario} = useParams()
-  const [nombreUsuario,setNombreUsuario]=useState([])
-  useEffect(() => {
-    if(idUsuario!=undefined){
-      getUsuario()
-    } 
-}, []);
+  const [nombreUsuario,setNombreUsuario]=useState('')
+  const [foto,setFoto]=useState('')
 
-const getUsuario = async () => {
-    // Hacer la solicitud para obtener productos desde el backend
-    fetch(`http://localhost:3003/usuarios/${idUsuario}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    }).then(response => response.json())
-      .then(data => {
-            // Actualizar el estado con los productos obtenidos
-            setNombreUsuario(data.username);
-            console.log(data);
-        })
-        .catch(error => {
-            console.error('Error al obtener productos:', error);
-        });
+  useEffect(() => {
+    if(localStorage.getItem('objetoToken')!=undefined){
+      comprobarConexion() ///AJUSTAR A ESTE PROYECTO
+      setNombreUsuario(JSON.parse(localStorage.getItem('objetoToken')).correo)
+      setFoto(JSON.parse(localStorage.getItem('objetoToken')).foto)
+    } 
+  }, []);
+
+
+  const comprobarConexion = async () => {
+    fetch(`http://localhost:3003/usuarios/conexion/${JSON.parse(localStorage.getItem('objetoToken')).tokenId}/${JSON.parse(localStorage.getItem('objetoToken')).tokenCompleto}`, {  
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+    }).then(res => res.json())
+    .then(data => {
+      console.log(data)
+      if(data=="expired" || data=="invalid token"){
+        localStorage.clear()
+        alert("Tu sesion ha expirado")
+        window.location.href = '/login'
+      }
+
+    })
+    .catch(error => {
+        console.error('Error al obtener productos:', error);
+    });
+  }
+
+function cerrarSesion () {
+  console.log("en Cerrar sesion")
+  localStorage.clear();
+      // Redirige a show productos pero sin sesion iniciada
+  window.location.href = '/';
 }
 
-    return (
+  return (
     (idUsuario != undefined) ?
     (<Navbar expand="lg" className="navbar">
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -43,25 +58,26 @@ const getUsuario = async () => {
         </Nav>
         <NavItem>{nombreUsuario}</NavItem>
         <Nav>
-            <NavDropdown drop='start' className='me-3' title={<img src={fotoUser} style={{ width: '6vh', borderRadius: '50%' }} alt="" />} id="basic-nav-dropdown">
+            <NavDropdown drop='start' className='me-3' title={<img src={foto} style={{ width: '6vh', borderRadius: '50%' }} alt="" />} id="basic-nav-dropdown">
             <NavDropdown.Item href={`/myUserInfo/${idUsuario}`}>Ver mi perfil</NavDropdown.Item>
             <NavDropdown.Divider />
-            <NavDropdown.Item href="/">Cerrar sesión</NavDropdown.Item>
+            <NavDropdown.Item href="/" onClick={cerrarSesion} >Cerrar sesión</NavDropdown.Item>
           </NavDropdown>
         </Nav>
       </Navbar.Collapse>
     </Navbar>) : 
+    
     (<Navbar expand="lg" className="navbar">
-    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-    <Navbar.Collapse id="basic-navbar-nav" className='navbar-collapse'>
-      <Nav className="me-auto">
-        <Nav.Link href={`/`} className='navbar-link' style={{marginLeft: '10vmin'}}> Home
-        </Nav.Link>
-        <Nav.Link href={`/login`} className='navbar-link' style={{marginLeft: '10vmin'}}> Inicio de sesion
-        </Nav.Link>
-      </Nav>
-    </Navbar.Collapse>
-  </Navbar>));
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Collapse id="basic-navbar-nav" className='navbar-collapse'>
+        <Nav className="me-auto">
+          <Nav.Link href={`/`} className='navbar-link' style={{marginLeft: '10vmin'}}> Home
+          </Nav.Link>
+          <Nav.Link href={`/login`} className='navbar-link' style={{marginLeft: '10vmin'}}> Inicio de sesion
+          </Nav.Link>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>));
   }
 
   export default NavbarPage;

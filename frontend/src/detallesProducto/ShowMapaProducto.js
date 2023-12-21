@@ -1,10 +1,6 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import L from 'leaflet';
-//import 'bootstrap/dist/css/bootstrap.min.css';
-//import { GeoAltFill } from 'react-bootstrap-icons'; 
 
 const CompShowMapaProducto = () => {
     const { idProducto } = useParams();
