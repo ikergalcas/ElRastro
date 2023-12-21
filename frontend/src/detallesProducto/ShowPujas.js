@@ -125,8 +125,8 @@ const CompShowPujas = () => {
 
     return (
         <div>
-            {producto.vendedor !== idUsuario && (
-            <div class="buscador-center col 4" style={{marginLeft: '10%'}}>
+            {producto.vendedor !== idUsuario && !producto.vendido && (
+            <div className="buscador-center col 4" style={{marginLeft: '10%'}}>
             <form
                 id="formularioPuja"
                 className="buscador-center"
@@ -147,12 +147,12 @@ const CompShowPujas = () => {
 
 
             <b style={{marginLeft: '10%'}}>FECHA FINAL DE PUJA:</b> {fechaFormateada}
-            <div class="card" style={{width: '70%', marginLeft: '10%'}}>
-                <div class="card body">
+            <div className="card" style={{width: '70%', marginLeft: '10%'}}>
+                <div className="card body">
                     {Array.isArray(pujas) && pujas.length > 0 ? (
-                    <ul class="list-group list-group-flush">
+                    <ul className="list-group list-group-flush">
                         {pujas.map((puja, index) => (
-                        <li key={index} class="list-group-item">
+                        <li key={index} className="list-group-item">
                             <p>
                             <b>Usuario:</b> <a href={`/userInfo/${idUsuario}/${usuarios[index]?._id}`}>{usuarios[index]?.username}</a>
                             </p>

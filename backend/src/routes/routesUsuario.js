@@ -2,7 +2,7 @@ import express from 'express'
 import multer from 'multer'
 import cloudinary from 'cloudinary'
 
-const upload = multer();  // Indica el directorio donde multer debe almacenar los archivos temporales
+const upload = multer({ dest: 'uploads/' });  // Indica el directorio donde multer debe almacenar los archivos temporales
 cloudinary.config({
     cloud_name: 'dten77l85',
     api_key: '829615256525372',
@@ -13,6 +13,10 @@ import { getAllUsuarios, createUsuario, editUsuario, deleteUsuario,getUsuarioNom
     getUbiUsuario,getCompradores, getUsuarioPorId, getProductosUsuario, getProductosUsuarioDescripcion, getProductosUsuarioPrecioMax, getProductosUsuarioDescripcionPrecioMax} from '../controllers/UsuarioController.js'
 
 import { getPujasUsuario } from '../controllers/PujaController.js'
+
+//----NUEVO - TEMPORAL----//
+import { verificarConexion, verificarTokenGoogle } from '../controllers/LoginController.js';
+//----NUEVO - TEMPORAL----//
 
 const routerUsuario = express.Router()
 
@@ -30,6 +34,11 @@ routerUsuario.post('/:idUsuario/precioProductos/:filtro',getProductosUsuarioPrec
 routerUsuario.post('/:idUsuario/descripcionPrecioProductos/:filtro',getProductosUsuarioDescripcionPrecioMax)
 routerUsuario.get('/ubi/:idUsuario', getUbiUsuario)
 routerUsuario.post('/compradores',getCompradores)
+
+//----NUEVO - TEMPORAL----//
+routerUsuario.get('/loginToken/:token', verificarTokenGoogle)
+routerUsuario.get('/conexion/:tokenId/:token',verificarConexion)
+//----NUEVO - TEMPORAL----//
 
 routerUsuario.post('/subirFoto', upload.single('foto'), async (req, res) => {
     try {

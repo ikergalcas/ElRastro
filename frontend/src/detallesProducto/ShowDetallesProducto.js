@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Carousel, CarouselItem, CarouselControl, CarouselIndicators, CarouselCaption } from 'react-bootstrap';
 
 
 const CompShowDetallesProducto = () => {
     const {idUsuario, idProducto} = useParams()
+    const navigate = useNavigate()
 
     // Obtenemos el producto y el vendedor
     const [producto, setProducto] = useState({});
     const [vendedor, setVendedor] = useState({});
+    const [comprador, setComprador] = useState(null)
     const [mostrarValoracion, setMostrarValoracion] = useState(false)
     const [calidad, setCalidad] = useState(1)
     const [fiabilidad, setFiabilidad] = useState(1)
     const [valoracionComprador, setValoracionComprador] = useState(1)
+    const [idUserMaxPuja, setIdUserMaxPuja] = useState()
+    const [precioEnvio, setPrecioEnvio] = useState()
 
     //CARRUSEL
     const [index, setIndex] = useState(0);
@@ -33,10 +37,14 @@ const CompShowDetallesProducto = () => {
         }).then(response => response.json())
         .then(data => {
             // Actualizar el estado con los productos obtenidos
-            setProducto(data);
+            setProducto(data.producto);
+            setIdUserMaxPuja(data.idUserMaxPuja)
+            if(data.comprador != null) {
+                setComprador(data.comprador)
+            }
 
             // Hacer la solicitud para obtener el vendedor
-            return fetch(`http://localhost:3003/usuarios/${data.vendedor}`);
+            return fetch(`http://localhost:3003/usuarios/${data.producto.vendedor}`);
         })
         .then(response => response.json())
         .then(data => {
@@ -48,7 +56,10 @@ const CompShowDetallesProducto = () => {
         });
     }, [idProducto]);
 
+    //SUBASTA CERRADA + YO HE HECHO LA MAX PUJA     +   NO HE PAGADO
+    if(producto.vendido && idUsuario == idUserMaxPuja && producto.comprador == null) {
 
+    }
     
     const [fotoNueva, setFotoNueva] = useState(null);
     
@@ -114,6 +125,13 @@ const CompShowDetallesProducto = () => {
         })
     }
     
+
+    //---CANCELAR SUBASTA (BORRAR OBJETO)---
+    const cancelarSubasta = () => {
+        navigate(`/borrarSubasta/${idProducto}/${idUsuario}`)
+        
+    }
+
     //---CERRAR PUJA---
     const cerrarPuja = () => {
         var raw = JSON.stringify({
@@ -126,8 +144,13 @@ const CompShowDetallesProducto = () => {
                 'Content-Type': 'application/json',
             },
             body: raw
+        }).then(response => response.json())
+        .then(data => {
+            setIdUserMaxPuja(data.id)
+            setComprador(data.comprador)
         })
     }
+
 
     const subirFotoIdentificativa = async(e) => {
         e.preventDefault()
@@ -263,8 +286,15 @@ const CompShowDetallesProducto = () => {
                             <div className='card text-center mt-3'>
                                 <div className='card-body'>
                                     <h3 className='card-title'>
-                                        {/* PROVISIONAL VISTA USUARIO*/}
-                                        <Link to={`/vistaUser/${vendedor._id}`} >{vendedor.username}</Link>
+                                        {/* ACCEDER A MI PROPIO PERFIL */
+                                        idUsuario == vendedor._id ?
+                                        <Link to={`/myUserInfo/${idUsuario}`} >{vendedor.username}</Link>
+
+                                        /* ACCEDER A PERFIL AJENO */
+                                        :
+                                        <Link to={`/userInfo/${idUsuario}/${vendedor._id}`} >{vendedor.username}</Link>
+                                        }
+                                        
                                     </h3>
                                     Valoracion
                                         { /* Mostrar estrellas según la valoracionMedia */
@@ -279,11 +309,16 @@ const CompShowDetallesProducto = () => {
                 </div>
                 <div className='col 8'>
                     <div className='row'>
-                        <div className='col 6'>
+                        <div className='col 2'>
                             <h3 className='card-title'>
                                 Producto: {producto.titulo}
                             </h3>
                         </div>
+                        {producto.vendido && (
+                        <div className='col 2'>
+                            <h3 className='card-title'>VENDIDO</h3>
+                        </div>
+                        )}
                         <div className='col 2'>
                             <h3 className='card-title'>Puja mas alta: {producto.maximaPuja}</h3>
                         </div>
@@ -295,7 +330,8 @@ const CompShowDetallesProducto = () => {
                                     <h6 className='card-title'>
                                         {producto.descripcion} <br/> <br/>
                                         Ubicación: {producto.ubicacion} <br/>  <br/>
-                                        Precio Inicial: {producto.precioInicial}
+                                        Precio Inicial: {producto.precioInicial} <br/> <br/>
+                                        Fecha de cierre: {new Date(producto.fechaCierre).toLocaleString()}
                                     </h6>
                                 </div>
                                 <div className='row'>
@@ -309,6 +345,13 @@ const CompShowDetallesProducto = () => {
                                         }
                                     </div>
                                     <div className='col'>
+                                        {//--COMPRA--
+                                        producto.vendido && idUsuario == idUserMaxPuja && (
+                                        <div>
+                                            <Link className='btn btn-secondary' to={`/pago/${idUsuario}/${idProducto}`}>Comprar</Link>
+                                        </div>
+                                        )}
+
                                         {//--VALORACION--
                                         //----------------Comprador Valora Vendedor----------------
                                         idUsuario == producto.comprador && !producto.valoracionVendedor ?
@@ -354,7 +397,7 @@ const CompShowDetallesProducto = () => {
                                         : null
                                         }
                                         {//--Vendedor valora comprador--
-                                        idUsuario == producto.vendedor && !producto.valoracionComprador && producto.vendido ?
+                                        idUsuario == producto.vendedor && producto.comprador != null && !producto.valoracionComprador && producto.vendido ?
                                         <div>
                                             <button className="btn btn-secondary" onClick={() => setMostrarValoracion(true)}>
                                             Dejar Valoración
@@ -387,12 +430,20 @@ const CompShowDetallesProducto = () => {
                                         }
                                     </div>
                                     <div className='col'>
-                                        {//---Cerrar Puja
-                                        idUsuario == producto.vendedor && !producto.vendido ? 
+                                        {//---Cancelar Subasta---//
+                                        //Puedo cancelar la subasta si soy el vendedor y no tiene pujas
+                                        idUsuario == producto.vendedor && producto.pujas && producto.pujas.length == 0 && (
+                                            <form onSubmit={cancelarSubasta}>
+                                                <button className='btn btn-secondary' type='submit'>Cancelar Subasta</button>
+                                            </form>
+                                        )}
+                                        {//---Cerrar Puja--//
+                                        //Puedo cerrar puja si soy el vendedor, no esta vendido y tiene pujas
+                                        idUsuario == producto.vendedor && !producto.vendido && 
+                                        producto.pujas && producto.pujas.length > 0 && ( 
                                         <form onSubmit={cerrarPuja}>
                                             <button className='btn btn-secondary' type='submit'>Cerrar Puja</button>
-                                        </form>
-                                        : null
+                                        </form>)
                                         }
                                     </div>
                                 </div>
