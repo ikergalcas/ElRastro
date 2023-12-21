@@ -9,7 +9,6 @@ const CompPago = () => {
     const [huellaCarbono, setHuellaCarbono] = useState()
     const [vendedor, setVendedor] = useState()
     const [producto, setProducto] = useState(null)
-    const [checkout, setCheckOut] = useState(false)
     
     useEffect(() => {
         getDatos()
@@ -68,17 +67,15 @@ const CompPago = () => {
     }
 
     return(
-        producto && (
         <div>
             <h1>PAGAME HIJUEPUTA</h1> <br/>
-            <h3>Huella carbono {/*huellaCarbono && huellaCarbono*/}</h3> <br/>
+            <h3>Huella carbono (esta comentado) {/*huellaCarbono && huellaCarbono*/}</h3> <br/>
             <h3>Vendedor {vendedor && vendedor.username}</h3> <br></br>
             <h3>Producto {producto && producto.titulo}</h3>
             <div style={{borderWidth: "6px", borderColor: "green"}}>
                 <div ref={paypal}></div>
             </div>
         </div>
-        )
     )
 }
 
