@@ -14,6 +14,8 @@ import MyUserInfo from "./usuario/MyUserInfo.js"
 import CrearProdcuto from './pages/CrearProducto.jsx'
 import CompEditProducto from './detallesProducto/EditProducto.js';
 import EditarPerfil from './usuario/EditarPerfil.js'
+import CompBorrarSubasta from './detallesProducto/BorrarSubasta.js';
+import CompPago from './pago/Pago.js';
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
           <Route path="/userInfo/:idUsuario/:idUsuarioAjeno" element={<UserInfo/>}/>
           <Route path="/myUserInfo/:idUsuario" element={<MyUserInfo/>}/>
           <Route path="/editarPerfil/:idUsuario" element={<EditarPerfil/>}/>
+          <Route path='/borrarSubasta/:idProducto/:idUsuario' element={<CompBorrarSubasta/>}/>
+          <Route path='/pago/:idComprador/:idProducto' element={<CompPago/>}/>
 
         </Routes>
       </BrowserRouter>

@@ -7,7 +7,7 @@ import cors from 'cors';
 
 const app = express()
 
-app.use(morgan('dev2'))  //Si hacemos un get esto nos lo mostrara por el terminal
+app.use(morgan('Consulta a producto'))  //Si hacemos un get esto nos lo mostrara por el terminal
 app.use(express.json()) //Esto es para convertir los req.body en formato json
 app.use(cors())
 app.options('/productos/subirFoto', cors());
