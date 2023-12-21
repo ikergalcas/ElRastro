@@ -48,18 +48,19 @@ const CompEditProducto = () => {
     const editar = async (e) => {
         e.preventDefault();
 
-        var raw = JSON.stringify({
-            descripcion: descripcion,
-            ubicacion: ubicacion,
-        })
-
         if (producto.pujas && producto.pujas.length === 0) {
             // Agregar campos adicionales si se cumple la condición
-            raw = {
-                ...raw,
+            var raw = {
+                descripcion: descripcion,
+                ubicacion: ubicacion,
                 precio: precio,
                 fechaCierre: fechaCierre,
             };
+        } else {
+            var raw = JSON.stringify({
+                descripcion: descripcion,
+                ubicacion: ubicacion,
+            })
         }
 
         try {

@@ -7,6 +7,8 @@ export const verificarTokenGoogle = async (req, res) => {
         var userObjetct = jwtDecode(token)
         var epochExpire = userObjetct.exp
 
+        const user = (await Usuario.findOne({correo: userObjetct.email}));
+
         let data ={
             "correo": userObjetct.email,
             "expiracionToken": new Date((epochExpire+3600)*1000),
@@ -14,20 +16,31 @@ export const verificarTokenGoogle = async (req, res) => {
             "foto": userObjetct.picture
         };
 
-        console.log("Correo: " + data.correo)
-        let user = await Usuario.findOne({ username : data.correo })
+        if(user != null) {
+            res.json({token : data, idUser : user._id})
+        } else {
+            //REGISTRO USUARIO NUEVO
+            var username= userObjetct.name;
+            var correo= userObjetct.email;
+            var expiracionToken =new Date((epochExpire+3600)*1000);
+            var tokenId = userObjetct.jti;
 
-        console.log("Usuario registrado: " + user)
-        console.log("Id del usuario: " + user._id)
+            const newUser = new Usuario({
+                username,
+                correo
+            })
+    
+            await newUser.save()
+    
+            res.send({token : data, idUser : newUser._id})
+        }
 
-        //CODIGO MARTA 
-        //res.json(data)
-        res.json({token : data, idUser : user._id})
     } catch (error) {
         console.log('Error en la verificacion ', error)
         res.status(500).json({ message: 'Error al verificar el token' })
     }
 };
+
 
 export const verificarConexion = async (req, res) => {
     try {
@@ -41,7 +54,7 @@ export const verificarConexion = async (req, res) => {
         console.log(fechaActual)
 
         if(tokenId == userObjetct.jti){
-            if( epochExpire < fechaActual){
+            if(epochExpire < fechaActual){
                 res.send("expired");
             }else{
                 res.send("ok");

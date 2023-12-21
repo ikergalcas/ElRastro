@@ -28,17 +28,15 @@ const CompPago = () => {
             console.log(data.producto)
             console.log(data.vendedor)
             console.log(data.huellaCarbono)
-            alert("QUIERO PARAO")
         })
     }, [])    
 
     return(
         <div>
             <h1>PAGAME HIJUEPUTA</h1> <br/>
-
-            <h3>Huella carbono {huellaCarbono}</h3> <br/>
-            <h3>Vendedor {vendedor.username}</h3> <br></br>
-            <h3>Producto {producto.titulo}</h3>
+            <h3>Huella carbono {huellaCarbono && huellaCarbono}</h3> <br/>
+            <h3>Vendedor {vendedor && vendedor.username}</h3> <br></br>
+            <h3>Producto {producto && producto.titulo}</h3>
         </div>
     )
 }

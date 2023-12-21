@@ -3,7 +3,7 @@ import { redirect, useNavigate, useParams } from 'react-router-dom'
 import fotoUser from "../imagenes/usuario.jpg"
 import React, { useState, useEffect } from 'react';
 
-function NavbarPage(props) {
+function NavbarPage() {
   const {idUsuario} = useParams()
   const [nombreUsuario,setNombreUsuario]=useState('')
   const [foto,setFoto]=useState('')
