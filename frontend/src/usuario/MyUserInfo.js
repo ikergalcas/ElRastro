@@ -145,8 +145,7 @@ const CompEditUser = () => {
                             
                             <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/comprados`} className='btn btn-outline-secondary mt-2'>Productos comprados</a>
                         
-                            <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/pendientes`} className='btn btn-outline-secondary mt-2'>Productos pendientes de pago ({pendientes})</a>
-                            
+                            <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/pendientes`} className='btn btn-outline-secondary mt-2'>Productos pendientes de pago ({pendientes})</a> 
                         </div> 
                     </div>
                     <div className='col-4'>

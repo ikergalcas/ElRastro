@@ -64,10 +64,24 @@ const CompLogin = () => {
 
 
     return (
-        <div className="container mt-5">
-            <div className='row'>
-                <div className='col'>
-                    <div id='singInDiv'></div>
+        <div class="limiter">
+            <div class="container-login100">
+                <div class="wrap-login100">
+                    <form class="login100-form validate-form">
+                        <span class="login100-form-title p-b-26">
+                            Bienvenid@ a ElRastro
+                        </span>
+                        <span class="login100-form-title p-b-48">
+                            <img src="./favicon.ico" alt="Tu icono" class="login100-form-title-icon"></img>
+                        </span>
+                        {/* <span class="login100-form-title p-b-48">
+                            <i class="zmdi zmdi-font"></i>
+                        </span> */}
+
+                        <div class="container-login100-form-btn">
+                            <div id='singInDiv'></div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
