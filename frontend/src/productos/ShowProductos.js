@@ -3,9 +3,13 @@ import { Link } from 'react-router-dom';
 import { useNavigate, useParams } from 'react-router-dom'
 
 const ShowProductos = () => {
-
-    const [productos, setProductos] = useState([]);
     const {idUsuario} = useParams()
+    const [productos, setProductos] = useState([]);
+    const [mostrarFormulario, setMostrarFormulario] = useState(false)
+    const [busqueda, setBusqueda] = useState('');
+    const [precioMax, setPrecioMax] = useState('');
+
+
     useEffect(() => {
         getProductos()
     }, []);
@@ -28,8 +32,7 @@ const ShowProductos = () => {
             });
     }
 
-    const [busqueda, setBusqueda] = useState('');
-    const [precioMax, setPrecioMax] = useState('');
+    
     const buscarProductos = async (e) => {
         e.preventDefault()
 
@@ -110,19 +113,34 @@ const ShowProductos = () => {
         getProductos()
     }
 
+    //Si se esta mostrando lo quito y viceversa
+    const toggleMostrarFormulario = () => {
+        setMostrarFormulario(!mostrarFormulario)
+    }
 
 return(
     <div>
         <div className="row"> 
             <div class="buscador col 4">
-                <form class="buscador" onSubmit={buscarProductos}>
-                    <input value={precioMax} className="barrabusqueda col 1" 
-                        onChange={(e) => setPrecioMax(e.target.value)} type="number" placeholder="Precio maximo" />
-                    <input value={busqueda} className="barrabusqueda col 1" 
-                        onChange={(e) => setBusqueda(e.target.value)} type="string" placeholder="Busca aquí ..." />
-                    <button class="botonBusqueda col 1" type="submit" >Buscar</button>
-                    <button onClick={limpiarSeleccion} className="btn btn-outline-dark btn-sm col 1" >Limpiar</button>
-                </form>
+                <div className='row'>
+                    <div className='col-1-'>
+                        <button onClick={toggleMostrarFormulario} 
+                            className='btn btn-outline-dark btn-sm col-1'
+                            style={{ height: '30px', width: '100px'}}>
+                                { mostrarFormulario ? "Ocultar filtro" : "Mostrar filtro" }
+                        </button>
+                        {mostrarFormulario && (
+                        <form class="buscador" onSubmit={buscarProductos}>
+                            <input value={precioMax} className="barrabusqueda col 1" 
+                                onChange={(e) => setPrecioMax(e.target.value)} type="number" placeholder="Precio maximo" />
+                            <input value={busqueda} className="barrabusqueda col 1" 
+                                onChange={(e) => setBusqueda(e.target.value)} type="string" placeholder="Busca aquí ..." />
+                            <button class="botonBusqueda col 1" type="submit" >Buscar</button>
+                            <button onClick={limpiarSeleccion} className="btn btn-outline-dark btn-sm col 1" >Limpiar</button>
+                        </form>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
 

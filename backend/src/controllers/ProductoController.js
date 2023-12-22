@@ -506,7 +506,7 @@ export const getHuellaCarbonoNuevo = async (req, res) => {
         const vendedor = await Usuario.findById(producto.vendedor)
 
 
-        var latO;
+/*        var latO;
         var lonO;
         var latD;
         var lonD;
@@ -579,7 +579,8 @@ export const getHuellaCarbonoNuevo = async (req, res) => {
         })
         .catch(error => {
             console.error("Error en la solicitud de geocodificación2: " + error);
-        });
+        });*/
+        res.json({"vendedor" : vendedor, "producto": producto})
 
     } catch (error) {
         
