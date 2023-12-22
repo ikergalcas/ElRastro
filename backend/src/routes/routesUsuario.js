@@ -14,8 +14,6 @@ import { getAllUsuarios, createUsuario, editUsuario, deleteUsuario,getUsuarioNom
     getUbiUsuario,getCompradores, getUsuarioPorId, getProductosUsuario, getProductosUsuarioDescripcion, getProductosUsuarioPrecioMax, getProductosUsuarioDescripcionPrecioMax} from '../controllers/UsuarioController.js'
 
 import { getPujasUsuario } from '../controllers/PujaController.js'
-import {verificarTokenGoogle, verificarConexion } from '../controllers/GoogleLogin.js'
-
 //----NUEVO - TEMPORAL----//
 import { verificarConexion, verificarTokenGoogle } from '../controllers/LoginController.js';
 //----NUEVO - TEMPORAL----//

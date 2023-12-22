@@ -59,7 +59,7 @@ const CompEditProducto = () => {
         } else {
             var raw = JSON.stringify({
                 descripcion: descripcion,
-                ubicacion: ubicacion,
+                ubicacion: ubicacion
             })
         }
 

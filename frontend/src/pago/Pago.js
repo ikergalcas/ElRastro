@@ -72,9 +72,7 @@ const CompPago = () => {
             <h3>Huella carbono (esta comentado) {/*huellaCarbono && huellaCarbono*/}</h3> <br/>
             <h3>Vendedor {vendedor && vendedor.username}</h3> <br></br>
             <h3>Producto {producto && producto.titulo}</h3>
-            <div style={{borderWidth: "6px", borderColor: "green"}}>
-                <div ref={paypal}></div>
-            </div>
+            <div ref={paypal}></div>
         </div>
     )
 }

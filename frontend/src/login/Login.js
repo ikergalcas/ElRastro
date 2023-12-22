@@ -1,6 +1,5 @@
 import {useState, useEffect} from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { jwtDecode } from 'jwt-decode';
 
 const CompLogin = () => {
     const navigate = useNavigate()
