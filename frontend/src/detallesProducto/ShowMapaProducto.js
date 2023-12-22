@@ -5,17 +5,17 @@ import { useParams } from 'react-router-dom';
 const CompShowMapaProducto = () => {
     const { idProducto } = useParams();
 
-    const [geo, setGeo] = useState({});
+    const [producto, setProducto] = useState({});
     const [position, setPosition] = useState([0, 0]);
 
-    //Consulta para obtener la geolocalizacion del producto
+    // En posiciton almaceno la geolocalizacion del producto
     useEffect(() => {
-        fetch(`http://localhost:3001/productos/${idProducto}/ubicacion`)
+        fetch(`http://localhost:3001/productos/${idProducto}`)
             .then(response => response.json())
             .then(data => {
-                setGeo(data);
-                if (data.latitude && data.longitude) {
-                    setPosition([data.latitude, data.longitude]);
+                setProducto(data);
+                if (data.lat && data.lon) {
+                    setPosition([data.lat, data.lon]);
                 }
             })
             .catch(error => {

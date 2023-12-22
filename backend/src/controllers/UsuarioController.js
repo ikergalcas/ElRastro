@@ -1,5 +1,6 @@
 import Usuario from '../models/UsuarioModel.js'
 import Producto from "../models/ProductoModel.js";
+import axios from 'axios'
 
 export const getAllUsuarios = async (req, res) => {
     try {
@@ -52,12 +53,31 @@ export const editUsuario = async (req, res) => {
         const updateData = req.body; //la info modificada
 
         //buscamos user y modificamos
-        const updatedUser = await Usuario.findByIdAndUpdate(id, updateData, {new: true});
+        const updatedUserAux = await Usuario.findByIdAndUpdate(id, updateData, {new: true});
 
-        if(!updatedUser){
+        if(!updatedUserAux){
             return res.status(404).json({message : 'User no encontrado' });
         }
-        res.json(updatedUser);
+
+        //Compruebo si la ubicacion ha sido cambiada
+        const nominatimEndpoint = 'https://nominatim.openstreetmap.org/search';
+        const format = 'json'; 
+
+        const response = await axios.get(`${nominatimEndpoint}?q=${updatedUserAux.ubicacion}&format=${format}`);
+
+        const firstResult = response.data[0];
+        if (!firstResult) {
+            return res.status(404).json({ error: 'No se encontraron resultados.' });
+        }
+
+        const { lat, lon } = firstResult;
+
+        if(lat != updatedUserAux.lat || lon != updatedUserAux.lon) {
+            const updatedUser = await Usuario.findByIdAndUpdate(id, {lat : lat, lon : lon}, {new: true});
+            res.json(updatedUser)
+        } else {
+            res.json(updatedUserAux);
+        }
 
     } catch (error) {
         console.log('Error en la consulta de usuarios a la base de datos:', error);

@@ -25,7 +25,16 @@ const productSchema = new mongoose.Schema({
         type: String
     },
     ubicacion: {
-        type: String 
+        type: String,
+        required: true
+    },
+    lat: {
+        type: Number,
+        default: -1
+    }, 
+    lon: {
+        type: Number,
+        default: -1
     },
     vendedor: {
         type: mongoose.Schema.Types.ObjectId,  
