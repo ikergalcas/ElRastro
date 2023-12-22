@@ -8,7 +8,11 @@ const CompEditUser = () => {
 
     const [usuario, setUsuario] = useState([]); 
     const {idUsuario} = useParams();
-    useEffect( () => {getUsuario()}, []);
+    const [pendientes, setPendientes] = useState(0)
+    useEffect( () => {
+        getUsuario()
+        getPendientes()
+    }, []);
 
     const getUsuario = async () => {
         fetch(`http://localhost:3003/usuarios/${idUsuario}`, {
@@ -27,6 +31,22 @@ const CompEditUser = () => {
         })
     }
 
+    const getPendientes = async () => {
+        fetch(`http://localhost:3003/usuarios/${idUsuario}/productos/pendientes`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response => response.json())
+        .then(data => {
+            setPendientes(data.length);
+            console.log(data.length);
+        })
+        .catch(error => {
+            console.error('Error al obtener el usuario:', error);
+        })
+    }
+
     const subirFotoIdentificativa = async(e) => {
         e.preventDefault()
         const input = document.getElementById('archivo');
@@ -38,32 +58,33 @@ const CompEditUser = () => {
             formdata.append("foto", archivo);
     
             fetch('http://localhost:3003/usuarios/subirFoto', {
-                    method: 'POST',
-                    body : formdata
-                }).then(response => response.json())
-                    .then(result =>{
-                        var raw = JSON.stringify({
-                            "foto" : result.imageUrl
-                          });
-                        console.log(result.imageUrl)
-                        fetch(`http://localhost:3003/usuarios/${idUsuario}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: raw
-                        }).then(response => response.text())
-                        .then(result => {
-                            console.log(result)
-                            window.location.href = `/myUserInfo/${idUsuario}`;
-                        })
-                            .catch(error => {
-                                console.error('Error al subir la imagen:', error);
-                            });
-                            })
-                    .catch(error => {
-                        console.error('Error al subir la imagen:', error);
-                    });
+                method: 'POST',
+                body : formdata
+            }).then(response => response.json())
+            .then(result =>{
+                var raw = JSON.stringify({
+                    "foto" : result.imageUrl
+                });
+                console.log(result.imageUrl)
+                fetch(`http://localhost:3003/usuarios/${idUsuario}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: raw
+                }).then(response => response.text())
+                .then(result => {
+                    console.log(result)
+                    window.location.href = `/myUserInfo/${idUsuario}`;
+                })
+                .catch(error => {
+                    console.error('Error al subir la imagen:', error);
+                });
+            })
+            .catch(error => {
+                console.error('Error al subir la imagen:', error);
+            });
+
         }else{
             alert("Selecciona una foto");   
             console.error('No se seleccionó ningún archivo.');
@@ -113,7 +134,7 @@ const CompEditUser = () => {
                         </div>
                     </div>
                 </div> 
-                <div className='row'>
+                <div className='row mt-3'>
                 <div className='col-8'>
                         <div className= "container-fluid ">
                             <a  style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/vendidos`} className='btn btn-outline-secondary mt-2'>Productos vendidos</a>
@@ -123,6 +144,9 @@ const CompEditUser = () => {
                             <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/pujados`} className='btn btn-outline-secondary mt-2'>Productos pujados</a>
                             
                             <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/comprados`} className='btn btn-outline-secondary mt-2'>Productos comprados</a>
+                        
+                            <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/pendientes`} className='btn btn-outline-secondary mt-2'>Productos pendientes de pago ({pendientes})</a>
+                            
                         </div> 
                     </div>
                     <div className='col-4'>
