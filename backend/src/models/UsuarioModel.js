@@ -34,10 +34,6 @@ const userSchema = new mongoose.Schema({
         type:Number,
         default: 0
     },
-    correo: {
-        type: String,
-        unique: true
-    },
     expiracionToken:{
         type: Date
     },

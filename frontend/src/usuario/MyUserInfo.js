@@ -137,15 +137,15 @@ const CompEditUser = () => {
                 <div className='row mt-3'>
                 <div className='col-8'>
                         <div className= "container-fluid ">
-                            <a  style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/vendidos`} className='btn btn-outline-secondary mt-2'>Productos vendidos</a>
+                            <a  style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/${idUsuario}/vendidos`} className='btn btn-outline-secondary mt-2'>Productos vendidos</a>
                             
-                            <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/enVenta`} className='btn btn-outline-secondary mt-2'>Productos en venta</a>
+                            <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/${idUsuario}/enVenta`} className='btn btn-outline-secondary mt-2'>Productos en venta</a>
                             
-                            <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/pujados`} className='btn btn-outline-secondary mt-2'>Productos pujados</a>
+                            <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/${idUsuario}/pujados`} className='btn btn-outline-secondary mt-2'>Productos pujados</a>
                             
-                            <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/comprados`} className='btn btn-outline-secondary mt-2'>Productos comprados</a>
+                            <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/${idUsuario}/comprados`} className='btn btn-outline-secondary mt-2'>Productos comprados</a>
                         
-                            <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/pendientes`} className='btn btn-outline-secondary mt-2'>Productos pendientes de pago ({pendientes})</a> 
+                            <a style={{marginRight: '1%'}} href={`../productosUsuario/${idUsuario}/${idUsuario}/pendientes`} className='btn btn-outline-secondary mt-2'>Productos pendientes de pago ({pendientes})</a> 
                         </div> 
                     </div>
                     <div className='col-4'>

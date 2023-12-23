@@ -6,11 +6,12 @@ import NavbarPage from "../navbar/navbar.js";
 const ShowProductosVendidos = () => {
 
     const [productos, setProductos] = useState([]); 
-    const {idUsuario, filtro} = useParams()
+    const {idUsuarioAjeno, filtro, idUsuario} = useParams()
+
     useEffect( () => {getProductosDeUsuario()}, []);
 
     const getProductosDeUsuario = async () => {
-        fetch(`http://localhost:3003/usuarios/${idUsuario}/productos/${filtro}`, {
+        fetch(`http://localhost:3003/usuarios/${idUsuarioAjeno}/productos/${filtro}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -37,7 +38,7 @@ const ShowProductosVendidos = () => {
               });
             console.log(raw);
             // Hacer la solicitud para obtener productos desde el backend
-            fetch(`http://localhost:3003/usuarios/${idUsuario}/descripcionProductos/${filtro}`, {
+            fetch(`http://localhost:3003/usuarios/${idUsuarioAjeno}/descripcionProductos/${filtro}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,7 +59,7 @@ const ShowProductosVendidos = () => {
                 "precio": precioMax
               });
             // Hacer la solicitud para obtener productos desde el backend
-            fetch(`http://localhost:3003/usuarios/${idUsuario}/precioProductos/${filtro}`, {
+            fetch(`http://localhost:3003/usuarios/${idUsuarioAjeno}/precioProductos/${filtro}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -81,7 +82,7 @@ const ShowProductosVendidos = () => {
                 "precio" : precioMax
               });
             // Hacer la solicitud para obtener productos desde el backend
-            fetch(`http://localhost:3003/usuarios/${idUsuario}/descripcionPrecioProductos/${filtro}`, {
+            fetch(`http://localhost:3003/usuarios/${idUsuarioAjeno}/descripcionPrecioProductos/${filtro}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

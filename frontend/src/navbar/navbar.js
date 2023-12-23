@@ -75,7 +75,7 @@ function cerrarSesion () {
           </Nav.Link>
           <Nav.Link href={`/nuevoProducto/${idUsuario}`} className='navbar-link' style={{marginLeft: '10vmin'}}> Crear un producto
           </Nav.Link> 
-          {pendientes > 0 && (<Nav.Link href={`../productosUsuario/${idUsuario}/pendientes`} className='navbar-link' style={{marginLeft: '10vmin'}}> Pendiente de pago ({pendientes})
+          {pendientes > 0 && (<Nav.Link href={`../productosUsuario/${idUsuario}/${idUsuario}/pendientes`} className='navbar-link' style={{marginLeft: '10vmin'}}> Pendiente de pago ({pendientes})
           </Nav.Link> )}
         </Nav>
         <NavItem>{nombreUsuario}</NavItem>

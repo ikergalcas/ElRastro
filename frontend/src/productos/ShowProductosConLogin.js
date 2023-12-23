@@ -13,7 +13,7 @@ const ShowProductosConLogin = () => {
     const [precioMax, setPrecioMax] = useState('');
     const [radio, setRadio] = useState('')
 
-    //ICONO DEL MARCADOR
+    //ICONO DEL MARCADOR DEL PRODUCTO
     const locationIcon = new L.Icon({
         iconUrl: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/></svg>',
         iconSize: [30, 30],
@@ -21,6 +21,7 @@ const ShowProductosConLogin = () => {
         popupAnchor: [0, -30],
       });
 
+    //ICONO DEL MARCADOR DEL USUARIO
     const locationIconUser = new L.Icon({
         iconUrl: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="darkred" class="bi bi-geo-alt-fill" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/></svg>',
         iconSize: [30, 30],
@@ -236,7 +237,8 @@ return(
     <div className='container'>
         <div className="row"> 
             <div className='col 8'>
-                {usuario && usuario.lat !== undefined && usuario.lon !== undefined && (
+                {(usuario && usuario.lat !== undefined && usuario.lon !== undefined &&
+                 usuario.lat !== 0 && usuario.lon !== 0) ? (
                 <div className='card m-3'>
                     <div className='card-body'>
                         <h3 className='card-title'> Mapa de los productos </h3>
@@ -260,7 +262,10 @@ return(
                             
                         </MapContainer>
                     </div>
-                </div>
+                </div> 
+                ) :
+                (
+                <Link className='btn btn-secondary' to={`/editarPerfil/${idUsuario}`}>Introduce tu ubicacion para visualizar el mapa</Link>
                 )}
             </div>
             <div class="buscador col 4">
@@ -327,11 +332,14 @@ return(
                         <img className="card-img-top" src={producto.foto} alt={producto.titulo} style={{ objectFit: 'contain', height: '25vmin'}} />
                         <h5 className="card-title">{producto.titulo}</h5>
                         <p className="card-text">{producto.descripcion}</p>
-                        <p className="card-text">Maxima puja: {producto.maximaPuja}</p>
-                        {idUsuario!=undefined ?
-                        (<a href={`/detallesProducto/${idUsuario}/${producto._id}`} className='btn btn-secondary'>Ver mas informacion</a>) :
-                        (<a href={'/login'} className='btn btn-secondary'>Inicia sesion para ver mas informacion</a>)
-                        }
+                        {producto.pujas.length == 0 ? (
+                            <p className='card-text'>Sin pujas, precio inicial: {producto.precioInicial}</p>
+                        ):
+                        (
+                            <p className="card-text">Maxima puja: {producto.maximaPuja}</p>
+                        )}
+                        
+                        <a href={`/detallesProducto/${idUsuario}/${producto._id}`} className='btn btn-secondary'>Ver más informacion</a>
                     </div>
                 </div>
             ))}

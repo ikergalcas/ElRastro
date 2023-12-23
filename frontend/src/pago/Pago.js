@@ -18,6 +18,37 @@ const CompPago = () => {
         getDatos()  
     }, []) 
     
+    /*useEffect(() => {
+        if (producto) {
+
+            paypal.current.innerHTML = '';
+
+            window.paypal.Buttons({
+                createOrder: (data, actions, err) => {
+                    return actions.order.create ({
+                        intent: "CAPTURE",
+                        purchase_units: [
+                            {
+                                description: "Producto comprado",
+                                amount: {
+                                    currency_code: "EUR",
+                                    value: (precioFinal)
+                                }
+                            }
+                        ],
+                    })
+                },
+                onApprove: async (data, actions) => {
+                    const order = await (actions.order.capture())
+                    console.log(order)
+                },
+                onError : (err) => {
+                    console.log(err)
+                }
+            }).render(paypal.current)
+        }
+    }, [precioFinal]);*/
+
     useEffect(() => {
         if (producto) {
 
@@ -49,7 +80,7 @@ const CompPago = () => {
         }
     }, [precioFinal]);
 
-   
+
     const getDatos = async () =>{
         var raw = JSON.stringify({
             "idComprador" : idUsuario,

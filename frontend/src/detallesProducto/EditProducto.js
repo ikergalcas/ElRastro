@@ -22,7 +22,6 @@ const CompEditProducto = () => {
             })
             if (response.ok) {
                 // Manejar la respuesta exitosa, redirigir o realizar otras acciones según sea necesario
-                console.log('Producto obtenido con éxito');
                 const data = await response.json();
                 setProducto(data);
                 setDescripcion(data.descripcion || '');
@@ -67,8 +66,6 @@ const CompEditProducto = () => {
         }
         try {
             // Hacer la solicitud PUT al backend
-            alert("antes del fetch")
-            console.log("Antes del fetch")
             const response = await fetch(`http://localhost:3001/productos/${idProducto}`, {
                 method: 'PUT',
                 headers: {
@@ -79,12 +76,8 @@ const CompEditProducto = () => {
             });
             if (response.ok) {
                 // Manejar la respuesta exitosa, redirigir o realizar otras acciones según sea necesario
-                console.log("Fetch perfe")
-                alert("Fetch perfe")
-                console.log('Producto editado con éxito');
                 navigate(`/detallesProducto/${producto.vendedor}/${idProducto}`);
             } else {
-                alert("Fetch error")
                 console.error('Error al editar el producto:', response.statusText);
             }
         } catch (error) {

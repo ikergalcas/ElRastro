@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Carousel, CarouselItem, CarouselControl, CarouselIndicators, CarouselCaption } from 'react-bootstrap';
 
+
 const CompShowDetallesProducto = () => {
     const {idUsuario, idProducto} = useParams()
     const navigate = useNavigate()
@@ -17,6 +18,9 @@ const CompShowDetallesProducto = () => {
     const [idUserMaxPuja, setIdUserMaxPuja] = useState()
     const [precioEnvio, setPrecioEnvio] = useState()
     const [arrayFotos,setArrayFotos]= useState([]);
+
+
+    
 
     //Dentro de un useEffect hacemos las 2 consultas porque las solicitudes http son asincronas y en la
     //segunda consulta uso el atributo vendedor de la primera
@@ -65,11 +69,7 @@ const CompShowDetallesProducto = () => {
             console.error('Error al obtener el usuario:', error);
         })
     }
-    //SUBASTA CERRADA + YO HE HECHO LA MAX PUJA     +   NO HE PAGADO
-    if(producto.vendido && idUsuario == idUserMaxPuja && producto.comprador == null) {
 
-    }
-    
     const [fotoNueva, setFotoNueva] = useState(null);
     
     const nuevaFoto = async (foto) => {
@@ -290,7 +290,6 @@ const CompShowDetallesProducto = () => {
 
                     <div>
                         {idUsuario == vendedor._id ? 
-                        /*<form id="formularioParte2" onSubmit={subirFotoIdentificativa} style={{marginTop: '3%', width: '90%'}}>*/
                         <form id="formularioParte2" onSubmit={subirFotos} style={{marginTop: '3%', width: '90%'}} >
                             <div style={{flexdirection: 'row', width:'90%'}} >
                                 <input type="file" className="form-control" id="archivos2" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg" multiple/>
@@ -358,20 +357,20 @@ const CompShowDetallesProducto = () => {
                                         {//----------------EDITAR----------------
                                         idUsuario == vendedor._id ? 
                                         <div>
-                                            <Link to={`/editarProducto/${idUsuario}/${idProducto}`} className="btn btn-secondary m-2">Editar</Link>
+                                            <Link to={`/editarProducto/${idUsuario}/${idProducto}`} className="btn btn-secondary m-3">Editar</Link>
                                         </div>
                                         : null
                                         }
                                     </div>
                                     <div className='col'>
                                         {//--COMPRA--
-                                        producto.vendido && idUsuario == idUserMaxPuja && (
+                                        producto.vendido && idUsuario == idUserMaxPuja && producto.comprador == null && (
                                         <div>
                                             {(usuarioVisitante && usuarioVisitante.ubicacion) ? (
-                                            <Link className='btn btn-secondary' to={`/pago/${idUsuario}/${idProducto}`}>Comprar</Link>
+                                            <Link className='btn btn-secondary mb-3' to={`/pago/${idUsuario}/${idProducto}`}>Comprar</Link>
                                             ) :
                                             (
-                                            <Link className='btn btn-secondary' to={`/editarPerfil/${idUsuario}`}>Completa tu informacion antes de comprar</Link>
+                                            <Link className='btn btn-secondary mb-3' to={`/editarPerfil/${idUsuario}`}>Completa tu informacion antes de comprar</Link>
                                             )}
                                         </div>
                                         )}
@@ -380,7 +379,7 @@ const CompShowDetallesProducto = () => {
                                         //----------------Comprador Valora Vendedor----------------
                                         idUsuario == producto.comprador && !producto.valoracionVendedor ?
                                         <div>
-                                            <button className="btn btn-secondary" onClick={() => setMostrarValoracion(true)}>
+                                            <button className="btn btn-secondary mb-3" onClick={() => setMostrarValoracion(true)}>
                                             Dejar Valoración
                                             </button>
 
@@ -423,7 +422,7 @@ const CompShowDetallesProducto = () => {
                                         {//--Vendedor valora comprador--
                                         idUsuario == producto.vendedor && producto.comprador != null && !producto.valoracionComprador && producto.vendido ?
                                         <div>
-                                            <button className="btn btn-secondary" onClick={() => setMostrarValoracion(true)}>
+                                            <button className="btn btn-secondary m-3" onClick={() => setMostrarValoracion(true)}>
                                             Dejar Valoración
                                             </button>
 
@@ -458,7 +457,7 @@ const CompShowDetallesProducto = () => {
                                         //Puedo cancelar la subasta si soy el vendedor y no tiene pujas
                                         idUsuario == producto.vendedor && producto.pujas && producto.pujas.length == 0 && (
                                             <form onSubmit={cancelarSubasta}>
-                                                <button className='btn btn-secondary' type='submit'>Cancelar Subasta</button>
+                                                <button className='btn btn-secondary m-3' type='submit'>Cancelar Subasta</button>
                                             </form>
                                         )}
                                         {//---Cerrar Puja--//
@@ -466,7 +465,7 @@ const CompShowDetallesProducto = () => {
                                         idUsuario == producto.vendedor && !producto.vendido && 
                                         producto.pujas && producto.pujas.length > 0 && ( 
                                         <form onSubmit={cerrarPuja}>
-                                            <button className='btn btn-secondary' type='submit'>Cerrar Puja</button>
+                                            <button className='btn btn-secondary m-3' type='submit'>Cerrar Puja</button>
                                         </form>)
                                         }
                                     </div>

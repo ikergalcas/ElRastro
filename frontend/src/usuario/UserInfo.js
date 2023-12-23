@@ -8,6 +8,8 @@ const CompEditUser = () => {
 
     const [usuario, setUsuario] = useState([]); 
     const {idUsuarioAjeno} = useParams();
+    const {idUsuario} = useParams()
+
     useEffect( () => {getUsuario()}, []);
 
     const getUsuario = async () => {
@@ -73,9 +75,9 @@ const CompEditUser = () => {
 
                     <div className='col-8'> 
                         <div className= "container-fluid ">
-                            <a href={`/productosUsuario/${idUsuarioAjeno}/vendidos`} className='btn btn-success'>Productos vendidos</a>
+                            <a href={`/productosUsuario/${idUsuarioAjeno}/${idUsuario}/vendidos`} className='btn btn-success'>Productos vendidos</a>
                             <br/>
-                            <a href={`/productosUsuario/${idUsuarioAjeno}/enVenta`} className='btn btn-success mt-2'>Productos en venta</a>
+                            <a href={`/productosUsuario/${idUsuarioAjeno}/${idUsuario}/enVenta`} className='btn btn-success mt-2'>Productos en venta</a>
                         </div> 
                     </div>
 

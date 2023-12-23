@@ -25,7 +25,7 @@ function App() {
           <Route path="/login" element={<Login/>}/>
           <Route path="/productos/:idUsuario" element={<ProductosInicial/>}/>
           <Route path="/detallesProducto/:idUsuario/:idProducto" element={<MiProductoBloque/>}/>
-          <Route path="/productosUsuario/:idUsuario/:filtro" element={<ProductosUsuario/>}/>
+          <Route path="/productosUsuario/:idUsuarioAjeno/:idUsuario/:filtro" element={<ProductosUsuario/>}/>
           <Route path="/nuevoProducto/:idUsuario" element={<CrearProdcuto/>}/>
           <Route path="/editarProducto/:idUsuario/:idProducto" element={<CompEditProducto/>}/>
           <Route path="/userInfo/:idUsuario/:idUsuarioAjeno" element={<UserInfo/>}/>
