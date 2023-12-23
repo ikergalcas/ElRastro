@@ -52,10 +52,11 @@ const CompEditProducto = () => {
 
         if (producto.pujas && producto.pujas.length === 0) {
             // Agregar campos adicionales si se cumple la condición
+            alert("Dentro IF")
             var raw = JSON.stringify({
                 "descripcion": descripcion,
                 "ubicacion": ubicacion,
-                "precio": precio,
+                "precioInicial": precio,
                 "fechaCierre": fechaCierre,
             });
             
@@ -67,6 +68,8 @@ const CompEditProducto = () => {
         }
         try {
             // Hacer la solicitud PUT al backend
+            alert("antes del fetch")
+            console.log("Antes del fetch")
             const response = await fetch(`http://localhost:3001/productos/${idProducto}`, {
                 method: 'PUT',
                 headers: {
@@ -77,9 +80,12 @@ const CompEditProducto = () => {
             });
             if (response.ok) {
                 // Manejar la respuesta exitosa, redirigir o realizar otras acciones según sea necesario
+                console.log("Fetch perfe")
+                alert("Fetch perfe")
                 console.log('Producto editado con éxito');
                 navigate(`/detallesProducto/${producto.vendedor}/${idProducto}`);
             } else {
+                alert("Fetch error")
                 console.error('Error al editar el producto:', response.statusText);
             }
         } catch (error) {

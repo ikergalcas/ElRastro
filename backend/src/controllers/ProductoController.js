@@ -337,7 +337,7 @@ export const editProducto = async (req, res) => {
     try {
         const { id } = req.params;
         const updateData = req.body; //la info modificada
-        console.log("Data: " + updateData)
+        console.log("precio: " + updateData.precioInicial)
         const updatedProductAux = await Producto.findByIdAndUpdate(id, updateData, {new: true});
 
         if(!updatedProductAux){
