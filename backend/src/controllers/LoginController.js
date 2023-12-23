@@ -44,23 +44,30 @@ export const verificarTokenGoogle = async (req, res) => {
 
 export const verificarConexion = async (req, res) => {
     try {
+        const {idUsuario} = req.params;
         const {tokenId, token}  = req.params;
         var userObjetct = jwtDecode(token)
-        var epochExpire = new Date ((userObjetct.exp+3600)*1000)
+        const user = (await Usuario.findById(idUsuario));
 
-        var fechaActual= new Date ()
-        fechaActual.setHours(fechaActual.getHours() + 1);
-        
-        console.log(fechaActual)
-
-        if(tokenId == userObjetct.jti){
-            if(epochExpire < fechaActual){
-                res.send("expired");
-            }else{
-                res.send("ok");
-            }
+        if (user.correo != userObjetct.email ){
+            res.send("sesionChanged")
         }else{
-            res.send("invalid token")
+            var epochExpire = new Date ((userObjetct.exp+3600)*1000)
+
+            var fechaActual= new Date ()
+            fechaActual.setHours(fechaActual.getHours() + 1);
+            
+            console.log(fechaActual)
+
+            if(tokenId == userObjetct.jti){
+                if(epochExpire < fechaActual){
+                    res.send("expired");
+                }else{
+                    res.send("ok");
+                }
+            }else{
+                res.send("invalid token")
+            }
         }
 
 

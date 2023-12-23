@@ -30,7 +30,7 @@ function App() {
           <Route path="/myUserInfo/:idUsuario" element={<MyUserInfo/>}/>
           <Route path="/editarPerfil/:idUsuario" element={<EditarPerfil/>}/>
           <Route path='/borrarSubasta/:idProducto/:idUsuario' element={<CompBorrarSubasta/>}/>
-          <Route path='/pago/:idComprador/:idProducto' element={<CompPago/>}/>
+          <Route path='/pago/:idUsuario/:idProducto' element={<CompPago/>}/>
 
         </Routes>
       </BrowserRouter>

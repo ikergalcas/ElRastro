@@ -89,6 +89,9 @@ const productSchema = new mongoose.Schema({
             }}
         ],
         default:[]
+    },
+    peso: {
+        type: Number
     }
 
 },{ versionKey: false });

@@ -290,7 +290,7 @@ export const getProductoPorId = async (req, res) => {
 
 export const createProducto = async (req, res) => {
     try {
-        const { descripcion, fechaCierre, foto, precioInicial, titulo, ubicacion, vendedor } = req.body
+        const { descripcion, fechaCierre, foto, precioInicial, titulo, ubicacion, vendedor,peso } = req.body
         let maximaPuja= precioInicial;
 
         const nominatimEndpoint = 'https://nominatim.openstreetmap.org/search';
@@ -316,7 +316,8 @@ export const createProducto = async (req, res) => {
             ubicacion,
             lat,
             lon,
-            vendedor
+            vendedor,
+            peso
         })
 
         newProducto.maximaPuja = precioInicial
@@ -638,7 +639,28 @@ function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
 
 export const getHuellaCarbono = async (req, res) => {
     try {
-        const {ubicacionOrigen} = req.body;
+        let result=0;
+        const {transporte} = req.body;
+        switch (transporte) {
+            case "avion":
+                result=1;
+                break;
+
+            case "barco":
+                result=2;
+                break;
+
+            case "camion":
+                result=3;
+                break;
+            case "tren":
+                result=4;
+                break;
+            default: 
+                result=0;
+                break;
+        }
+        /*const {ubicacionOrigen} = req.body;
         const {ubicacionDestino} =req.body;
         const {peso} = req.body;
         const {transporte} = req.body;
@@ -711,7 +733,9 @@ export const getHuellaCarbono = async (req, res) => {
         })
         .catch(error => {
             console.error("Error en la solicitud de geocodificación2: " + error);
-        });
+        });*/
+        console.log("Entra")
+        res.json({"carbon": result})
 
     } catch (error) {
         
@@ -720,17 +744,24 @@ export const getHuellaCarbono = async (req, res) => {
 
 export const getHuellaCarbonoNuevo = async (req, res) => {
     try {
+        
         const {idComprador} = req.body;
         const {idProducto} =req.body;
-        //const {peso} = req.body;
-        //const {transporte} = req.body;
-        const peso = 400
-        const transporte = "plane"
+       // const {peso} = req.body;
+        const {transporte} = req.body;
+        const peso = 400;
+        let transport;
+        //const transporte = "plane"
+        if (transporte==null){
+            transport="truck"
+        }
+        console.log(transport);
 
         const comprador = await Usuario.findById(idComprador)
         const ubicacionOrigen = comprador.ubicacion
 
         const producto = await Producto.findById(idProducto)
+        //const peso = producto.peso
         const ubicacionDestino = producto.ubicacion
 
         const vendedor = await Usuario.findById(producto.vendedor)
@@ -777,7 +808,7 @@ export const getHuellaCarbonoNuevo = async (req, res) => {
                     "weight_unit": "g",
                     "distance_value": distancia,
                     "distance_unit": "km",
-                    "transport_method": `${transporte}`
+                    "transport_method": `${transport}`
                 };
                   
                 const options = {

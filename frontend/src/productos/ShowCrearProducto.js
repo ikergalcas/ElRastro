@@ -9,6 +9,7 @@ const CompShowCrearProducto = () => {
     const [ubicacion,setUbicacion]=useState('')
     const [precio,setPrecio]=useState('')
     const [fecha, setFecha]=useState('')
+    const [peso,setPeso] = useState('')
     const [idnuevoProducto,setProducto]=useState('')
     const [arrayFotos,setArrayFotos]= useState([])
 
@@ -21,7 +22,8 @@ const CompShowCrearProducto = () => {
             "precioInicial": precio,
             "titulo": titulo,
             "ubicacion": ubicacion,
-            "vendedor": idUsuario
+            "vendedor": idUsuario,
+            "peso": peso
           });
 
         fetch('http://localhost:3001/productos/', {
@@ -160,6 +162,11 @@ return(
                 <a>Precio base:</a><br/>
                 <input value={precio} onChange={(e) => setPrecio(e.target.value)} 
                 type="number" id="precio" className="form-control" required/><span className="input-group-text">€</span>
+                <br/>
+
+                <a>Peso del producto:</a><br/>
+                <input value={peso} onChange={(e) => setPeso(e.target.value)} 
+                type="number" id="peso" className="form-control" required/><span className="input-group-text">gr</span>
                 <br/>
 
                 <a>Ubicacion:</a><br/>

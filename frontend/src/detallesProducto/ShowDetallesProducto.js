@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Carousel, CarouselItem, CarouselControl, CarouselIndicators, CarouselCaption } from 'react-bootstrap';
 
-
 const CompShowDetallesProducto = () => {
     const {idUsuario, idProducto} = useParams()
     const navigate = useNavigate()
-
     // Obtenemos el producto y el vendedor
+    const [usuarioVisitante, setUsuario]= useState(null)
     const [producto, setProducto] = useState({});
     const [vendedor, setVendedor] = useState({});
     const [comprador, setComprador] = useState(null)
@@ -17,13 +16,7 @@ const CompShowDetallesProducto = () => {
     const [valoracionComprador, setValoracionComprador] = useState(1)
     const [idUserMaxPuja, setIdUserMaxPuja] = useState()
     const [precioEnvio, setPrecioEnvio] = useState()
-
-    //CARRUSEL
-    const [index, setIndex] = useState(0);
-    
-    const handleSelect = (selectedIndex) => {
-        setIndex(selectedIndex);
-    };
+    const [arrayFotos,setArrayFotos]= useState([]);
 
     //Dentro de un useEffect hacemos las 2 consultas porque las solicitudes http son asincronas y en la
     //segunda consulta uso el atributo vendedor de la primera
@@ -50,12 +43,28 @@ const CompShowDetallesProducto = () => {
         .then(data => {
             // Actualizar el estado con el vendedor obtenido
             setVendedor(data);
+            getUsuario()
         })
         .catch(error => {
             console.error('Error al obtener producto o vendedor:', error);
         });
     }, [idProducto]);
 
+    const getUsuario = async () => {
+        fetch(`http://localhost:3003/usuarios/${idUsuario}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response => response.json())
+        .then(data => {
+            setUsuario(data)
+            console.log("usuario encontrado")
+        })
+        .catch(error => {
+            console.error('Error al obtener el usuario:', error);
+        })
+    }
     //SUBASTA CERRADA + YO HE HECHO LA MAX PUJA     +   NO HE PAGADO
     if(producto.vendido && idUsuario == idUserMaxPuja && producto.comprador == null) {
 
@@ -151,7 +160,6 @@ const CompShowDetallesProducto = () => {
         })
     }
 
-
     const subirFotoIdentificativa = async(e) => {
         e.preventDefault()
         const input = document.getElementById('archivo');
@@ -196,91 +204,103 @@ const CompShowDetallesProducto = () => {
         
     }
 
+    const subirFotos = async(e) => {
+        e.preventDefault()
+        const input2 = document.getElementById('archivos2');
+        const archivos2 = input2.files;
+        if(producto.imagenes && producto.imagenes.length > 0){
+            for (let i = 0; i < producto.imagenes.length; i++) {
+                arrayFotos.push(producto.imagenes[i])
+                setArrayFotos(arrayFotos)
+            }
+        }
+        if (archivos2.length>0){
+            for (let i = 0; i < archivos2.length; i++) {
+                const arch = archivos2[i];
+                var formdata = new FormData();
+                formdata.append("foto", arch);
+        
+                fetch('http://localhost:3003/usuarios/subirFoto', {
+                    method: 'POST',
+                    body : formdata
+                }).then(response => response.json())
+                    .then(result =>{
+                        arrayFotos.push(result.imageUrl)
+                        setArrayFotos(arrayFotos)
+                        if (i === (archivos2.length-1)){
+                            actualizarElproducto()
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al subir la imagen:', error);
+                    });
+            }
+        }else{
+            alert('Sin Archivos');
+        }
+    }
+
+    const actualizarElproducto = async() => {
+        var raw = JSON.stringify({
+            "imagenes" : arrayFotos
+            });
+        fetch(`http://localhost:3001/productos/${producto._id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: raw
+        }).then(response => response.text())
+        .then(result => {
+            alert('Foto subida');
+            setArrayFotos([])
+            window.location.reload()
+        })
+            .catch(error => {
+                console.error('Error al subir la imagen:', error);
+            });
+    }
+
     return (
-        <div className='container' style={{marginTop: '3%'}}>
+        <div className='container-fluid' style={{marginTop: '3%'}}>
             <div className='row'>
-                <div className='col 4'>
-                    <div className='row'>
-                        <div className='col'>
-                            {idUsuario == vendedor._id ? 
-                            <div>
-                                {/* CAMBIAR IMAGEN PRINCIPAL */}
-                               
-                                {/* AÑADIR IMAGEN A LAS SECUNDARIAS 
-                                <div className='row'>   
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={(e) => nuevaFoto(e.target.files[0])}
-                                    />                                  
+                <div className='col'>
+                   <div className='container-fluid'>
+                        <div id="carouselExampleDark" className="carousel carousel-dark slide" data-bs-interval="false" style={{width: '50%'}}>
+                            <div className="carousel-inner">
+                                <div key={0} className={'carousel-item active'}>
+                                    <img src={producto.foto} className="d-block w-100" alt='...' style={{height: '30vmin'}} />
                                 </div>
-                                */}
-                            </div>
-                            
-                            : null
-                            }
-                            <div>
-                                <img src={producto.foto} className="card-img-top" style={{ objectFit: 'contain', height: '25vmin', textAlign: 'left'}}/>
-                                {idUsuario == vendedor._id ? 
-                                <form id="formularioParte2" onSubmit={subirFotoIdentificativa} style={{marginTop: '3%', width: '90%'}}>
-                                <div style={{flexdirection: 'row', width:'90%'}} >
-                                    <input type="file" className="form-control" id="archivo" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg,.jpeg"/>
-                                    <button className="btn btn-secondary mt-2" type="submit" >Cambiar foto</button>
-                                </div>
-                                </form>
-                                : null} 
-                            </div> 
-                            {/*
-                            <Carousel activeIndex={index} onSelect={handleSelect} style={{ maxWidth: '400px' }}>
-                                {producto.imagenes && producto.imagenes.map((foto, idx) => (
-                                    <Carousel.Item key={idx}>
-                                    <img
-                                        className="d-block w-100"
-                                        src={foto}
-                                        alt={`Foto ${idx + 1}`}
-                                        style={{ maxHeight: '200px', objectFit: 'contain' }}
-                                    />
-                                    </Carousel.Item>
+                                { (producto.imagenes && producto.imagenes.length > 0) && 
+                                    producto.imagenes.map((imagen, index) => (
+                                    <div key={index+1} className={'carousel-item'}>
+                                        <img src={imagen} className="d-block w-100" alt='...' style={{height: '30vmin'}} />
+                                    </div>
                                 ))}
-                                
-                                <button
-                                    className="carousel-control-prev"
-                                    type="button"
-                                    data-bs-target="#carouselExampleIndicators"
-                                    data-bs-slide="prev"
-                                >
-                                    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span className="visually-hidden">Previous</span>
-                                </button>
-                                
-                                <button
-                                    className="carousel-control-next"
-                                    type="button"
-                                    data-bs-target="#carouselExampleIndicators"
-                                    data-bs-slide="next"
-                                >
-                                    <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span className="visually-hidden">Next</span>
-                                </button>
-                                </Carousel>*/
-                                }
-
-
-                            {/* CAROUSEL SIN BOTONES ABAJO 
-                            <Carousel activeIndex={index} onSelect={handleSelect}>
-                                {producto.imagenes && producto.imagenes.map((foto, idx) => (
-                                    <Carousel.Item key={idx}>
-                                        <img
-                                            className="d-block w-50"
-                                            src={foto}
-                                            alt={`Foto ${idx + 1}`}
-                                        />
-                                    </Carousel.Item>
-                                ))
-                            </Carousel>*/}
+                            </div>
+                            <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+                                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span className="visually-hidden">Previous</span>
+                            </button>
+                                <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+                                <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span className="visually-hidden">Next</span>
+                            </button>
                         </div>
                     </div>
-                    
+
+                    <div>
+                        {idUsuario == vendedor._id ? 
+                        /*<form id="formularioParte2" onSubmit={subirFotoIdentificativa} style={{marginTop: '3%', width: '90%'}}>*/
+                        <form id="formularioParte2" onSubmit={subirFotos} style={{marginTop: '3%', width: '90%'}} >
+                            <div style={{flexdirection: 'row', width:'90%'}} >
+                                <input type="file" className="form-control" id="archivos2" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg" multiple/>
+                                <button className="btn btn-secondary mt-2" type="submit" >Cambiar foto</button>
+                            </div>
+                        </form>
+                        : null} 
+                    </div> 
+
                     <div className='row'>
                         <div className='col 2'>
                             <div className='card text-center mt-3'>
@@ -348,7 +368,12 @@ const CompShowDetallesProducto = () => {
                                         {//--COMPRA--
                                         producto.vendido && idUsuario == idUserMaxPuja && (
                                         <div>
+                                            {(usuarioVisitante && usuarioVisitante.ubicacion) ? (
                                             <Link className='btn btn-secondary' to={`/pago/${idUsuario}/${idProducto}`}>Comprar</Link>
+                                            ) :
+                                            (
+                                            <Link className='btn btn-secondary' to={`/editarPerfil/${idUsuario}`}>Completa tu informacion antes de comprar</Link>
+                                            )}
                                         </div>
                                         )}
 

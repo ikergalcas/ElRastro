@@ -39,8 +39,8 @@ const CompEditProducto = () => {
 
     const [descripcion, setDescripcion] = useState('')
     const [ubicacion, setUbicacion] = useState('')
-    const [fechaCierre, setFechaCierre] = useState()
-    const [precio, setPrecio] = useState()
+    const [fechaCierre, setFechaCierre] = useState('')
+    const [precio, setPrecio] = useState('')
 
     const volverAtras = (e) => {
         e.preventDefault()
@@ -52,7 +52,6 @@ const CompEditProducto = () => {
 
         if (producto.pujas && producto.pujas.length === 0) {
             // Agregar campos adicionales si se cumple la condición
-            alert("Dentro IF")
             var raw = JSON.stringify({
                 "descripcion": descripcion,
                 "ubicacion": ubicacion,
