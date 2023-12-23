@@ -7,8 +7,6 @@ const CompShowPujas = () => {
     const {idProducto} = useParams()
     const navigate = useNavigate()
 
-
-
     const [producto, setProducto] = useState([]);
     useEffect(() => {
         getProductos()
@@ -173,9 +171,6 @@ const CompShowPujas = () => {
                             </p>
                             <p>
                             <b>Precio:</b> {puja.precio} €
-                            </p>
-                            <p>
-                                {puja._id}
                             </p>
                             <p>
                             {//---Borrar Puja---//
