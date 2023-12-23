@@ -77,7 +77,6 @@ export const editPuja = async (req, res) => {
 export const deletePuja = async (req, res) => {
     try {
         const { idPuja, idProducto } = req.params;
-
         const producto = await Producto.findById(idProducto)
         const listaPujas = producto.pujas
         let newMaxPuja=0;

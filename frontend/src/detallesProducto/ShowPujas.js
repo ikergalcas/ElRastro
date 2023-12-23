@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 
 const CompShowPujas = () => {
     const {idUsuario} = useParams()
     const {idProducto} = useParams()
-
+    const navigate = useNavigate()
 
     const [producto, setProducto] = useState([]);
     useEffect(() => {
@@ -123,6 +123,19 @@ const CompShowPujas = () => {
         obtenerUsuarios();
     }, [pujas]);
 
+     //---BORRAR PUJa---
+     const borrarPuja = (event) => {
+        event.preventDefault(); // Previene el comportamiento predeterminado del formulario
+        const idPuja = document.getElementById("idPuja").value;
+        console.log(idPuja);
+        //const formElements = event.target.elements;
+        //const idPuja = document.getElementById("idPuja").value;
+        
+        //const idUsuario = event.target.elements.namedItem("idVendedor").value;
+        navigate(`/borrarPuja/${idUsuario}/${idProducto}/${idPuja}`)
+        
+    }
+
     return (
         <div>
             {producto.vendedor !== idUsuario && !producto.vendido && (
@@ -158,6 +171,19 @@ const CompShowPujas = () => {
                             </p>
                             <p>
                             <b>Precio:</b> {puja.precio} €
+                            </p>
+                            <p>
+                            {//---Borrar Puja---//
+                                        //Puedo borrar la puja si soy el creador
+                                        //      <input type="hidden" name="idUsuario" value={producto.vendedor} />
+                                        //             <input type="hidden" name="idPuja" value={puja._id} />
+
+                                        idUsuario == puja.usuario && (
+                                            <form onSubmit = {borrarPuja}>
+                                                <input type="hidden" name="idPuja" id="idPuja" value={puja._id} />
+                                                <button className='btn btn-secondary' type='submit'>Borrar Puja</button>
+                                            </form>
+                                        )}
                             </p>
                         </li>
                         ))}

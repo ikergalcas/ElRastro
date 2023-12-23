@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 
 const CompShowComentarios = () => {
     const {idUsuario} = useParams()
     const {idProducto} = useParams()
+    const navigate = useNavigate()
 
 
     const [producto, setProducto] = useState([]);
@@ -170,6 +171,18 @@ const CompShowComentarios = () => {
         obtenerUsuarios();
     }, [comentarios]);
 
+       //---BORRAR PUJa---
+       const borrarComentario = (event) => {
+        event.preventDefault(); // Previene el comportamiento predeterminado del formulario
+        const idComentario = document.getElementById("idComentario").value;
+        console.log(idComentario);
+        //const formElements = event.target.elements;
+        //const idPuja = document.getElementById("idPuja").value;
+        //const idUsuario = event.target.elements.namedItem("idVendedor").value;
+        navigate(`/borrarComentario/${idUsuario}/${idProducto}/${idComentario}`)
+        
+    }
+
     //METER LA LISTITA DE COMENTARIOS
     return (
         <div>
@@ -214,6 +227,19 @@ const CompShowComentarios = () => {
                             <b>Respuesta: </b> {comentario.respuesta}
                         </p>
                         )}
+                        <p>
+                              {//---Borrar Puja---//
+                                        //Puedo borrar la puja si soy el creador
+                                        //      <input type="hidden" name="idUsuario" value={producto.vendedor} />
+                                        //             <input type="hidden" name="idPuja" value={puja._id} />
+
+                                        idUsuario == comentario.usuario && (
+                                            <form onSubmit = {borrarComentario}>
+                                                <input type="hidden" name="idComentario" id="idComentario" value={comentario._id} />
+                                                <button className='btn btn-secondary' type='submit'>Borrar Comentario</button>
+                                            </form>
+                                        )}
+                        </p>
                         {producto.vendedor === idUsuario && comentario.respuesta === "" && (
                             <form
                             id={`crearRespuesta${index}`}

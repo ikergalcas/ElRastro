@@ -138,7 +138,6 @@ const CompShowDetallesProducto = () => {
     //---CANCELAR SUBASTA (BORRAR OBJETO)---
     const cancelarSubasta = () => {
         navigate(`/borrarSubasta/${idProducto}/${idUsuario}`)
-        
     }
 
     //---CERRAR PUJA---
