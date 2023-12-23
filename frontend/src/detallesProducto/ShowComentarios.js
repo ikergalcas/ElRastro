@@ -228,9 +228,6 @@ const CompShowComentarios = () => {
                         </p>
                         )}
                         <p>
-                            {comentario._id}
-                        </p>
-                        <p>
                               {//---Borrar Puja---//
                                         //Puedo borrar la puja si soy el creador
                                         //      <input type="hidden" name="idUsuario" value={producto.vendedor} />
