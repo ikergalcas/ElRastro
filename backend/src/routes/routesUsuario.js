@@ -34,12 +34,10 @@ routerUsuario.post('/:idUsuario/precioProductos/:filtro',getProductosUsuarioPrec
 routerUsuario.post('/:idUsuario/descripcionPrecioProductos/:filtro',getProductosUsuarioDescripcionPrecioMax)
 routerUsuario.get('/ubi/:idUsuario', getUbiUsuario)
 routerUsuario.post('/compradores',getCompradores)
-routerUsuario.get('/loginToken/:token',verificarTokenGoogle)
-routerUsuario.get('/conexion/:idUsuario',verificarConexion)
 
 //----NUEVO - TEMPORAL----//
 routerUsuario.get('/loginToken/:token', verificarTokenGoogle)
-routerUsuario.get('/conexion/:tokenId/:token',verificarConexion)
+routerUsuario.get('/conexion/:idUsuario/:tokenId/:token',verificarConexion)
 //----NUEVO - TEMPORAL----//
 
 routerUsuario.post('/subirFoto', upload.single('foto'), async (req, res) => {

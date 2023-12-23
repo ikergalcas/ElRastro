@@ -46,7 +46,6 @@ routerProducto.put('/:idProducto/editComentario/:idComentario',editComentario)
 routerProducto.put('/:idProducto/crearRespuestaComentario/:idComentario',crearRespuestaComentario)
 routerProducto.put('/:idProducto/deleteComentario/:idComentario',deleteComentario)
 routerProducto.get('/:idProducto/ubicacion', getUbiProducto)
-
 //--NUEVO
 routerProducto.post('/huellaCarbonoNuevo', getHuellaCarbonoNuevo)
 //--NUEVO

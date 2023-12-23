@@ -27,6 +27,15 @@ const CompEditProducto = () => {
                 setProducto(data);
                 setDescripcion(data.descripcion || '');
                 setUbicacion(data.ubicacion || '');
+                setPrecio(data.precioInicial || '');
+                const dateObject = new Date(data.fechaCierre);
+                const year = dateObject.getFullYear();
+                const month = String(dateObject.getMonth() + 1).padStart(2, '0');
+                const day = String(dateObject.getDate()).padStart(2, '0');
+
+                const formattedDate = `${year}-${month}-${day}`;
+                setFechaCierre(formattedDate);
+
             } else {
                 console.error('Error al obtener el producto:', response.statusText);
             }
@@ -37,8 +46,8 @@ const CompEditProducto = () => {
 
     const [descripcion, setDescripcion] = useState('')
     const [ubicacion, setUbicacion] = useState('')
-    const [fechaCierre, setFechaCierre] = useState()
-    const [precio, setPrecio] = useState()
+    const [fechaCierre, setFechaCierre] = useState('')
+    const [precio, setPrecio] = useState('')
 
     const volverAtras = (e) => {
         e.preventDefault()
@@ -51,15 +60,15 @@ const CompEditProducto = () => {
         if (producto.pujas && producto.pujas.length === 0) {
             // Agregar campos adicionales si se cumple la condición
             var raw = {
-                descripcion: descripcion,
-                ubicacion: ubicacion,
-                precio: precio,
-                fechaCierre: fechaCierre,
+                "descripcion": descripcion,
+                "ubicacion": ubicacion,
+                "precioInicial": precio,
+                "fechaCierre": fechaCierre,
             };
         } else {
             var raw = JSON.stringify({
-                descripcion: descripcion,
-                ubicacion: ubicacion
+                "descripcion": descripcion,
+                "ubicacion": ubicacion
             })
         }
 

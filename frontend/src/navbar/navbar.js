@@ -16,25 +16,26 @@ function NavbarPage() {
     } 
   }, []);
 
-
   const comprobarConexion = async () => {
-    fetch(`http://localhost:3003/usuarios/conexion/${JSON.parse(localStorage.getItem('objetoToken')).tokenId}/${JSON.parse(localStorage.getItem('objetoToken')).tokenCompleto}`, {  
+    fetch(`http://localhost:3003/usuarios/conexion/${idUsuario}/${JSON.parse(localStorage.getItem('objetoToken')).tokenId}/${JSON.parse(localStorage.getItem('objetoToken')).tokenCompleto}`, {  
       method: 'GET',
       headers: {
           'Content-Type': 'application/json',
       },
-    }).then(res => res.json())
+    }).then(res => res.text())
     .then(data => {
       console.log(data)
       if(data=="expired" || data=="invalid token"){
         localStorage.clear()
         alert("Tu sesion ha expirado")
         window.location.href = '/login'
+      }else if (data=="sesionChanged"){
+        alert("Has cambiando de cuenta")
+        window.location.href = '/login'
       }
-
     })
     .catch(error => {
-        console.error('Error al obtener productos:', error);
+        console.error('Error al validar token:', error);
     });
   }
 
