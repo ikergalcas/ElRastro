@@ -10,8 +10,9 @@ cloudinary.config({
 });
 
 import { getAllProductos, createProducto, editProducto, deleteProducto,getProductosdeUsuario,getProductosDescripcion,
-    getHuellaCarbono,getProductosPrecioMax, getProductosDescripcionPrecio, getUbiProducto, getProductoPorId, valoracion, 
-    nuevaImagen, checkeo, cerrarPuja, getHuellaCarbonoNuevo } from '../controllers/ProductoController.js'
+    getHuellaCarbono,getProductosPrecioMax, getProductosDescripcionPrecio, /*getUbiProducto,*/ getProductoPorId, valoracion, 
+    nuevaImagen, checkeo, cerrarPuja, getHuellaCarbonoNuevo, getProductosInicio, getProductosInicioConLogin, getProductosRadio,
+    getProductosDescripcionPrecioRadio, getProductosPrecioMaxRadio, getProductosDescripcionRadio } from '../controllers/ProductoController.js'
 
 import { getAllPujas, createPuja, deletePuja, editPuja, getPujasPrecio } from '../controllers/PujaController.js'
 
@@ -28,8 +29,14 @@ routerProducto.delete('/:id', deleteProducto)
 routerProducto.get('/:idProducto', getProductoPorId)
 routerProducto.get('/usuario/:idUsuario',getProductosdeUsuario)
 routerProducto.post('/descripcion',getProductosDescripcion)
+routerProducto.get('/inicio/mostrar', getProductosInicio)  //--NUEVO--//
+routerProducto.get('/:idUsuario/inicio', getProductosInicioConLogin) //--NUEVO--//
 routerProducto.post('/preciomax',getProductosPrecioMax)
+routerProducto.post('/radio', getProductosRadio)  //--NUEVO--//
 routerProducto.post('/descripcionPrecio',getProductosDescripcionPrecio)
+routerProducto.post('/radioPrecio', getProductosPrecioMaxRadio)   //--NUEVO--//
+routerProducto.post('/descripcionRadio', getProductosDescripcionRadio)  //--NUEVO--//
+routerProducto.post('/descripcionRadioPrecio', getProductosDescripcionPrecioRadio)  //--NUEVO--//
 routerProducto.post('/huellaCarbono',getHuellaCarbono)
 routerProducto.put('/valoracion/calculoValoracion', valoracion)  
 routerProducto.put('/:idProducto/nuevaImagen', nuevaImagen) 
@@ -45,7 +52,7 @@ routerProducto.put('/:idProducto/crearComentario',createComentario)
 routerProducto.put('/:idProducto/editComentario/:idComentario',editComentario)
 routerProducto.put('/:idProducto/crearRespuestaComentario/:idComentario',crearRespuestaComentario)
 routerProducto.put('/:idProducto/deleteComentario/:idComentario',deleteComentario)
-routerProducto.get('/:idProducto/ubicacion', getUbiProducto)
+//routerProducto.get('/:idProducto/ubicacion', getUbiProducto)
 
 //--NUEVO
 routerProducto.post('/huellaCarbonoNuevo', getHuellaCarbonoNuevo)

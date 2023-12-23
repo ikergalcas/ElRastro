@@ -1,6 +1,39 @@
 import Producto from "../models/ProductoModel.js";
 import Usuario from "../models/UsuarioModel.js";
+import axios from 'axios'
 
+//------------------NUEVO------------------//
+// Consulta que se ejecuta en ShowProductos (inicio de la app) 
+// Buscamos productos que no esten en venta
+// Devolvemos ubi del usuario para centrar el mapa en su ubicacion
+export const getProductosInicioConLogin = async (req, res) => {
+    try {
+        const { idUsuario } = req.params
+
+        const productos = await Producto.find({vendido : false})
+
+        const usuario = await Usuario.findById(idUsuario)
+
+        res.json({ productos : productos, usuario : usuario})
+    } catch (error) {
+        console.log("error al obtener productos en venta")
+        res.status(500).json({ message: 'Error al obtener productos en venta' })
+    }
+}
+
+//------------------NUEVO------------------//
+// Consulta que se ejecuta en ShowProductos (inicio de la app) 
+// Buscamos productos que no esten en venta
+export const getProductosInicio = async (req, res) => {
+    try {
+        const productos = await Producto.find({vendido : false})
+
+        res.json(productos)
+    } catch (error) {
+        console.log("error al obtener productos en venta")
+        res.status(500).json({ message: 'Error al obtener productos en venta' })
+    }
+}
 
 //------------------NUEVO------------------//
 export const cerrarPuja = async (req, res) => {
@@ -10,7 +43,7 @@ export const cerrarPuja = async (req, res) => {
         const producto = await Producto.findById(idProducto);
 
         if (!producto) {
-            console.error('No se pudo actualizar el producto');
+            console.error('No se pudo obtener el producto');
             return res.status(500).json({ message: 'Error al cerrar la puja', error: 'No se pudo actualizar el producto' });
         }
 
@@ -204,31 +237,35 @@ export const getAllProductos = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener los productos' })
     }
 };
-
+/*
 export const getUbiProducto = async (req, res) => {
     try {
         const {idProducto} = req.params;
         const producto = await Producto.findById(idProducto);
         if(producto) {
-            const locationName = producto.ubicacion;
-            
-            const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}`;
-            
-            fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.length > 0) {
-                const firstResult = data[0];
-                const latitude = parseFloat(firstResult.lat);
-                const longitude = parseFloat(firstResult.lon);
-                res.json({latitude, longitude});
-                } else {
-                console.log("Ubicación de producto no encontrada");
-                }
-            })
-            .catch(error => {
-                console.error("Error en la solicitud de geocodificación: " + error);
-            });
+            if(producto.lat == -1) {    // Primera consulta a la ubi
+                const locationName = producto.ubicacion;
+                
+                const apiUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}`;
+                
+                fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                    const firstResult = data[0];
+                    const latitude = parseFloat(firstResult.lat);
+                    const longitude = parseFloat(firstResult.lon);
+                    res.json({latitude, longitude});
+                    } else {
+                    console.log("Ubicación de producto no encontrada");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error en la solicitud de geocodificación: " + error);
+                });
+            }
+        } else {
+            res.json({latitude : producto.lat, longitude : producto.lon})
         }
 
     } catch (error) {
@@ -236,7 +273,7 @@ export const getUbiProducto = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener la localización' })
     }
 };
-
+*/
 
 export const getProductoPorId = async (req, res) => {
     try {
@@ -253,17 +290,32 @@ export const getProductoPorId = async (req, res) => {
 
 export const createProducto = async (req, res) => {
     try {
-        const { descripcion, fechaCierre, foto, historialPujas, precioInicial, titulo, ubicacion, vendedor } = req.body
+        const { descripcion, fechaCierre, foto, precioInicial, titulo, ubicacion, vendedor } = req.body
         let maximaPuja= precioInicial;
+
+        const nominatimEndpoint = 'https://nominatim.openstreetmap.org/search';
+        const format = 'json'; 
+
+        const response = await axios.get(`${nominatimEndpoint}?q=${ubicacion}&format=${format}`);
+
+        const firstResult = response.data[0];
+        if (!firstResult) {
+            return res.status(404).json({ error: 'No se encontraron resultados.' });
+        }
+
+        const { lat, lon } = firstResult;
+
+
         const newProducto = new Producto({
             descripcion,
             fechaCierre,
             foto,
-            historialPujas,
-            maximaPuja,
             precioInicial,
+            maximaPuja,
             titulo,
             ubicacion,
+            lat,
+            lon,
             vendedor
         })
 
@@ -285,14 +337,33 @@ export const editProducto = async (req, res) => {
     try {
         const { id } = req.params;
         const updateData = req.body; //la info modificada
-        
-        //buscamos user y modificamos
-        const updatedProducto = await Producto.findByIdAndUpdate(id, updateData, {new: true});
+        console.log("precio: " + updateData.precioInicial)
+        const updatedProductAux = await Producto.findByIdAndUpdate(id, updateData, {new: true});
 
-        if(!updatedProducto){
-            return res.status(404).json({message : 'Producto no encontrado' });
+        if(!updatedProductAux){
+                return res.status(404).json({message : 'Producto no encontrado' });
         }
-        res.json(updatedProducto);
+        console.log("Producto editado: " + updatedProductAux)
+        //Compruebo si la ubicacion ha sido cambiada
+        const nominatimEndpoint = 'https://nominatim.openstreetmap.org/search';
+        const format = 'json'; 
+
+        const response = await axios.get(`${nominatimEndpoint}?q=${updatedProductAux.ubicacion}&format=${format}`);
+
+
+        const firstResult = response.data[0];
+        if (!firstResult) {
+            return res.status(404).json({ error: 'No se encontraron resultados.' });
+        }
+
+        const { lat, lon } = firstResult;
+        
+        if(lat != updatedProductAux.lat || lon != updatedProductAux.lon) {
+            const updatedProduct = await Producto.findByIdAndUpdate(id, {lat : lat, lon : lon}, {new: true});
+            res.json(updatedProduct)
+        } else {
+            res.json(updatedProductAux);
+        }
 
     } catch (error) {
         console.log('Error en la consulta de productos a la base de datos:', error);
@@ -338,15 +409,18 @@ export const getProductosDescripcion = async (req, res) => {
     try {
         const {descripcion}  = req.body;
         const listaProductos = (await Producto.find({
-            $or:[
-                {descripcion: {$regex: descripcion, $options:"i"}}, 
-                {titulo:{$regex: descripcion, $options:"i"}}
-            ]}));
+            $and: [
+                {$or:[
+                    {descripcion: {$regex: descripcion, $options:"i"}}, 
+                    {titulo:{$regex: descripcion, $options:"i"}}
+                ]}, {vendido : false}
+            ]
+            }));
 
         res.json(listaProductos);
 
     } catch (error) {
-        console.log('Error en la consulta de productos en la base de datos: ', error)
+        console.log('Error al filtrar productos por descripcion: ', error)
         res.status(500).json({ message: 'Error al obtener los productos' })
     }
 };
@@ -354,17 +428,173 @@ export const getProductosDescripcion = async (req, res) => {
 export const getProductosPrecioMax= async (req, res) => {
     try {
         const {precio}  = req.body;
-        const listaProductos = (await Producto.find({         
-                maximaPuja: {$lte: precio}
+        const listaProductos = (await Producto.find({   
+            $and: [
+                {maximaPuja: {$lte: precio}}, {vendido: false}
+            ]      
             }));
 
         res.json(listaProductos);
 
     } catch (error) {
-        console.log('Error en la consulta de productos en la base de datos: ', error)
+        console.log('Error al filtrar productos por precioMax: ', error)
         res.status(500).json({ message: 'Error al obtener los productos' })
     }
 };
+
+//--NUEVO--//
+export const getProductosRadio = async (req, res) => {
+    try {
+        const {radio, idUsuario} = req.body
+
+        const usuario = await Usuario.findById(idUsuario)
+        const productosSinFiltrar = await Producto.find({vendido : false})
+
+        if(usuario.lat != 0 || usuario.lat != 0) {  //Tiene ubicacion valida
+            const productosFiltrados = productosSinFiltrar.filter((producto) => {
+                const distancia = getDistanceFromLatLonInKm(
+                    usuario.lat,
+                    usuario.lon,
+                    producto.lat,
+                    producto.lon
+                )
+
+                return distancia <= radio;
+            })
+
+            res.json(productosFiltrados)
+        } else {
+            //Como no puedo filtrar lo devuelvo todo
+            res.json(productosSinFiltrar)
+        }
+
+    } catch (error) {
+        console.log('Error al filtrar productos por radio de proximidad: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+}
+
+export const getProductosDescripcionRadio = async (req, res) => {
+    try {
+        const {radio, idUsuario, descripcion} = req.body
+
+        const usuario = await Usuario.findById(idUsuario)
+        const productosPorDescripcion = (await Producto.find({
+            $and: [
+                {$or:[
+                    {descripcion: {$regex: descripcion, $options:"i"}}, 
+                    {titulo:{$regex: descripcion, $options:"i"}}
+                ]}, {vendido: false}
+            ]
+            }));
+
+        if(usuario.lat != 0 || usuario.lat != 0) {  //Tiene ubicacion valida
+            const productosFiltrados = productosPorDescripcion.filter((producto) => {
+                const distancia = getDistanceFromLatLonInKm(
+                    usuario.lat,
+                    usuario.lon,
+                    producto.lat,
+                    producto.lon
+                )
+
+                return distancia <= radio;
+            })
+
+            res.json(productosFiltrados)
+        } else {
+            //Como no puedo filtrar lo devuelvo todo
+            res.json(productosPorDescripcion)
+        }
+
+    } catch (error) {
+        console.log('Error al filtrar productos por radio de proximidad y descripcion: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+}
+
+export const getProductosPrecioMaxRadio= async (req, res) => {
+    try {
+        const {radio, idUsuario, precio}  = req.body;
+
+        const usuario = await Usuario.findById(idUsuario)
+        const productosPorPrecio = (await Producto.find({         
+            $and: [
+                {maximaPuja: {$lte: precio}}, {vendido : false}
+            ]  
+            }));
+
+        console.log("Filtrado por precio: " + productosPorPrecio)
+        
+        if(usuario.lat != 0 || usuario.lat != 0) {  //Tiene ubicacion valida
+            const productosFiltrados = productosPorPrecio.filter((producto) => {
+                const distancia = getDistanceFromLatLonInKm(
+                    usuario.lat,
+                    usuario.lon,
+                    producto.lat,
+                    producto.lon
+                )
+
+                return distancia <= radio;
+            })
+
+            console.log("Filtrado por precio y radio: " + productosFiltrados)
+
+            res.json(productosFiltrados)
+        } else {
+            //Como no puedo filtrar lo devuelvo todo
+            console.log("No ha podido filtrar por radio")
+            res.json(productosPorPrecio)
+        }
+
+    } catch (error) {
+        console.log('Error al filtrar productos por radio de proximidad y precioMax: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+};
+
+export const getProductosDescripcionPrecioRadio = async (req, res) => {
+    try {
+        const {descripcion, precio, radio, idUsuario}  = req.body;
+
+        const usuario = await Usuario.findById(idUsuario)
+        const productosFiltrados1 = (await Producto.find({
+            $and: [
+                {$or:[
+                    {descripcion: {$regex: descripcion, $options:"i"}}, 
+                    {titulo:{$regex: descripcion, $options:"i"}}
+                ]},
+                { maximaPuja: {$lte: precio} }, { vendido : false }
+            ]
+            }));
+
+        console.log("Productos filtrados sin radio: " + productosFiltrados1)
+
+        if(usuario.lat != 0 || usuario.lat != 0) {  //Tiene ubicacion valida
+            const productosFiltrados2 = productosFiltrados1.filter((producto) => {
+                const distancia = getDistanceFromLatLonInKm(
+                    usuario.lat,
+                    usuario.lon,
+                    producto.lat,
+                    producto.lon
+                )
+
+                return distancia <= radio;
+            })
+            console.log("Productos filtrados con radio: " + productosFiltrados2)
+
+            res.json(productosFiltrados2)
+        } else {
+            //Como no puedo filtrar lo devuelvo todo
+            res.json(productosFiltrados1)
+        }
+
+    } catch (error) {
+        console.log('Error al filtrar productos por radio de proximidad, precioMax y descripcion: ', error)
+        res.status(500).json({ message: 'Error al obtener los productos' })
+    }
+}
+
+//--NUEVO//
 
 export const getProductosDescripcionPrecio = async (req, res) => {
     try {
@@ -506,7 +736,7 @@ export const getHuellaCarbonoNuevo = async (req, res) => {
         const vendedor = await Usuario.findById(producto.vendedor)
 
 
-        var latO;
+/*        var latO;
         var lonO;
         var latD;
         var lonD;
@@ -579,7 +809,8 @@ export const getHuellaCarbonoNuevo = async (req, res) => {
         })
         .catch(error => {
             console.error("Error en la solicitud de geocodificación2: " + error);
-        });
+        });*/
+        res.json({"vendedor" : vendedor, "producto": producto})
 
     } catch (error) {
         

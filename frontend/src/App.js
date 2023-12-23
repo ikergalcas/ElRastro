@@ -2,10 +2,8 @@ import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 
-import Productos from "./productos/ShowProductos.js"
 import ProductosInicial from "./pages/ProductosInicial.jsx"
 import Login from "./login/Login.js"
-import ShowUsuario from "./pages/ShowUsuario.jsx"
 import MiProductoBloque from './pages/ProductoBloque.jsx';
 
 import ProductosUsuario from './productos/ShowProductosUsuario.js'

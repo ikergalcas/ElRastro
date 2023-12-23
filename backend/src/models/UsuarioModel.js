@@ -11,6 +11,14 @@ const userSchema = new mongoose.Schema({
     ubicacion:{
         type: String,
     },
+    lat: {
+        type: Number,
+        default: 0
+    },
+    lon: {
+        type: Number,
+        default: 0
+    },
     username: {
         type: String,
         //(en principio lo quito pq en la bdd no esta puesto asi)

@@ -27,6 +27,8 @@ const CompEditProducto = () => {
                 setProducto(data);
                 setDescripcion(data.descripcion || '');
                 setUbicacion(data.ubicacion || '');
+                setPrecio(data.precioInicial || '');
+                setFechaCierre(data.fechaCierre || '');
             } else {
                 console.error('Error al obtener el producto:', response.statusText);
             }
@@ -50,21 +52,24 @@ const CompEditProducto = () => {
 
         if (producto.pujas && producto.pujas.length === 0) {
             // Agregar campos adicionales si se cumple la condición
-            var raw = {
-                descripcion: descripcion,
-                ubicacion: ubicacion,
-                precio: precio,
-                fechaCierre: fechaCierre,
-            };
+            alert("Dentro IF")
+            var raw = JSON.stringify({
+                "descripcion": descripcion,
+                "ubicacion": ubicacion,
+                "precioInicial": precio,
+                "fechaCierre": fechaCierre,
+            });
+            
         } else {
             var raw = JSON.stringify({
-                descripcion: descripcion,
-                ubicacion: ubicacion,
+                "descripcion": descripcion,
+                "ubicacion": ubicacion,
             })
         }
-
         try {
             // Hacer la solicitud PUT al backend
+            alert("antes del fetch")
+            console.log("Antes del fetch")
             const response = await fetch(`http://localhost:3001/productos/${idProducto}`, {
                 method: 'PUT',
                 headers: {
@@ -73,12 +78,14 @@ const CompEditProducto = () => {
                 body: raw
                 ,
             });
-
             if (response.ok) {
                 // Manejar la respuesta exitosa, redirigir o realizar otras acciones según sea necesario
+                console.log("Fetch perfe")
+                alert("Fetch perfe")
                 console.log('Producto editado con éxito');
                 navigate(`/detallesProducto/${producto.vendedor}/${idProducto}`);
             } else {
+                alert("Fetch error")
                 console.error('Error al editar el producto:', response.statusText);
             }
         } catch (error) {
@@ -89,62 +96,64 @@ const CompEditProducto = () => {
     return(
         <div>
             <NavbarPage></NavbarPage>
-            <div className="container">
-                <div id="parte1" className="formularioCrear">
-                    <h2>Editar {producto.titulo}</h2>
+            {producto && (
+                <div className="container">
+                    <div id="parte1" className="formularioCrear">
+                        <h2>Editar {producto.titulo}</h2>
 
-                    <form onSubmit={editar} id="formularioParte1">
-                        <a>Descripción</a>
-                        <input
-                        id="descripcion"
-                        value={descripcion}
-                        onChange={ (e) => setDescripcion(e.target.value)}
-                        type="text"
-                        className="form-control"
-                        aria-label="Ingrese la nueva descripcion"
-                        />
-                        <br/>
-
-                        <a>Ubicación</a>
-                        <input
-                        id="ubicacion"
-                        value={ubicacion}
-                        onChange={ (e) => setUbicacion(e.target.value)}
-                        type="text"
-                        className="form-control"
-                        aria-label="Ingrese la nueva ubicacion del objeto"
-                        />
-                        <br/>
-                        {producto.pujas && producto.pujas.length == 0 && (
-                        <div>
-                            <a>Precio inicial</a>
+                        <form onSubmit={editar} id="formularioParte1">
+                            <a>Descripción</a>
                             <input
-                            id="precio"
-                            value={precio}
-                            onChange={ (e) => setPrecio(e.target.value)}
-                            type="number"
+                            id="descripcion"
+                            value={descripcion}
+                            onChange={ (e) => setDescripcion(e.target.value)}
+                            type="text"
                             className="form-control"
-                            aria-label="Ingrese el precio inicial de la subasta"
+                            aria-label="Ingrese la nueva descripcion"
                             />
                             <br/>
 
-                            <a>Fecha de cierre</a>
+                            <a>Ubicación</a>
                             <input
-                            id="fechaCierre"
-                            value={fechaCierre}
-                            onChange={ (e) => setFechaCierre(e.target.value)}
-                            type="date"
+                            id="ubicacion"
+                            value={ubicacion}
+                            onChange={ (e) => setUbicacion(e.target.value)}
+                            type="text"
                             className="form-control"
-                            aria-label="Ingrese la fecha de cierre de la subasta"
+                            aria-label="Ingrese la nueva ubicacion del objeto"
                             />
                             <br/>
-                        </div>   
-                        )}
-                        <button type="submit" className='btn btn-outline-secondary  mt-4'>Guardar</button> <br/>
-                        <button onClick={volverAtras} className='btn btn-secondary mt-2'> Volver atrás</button>
-                    </form>
+                            {producto.pujas && producto.pujas.length == 0 && (
+                            <div>
+                                <a>Precio inicial</a>
+                                <input
+                                id="precio"
+                                value={precio}
+                                onChange={ (e) => setPrecio(e.target.value)}
+                                type="number"
+                                className="form-control"
+                                aria-label="Ingrese el precio inicial de la subasta"
+                                />
+                                <br/>
+
+                                <a>Fecha de cierre</a>
+                                <input
+                                id="fechaCierre"
+                                value={fechaCierre.substring(0,10)}
+                                onChange={ (e) => setFechaCierre(e.target.value)}
+                                type="date"
+                                className="form-control"
+                                aria-label="Ingrese la fecha de cierre de la subasta"
+                                />
+                                <br/>
+                            </div>   
+                            )}
+                            <button type="submit" className='btn btn-outline-secondary  mt-4'>Guardar</button> <br/>
+                            <button onClick={volverAtras} className='btn btn-secondary mt-2'> Volver atrás</button>
+                        </form>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     )
 
