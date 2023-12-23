@@ -7,14 +7,33 @@ function NavbarPage() {
   const {idUsuario} = useParams()
   const [nombreUsuario,setNombreUsuario]=useState('')
   const [foto,setFoto]=useState('')
+  const [pendientes, setPendientes] = useState(0)
 
   useEffect(() => {
     if(localStorage.getItem('objetoToken')!=undefined){
       comprobarConexion() ///AJUSTAR A ESTE PROYECTO
       setNombreUsuario(JSON.parse(localStorage.getItem('objetoToken')).correo)
       setFoto(JSON.parse(localStorage.getItem('objetoToken')).foto)
+      getPendientes()
     } 
   }, []);
+
+  const getPendientes = async () => {
+    fetch(`http://localhost:3003/usuarios/${idUsuario}/productos/pendientes`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }).then(response => response.json())
+    .then(data => {
+        setPendientes(data.length);
+        console.log(data.length);
+    })
+    .catch(error => {
+        console.error('Error al obtener el usuario:', error);
+    })
+}
+
 
   const comprobarConexion = async () => {
     fetch(`http://localhost:3003/usuarios/conexion/${idUsuario}/${JSON.parse(localStorage.getItem('objetoToken')).tokenId}/${JSON.parse(localStorage.getItem('objetoToken')).tokenCompleto}`, {  
@@ -56,6 +75,8 @@ function cerrarSesion () {
           </Nav.Link>
           <Nav.Link href={`/nuevoProducto/${idUsuario}`} className='navbar-link' style={{marginLeft: '10vmin'}}> Crear un producto
           </Nav.Link> 
+          {pendientes > 0 && (<Nav.Link href={`../productosUsuario/${idUsuario}/pendientes`} className='navbar-link' style={{marginLeft: '10vmin'}}> Pendiente de pago ({pendientes})
+          </Nav.Link> )}
         </Nav>
         <NavItem>{nombreUsuario}</NavItem>
         <Nav>

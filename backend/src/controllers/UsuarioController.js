@@ -186,6 +186,19 @@ export const getProductosUsuario = async (req, res) => {
             listaProductos = (await Producto.find({vendedor : idUsuario, vendido : false}).sort({fechaCierre: -1}));
         } else if (filtro == "comprados") {
             listaProductos = (await Producto.find({comprador : idUsuario}).sort({fechaCierre: -1}));
+        } else if (filtro == "pendientes") {
+            const productos = await Producto.find();
+            for (const producto of productos) {
+                for(const puja of producto.pujas) {
+                    if (puja.usuario == idUsuario && 
+                        !listaProductos.includes(producto) && 
+                        puja.precio == producto.maximaPuja &&
+                        producto.vendido &&
+                        producto.comprador == null) {
+                        listaProductos.push(producto)
+                    }
+                }
+            }
         }
 
         res.json(listaProductos);
@@ -233,6 +246,23 @@ export const getProductosUsuarioDescripcion = async (req, res) => {
                 {descripcion: {$regex: descripcion, $options:"i"}}, 
                 {titulo:{$regex: descripcion, $options:"i"}}
             ]}).sort({fechaCierre: -1}));
+        } else if (filtro == "pendientes") {
+            const productos = await Producto.find({
+                $or:[
+                {descripcion: {$regex: descripcion, $options:"i"}}, 
+                {titulo:{$regex: descripcion, $options:"i"}}
+            ]});
+            for (const producto of productos) {
+                for(const puja of producto.pujas) {
+                    if (puja.usuario == idUsuario && 
+                        !listaProductos.includes(producto) && 
+                        puja.precio == producto.maximaPuja &&
+                        producto.vendido &&
+                        producto.comprador == null) {
+                        listaProductos.push(producto)
+                    }
+                }
+            }
         }
 
         res.json(listaProductos);
@@ -264,6 +294,19 @@ export const getProductosUsuarioPrecioMax= async (req, res) => {
             listaProductos = (await Producto.find({vendedor : idUsuario, vendido : false, maximaPuja: {$lte: precio}}).sort({fechaCierre: -1}));
         } else if (filtro == "comprados") {
             listaProductos = (await Producto.find({comprador : idUsuario, maximaPuja: {$lte: precio}}).sort({fechaCierre: -1}));
+        } else if (filtro == "pendientes") {
+            const productos = await Producto.find({maximaPuja: {$lte: precio}});
+            for (const producto of productos) {
+                for(const puja of producto.pujas) {
+                    if (puja.usuario == idUsuario && 
+                        !listaProductos.includes(producto) && 
+                        puja.precio == producto.maximaPuja &&
+                        producto.vendido &&
+                        producto.comprador == null) {
+                        listaProductos.push(producto)
+                    }
+                }
+            }
         }
 
         res.json(listaProductos);
@@ -311,6 +354,23 @@ export const getProductosUsuarioDescripcionPrecioMax = async (req, res) => {
                 {descripcion: {$regex: descripcion, $options:"i"}}, 
                 {titulo:{$regex: descripcion, $options:"i"}}
             ], maximaPuja: {$lte: precio}}).sort({fechaCierre: -1}));
+        } else if (filtro == "pendientes") {
+            const productos = await Producto.find({
+                $or:[
+                {descripcion: {$regex: descripcion, $options:"i"}}, 
+                {titulo:{$regex: descripcion, $options:"i"}}
+            ], maximaPuja: {$lte: precio}});
+            for (const producto of productos) {
+                for(const puja of producto.pujas) {
+                    if (puja.usuario == idUsuario && 
+                        !listaProductos.includes(producto) && 
+                        puja.precio == producto.maximaPuja &&
+                        producto.vendido &&
+                        producto.comprador == null) {
+                        listaProductos.push(producto)
+                    }
+                }
+            }
         }
 
         res.json(listaProductos);

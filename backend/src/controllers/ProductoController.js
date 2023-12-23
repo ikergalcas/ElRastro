@@ -83,6 +83,7 @@ export const checkeo = async (req, res) => {
         const producto = await Producto.findById(idProducto);
 
         console.log("Despues de consulta: " + producto)
+        
         if (!producto) {
             console.error('No se pudo actualizar el producto');
             return res.status(500).json({ message: 'Error al cerrar la puja', error: 'No se pudo actualizar el producto' });
@@ -98,17 +99,33 @@ export const checkeo = async (req, res) => {
         }
 
         if(Date.now() > producto.fechaCierre && !producto.vendido) {
-            //SE HA CERRADO LA SUBASTA -> DEVUELVO EL OBJETO COMPRADOR
-            
-            console.log("Id user: " + user)
-            var comprador = await Usuario.findById(user)
-            
-            //ASIGNAMOS PONEMOS VENDIDO A TRUE
-            //Con new: true hago que devuelva el objeto actualizado y de esta manera lo devuelvo en el res.json
-            var actualizado = await Producto.findByIdAndUpdate(idProducto, { vendido: true }, { new: true })
-            console.log("Producto vendido: " + actualizado)
-            
-            res.json({producto : actualizado, idUserMaxPuja : user, comprador : comprador})
+            if (user == -1) {
+                //SE HA CERRADO LA SUBASTA SIN NINGUNA PUJA
+                console.log("Usuerio: " + user)
+                console.log("Subasta desierta, bajando precio inicial")
+
+                //BAJAMOS PRECIO INICIAL
+                //Con new: true hago que devuelva el objeto actualizado y de esta manera lo devuelvo en el res.json
+                var precioRebajado = producto.precioInicial*0.9
+                precioRebajado = precioRebajado.toFixed(2)
+                const fechaActual = new Date()
+                const fechaActualizada = fechaActual.setDate(fechaActual.getDate() + 10)
+                var actualizado = await Producto.findByIdAndUpdate(idProducto, { precioInicial : precioRebajado, fechaCierre : fechaActualizada, maximaPuja : precioRebajado }, { new: true })
+                console.log("Producto vendido: " + actualizado)
+                
+                res.json({producto : actualizado, idUserMaxPuja : user, comprador : comprador})
+            } else {
+                //SE HA CERRADO LA SUBASTA -> DEVUELVO EL OBJETO COMPRADOR
+                console.log("Id user: " + user)
+                var comprador = await Usuario.findById(user)
+                
+                //ASIGNAMOS PONEMOS VENDIDO A TRUE
+                //Con new: true hago que devuelva el objeto actualizado y de esta manera lo devuelvo en el res.json
+                var actualizado = await Producto.findByIdAndUpdate(idProducto, { vendido: true }, { new: true })
+                console.log("Producto vendido: " + actualizado)
+                
+                res.json({producto : actualizado, idUserMaxPuja : user, comprador : comprador})
+            }
         } else {
             //NO SE HA CERRADO LA SUBASTA -> DEVUELVO COMPRADOR A NULL
             console.log("Usuario: " + user)

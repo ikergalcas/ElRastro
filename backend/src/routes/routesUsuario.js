@@ -1,14 +1,8 @@
 import express from 'express'
 import multer from 'multer'
 import cloudinary from 'cloudinary'
+import streamifier from 'streamifier'
 
-
-const upload = multer({ dest: 'uploads/' });  // Indica el directorio donde multer debe almacenar los archivos temporales
-cloudinary.config({
-    cloud_name: 'dten77l85',
-    api_key: '829615256525372',
-    api_secret: 'Km6kFadj1HOmPf6mYYyyd6KIMeQ'
-});
 
 import { getAllUsuarios, createUsuario, editUsuario, deleteUsuario,getUsuarioNombre,getUsuarioValoracion, 
     getUbiUsuario,getCompradores, getUsuarioPorId, getProductosUsuario, getProductosUsuarioDescripcion, getProductosUsuarioPrecioMax, getProductosUsuarioDescripcionPrecioMax} from '../controllers/UsuarioController.js'
@@ -40,28 +34,41 @@ routerUsuario.get('/loginToken/:token', verificarTokenGoogle)
 routerUsuario.get('/conexion/:idUsuario/:tokenId/:token',verificarConexion)
 //----NUEVO - TEMPORAL----//
 
-routerUsuario.post('/subirFoto', upload.single('foto'), async (req, res) => {
-    try {
-      const foto = req.file;
-  
-      // Verifica si multer ha creado el archivo temporal correctamente
-      if (!foto) {
-        return res.status(400).json({ error: 'No se proporcionó el archivo de imagen.' });
-      }
-  
-      // Subir la foto a Cloudinary
-      const cloudinaryResponse = await cloudinary.uploader.upload(foto.path, {
-        // Puedes agregar opciones adicionales aquí
+const fileUpload = multer();
+cloudinary.config({
+  cloud_name: 'dten77l85',
+  api_key: '829615256525372',
+  api_secret: 'Km6kFadj1HOmPf6mYYyyd6KIMeQ'
+});
+
+routerUsuario.post('/subirFoto', fileUpload.single('foto'), function (req, res, next) {
+  let streamUpload = (req) => {
+      return new Promise((resolve, reject) => {
+          let stream = cloudinary.uploader.upload_stream(
+            (result, error) => {
+              if (result) {
+                resolve(result);
+              } else {
+                reject(error);
+              }
+            }
+          );
+
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
       });
-  
-      // Puedes hacer algo con la respuesta de Cloudinary, como almacenar la URL en tu base de datos
-      console.log('Foto subida a Cloudinary:', cloudinaryResponse.url);
-  
-      res.status(200).json({ message: 'Imagen subida correctamente', imageUrl: cloudinaryResponse.url});
+  };
+
+  async function upload(req) {
+    try {
+      let result = await streamUpload(req);
+      res.status(200).json({ message: 'Imagen subida correctamente', imageUrl: result.url});
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Error al subir la foto a Cloudinary' });
+      console.log('Error al subir la imagen: ', error)
+      res.status(500).json({ message: 'Error al subir la imagen:', error});
     }
-  });
+  }
+
+  upload(req);
+});
 
 export default routerUsuario

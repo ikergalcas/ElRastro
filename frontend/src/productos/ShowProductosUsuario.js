@@ -126,7 +126,7 @@ const ShowProductosVendidos = () => {
             </div>
             <div className="row" style={{justifyContent: 'center'}}>  
                 {productos.length==0 ? (
-                    <p> No existen productos vendidos.</p> 
+                    <p> No existen productos que cumplan esta condición.</p> 
                 ) : productos.map(producto => (
                     <div class="card tarjeta col-md-3 col-sm-2" >
                         <div className="card-body">
