@@ -185,6 +185,7 @@ const CompShowComentarios = () => {
 
     //METER LA LISTITA DE COMENTARIOS
     return (
+
         <div>
         {producto.vendedor !==  idUsuario && (
             <div>
@@ -208,7 +209,7 @@ const CompShowComentarios = () => {
             </div>
             )}
         <b>COMENTARIOS</b>
-                <div class="card" style={{width: '70%'}}>
+                <div class="card" style={{width: '90%', marginLeft: '5%', marginRight: '5%', marginTop: '5%'} }>
             <div class="card body" >
                 {Array.isArray(comentarios) && comentarios.length > 0 ? (
                 <ul class="list-group list-group-flush">
@@ -228,7 +229,7 @@ const CompShowComentarios = () => {
                         </p>
                         )}
                         <p>
-                              {//---Borrar Puja---//
+                              {//---Borrar coment---//
                                         //Puedo borrar la puja si soy el creador
                                         //      <input type="hidden" name="idUsuario" value={producto.vendedor} />
                                         //             <input type="hidden" name="idPuja" value={puja._id} />
@@ -236,7 +237,7 @@ const CompShowComentarios = () => {
                                         idUsuario == comentario.usuario && (
                                             <form onSubmit = {borrarComentario}>
                                                 <input type="hidden" name="idComentario" id="idComentario" value={comentario._id} />
-                                                <button className='btn btn-secondary' type='submit'>Borrar Comentario</button>
+                                                <button className='btn btn-secondary' type='submit'><i className="fa fa-trash"></i></button>
                                             </form>
                                         )}
                         </p>

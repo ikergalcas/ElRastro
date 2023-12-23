@@ -160,7 +160,7 @@ const CompShowPujas = () => {
 
 
             <b style={{marginLeft: '10%'}}>FECHA FINAL DE PUJA:</b> {fechaFormateada}
-            <div className="card" style={{width: '70%', marginLeft: '10%'}}>
+            <div className="card" style={{width: '90%', marginLeft: '5%', marginRight: '%', marginTop: '5%'}}>
                 <div className="card body">
                     {Array.isArray(pujas) && pujas.length > 0 ? (
                     <ul className="list-group list-group-flush">
@@ -181,7 +181,7 @@ const CompShowPujas = () => {
                                         idUsuario == puja.usuario && (
                                             <form onSubmit = {borrarPuja}>
                                                 <input type="hidden" name="idPuja" id="idPuja" value={puja._id} />
-                                                <button className='btn btn-secondary' type='submit'>Borrar Puja</button>
+                                                <button className='btn btn-secondary' type='submit'><i className="fa fa-trash"></i></button>
                                             </form>
                                         )}
                             </p>

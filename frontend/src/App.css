@@ -123,3 +123,58 @@
   width: 90%;
   margin-right: 2%;
 }
+
+.container-fluid {
+  padding: 20px;
+  background-color: #f4f7fa; /* Fondo claro para resaltar el contenido */
+}
+
+.row {
+  margin-bottom: 20px;
+}
+
+.col-5 {
+  padding: 1.5vw;
+  background-color: #fff; /* Fondo blanco para los componentes */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera para profundidad */
+  border-radius: 8px; /* Bordes redondeados */
+  margin-left:  2vw;
+}
+
+.col-3 {
+  padding: 1.5vw;
+  background-color: #ffffff;
+  box-shadow: 0 1vw 2vw rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  /* Ajusta el margin-right para dejar espacio entre columnas */
+  margin-right: 2vw;
+  margin-left:  1vw;
+}
+
+
+/* Asegúrate de que el último elemento de la fila no tenga margin-right */
+.col-4:last-child {
+  margin-right: 0;
+}
+
+.col-6:not(:last-child) {
+  margin-right: 15px; /* Espacio entre columnas */
+}
+
+/* Estilos para títulos de secciones */
+.section-title {
+  color: #6194ca; /* Azul para títulos */
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Agregar alguna transición suave a los botones u otros elementos interactivos */
+button {
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #6584a4; /* Un azul más oscuro al pasar el mouse */
+}
+
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css');
