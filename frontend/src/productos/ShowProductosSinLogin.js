@@ -33,7 +33,12 @@ const ShowProductosSinLogin = () => {
 
 return(
     <div>
-        <div className="row" style={{justifyContent: 'center',marginTop: '3%'}}>  
+        <div className='row'>
+            <div className='col' style={{textAlign:'center'}}>
+                <h1>ElRastro</h1>
+            </div>
+        </div>
+        <div className="row" style={{justifyContent: 'center'}}>  
             {productos.length==0 ? (
                 <p> No hay productos en subasta ahora mismo</p> 
             ) : productos.map(producto => (

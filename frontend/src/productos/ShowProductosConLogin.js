@@ -234,7 +234,12 @@ const ShowProductosConLogin = () => {
 
 return(
     
-    <div className='container' style={{marginTop: '3%'}}>
+    <div className='container'>
+        <div className='row'>
+            <div className='col' style={{textAlign:'center'}}>
+                <h1>ElRastro</h1>
+            </div>
+        </div>
         <div className="row"> 
             <div className='col 8'>
                 {(usuario && usuario.lat !== undefined && usuario.lon !== undefined &&
