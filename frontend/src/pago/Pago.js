@@ -18,37 +18,6 @@ const CompPago = () => {
         getDatos()  
     }, []) 
     
-    /*useEffect(() => {
-        if (producto) {
-
-            paypal.current.innerHTML = '';
-
-            window.paypal.Buttons({
-                createOrder: (data, actions, err) => {
-                    return actions.order.create ({
-                        intent: "CAPTURE",
-                        purchase_units: [
-                            {
-                                description: "Producto comprado",
-                                amount: {
-                                    currency_code: "EUR",
-                                    value: (precioFinal)
-                                }
-                            }
-                        ],
-                    })
-                },
-                onApprove: async (data, actions) => {
-                    const order = await (actions.order.capture())
-                    console.log(order)
-                },
-                onError : (err) => {
-                    console.log(err)
-                }
-            }).render(paypal.current)
-        }
-    }, [precioFinal]);*/
-
     useEffect(() => {
         if (producto) {
 
@@ -60,7 +29,7 @@ const CompPago = () => {
                         intent: "CAPTURE",
                         purchase_units: [
                             {
-                                description: "Producto comprado",
+                                description: producto.titulo,
                                 amount: {
                                     currency_code: "EUR",
                                     value: (precioFinal)
@@ -71,15 +40,38 @@ const CompPago = () => {
                 },
                 onApprove: async (data, actions) => {
                     const order = await (actions.order.capture())
+                    aniadirComprador()
                     console.log(order)
                 },
                 onError : (err) => {
+                    alert("Ha habido algun fallo con la compra")
                     console.log(err)
                 }
             }).render(paypal.current)
         }
     }, [precioFinal]);
 
+    const aniadirComprador = async () =>{
+        var raw = JSON.stringify({
+            "comprador": idUsuario,
+          });
+
+        fetch(`http://localhost:3001/productos/${idProducto}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: raw
+        }).then(response => response.json())
+          .then(result => {
+                console.log(result)
+                alert ("Compra realizada con exito")
+                window.location.href = `/myUserInfo/${idUsuario}`;
+            })
+            .catch(error => {
+                console.error('Error al crear producto:', error);
+            });
+    }   
 
     const getDatos = async () =>{
         var raw = JSON.stringify({
