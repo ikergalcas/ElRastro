@@ -56,7 +56,7 @@ const CompPago = () => {
             "comprador": idUsuario,
           });
 
-        fetch(`http://localhost:3001/productos/${idProducto}`, {
+        fetch(`https://backend-rastro.vercel.app/productos/${idProducto}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ const CompPago = () => {
             "transporte" : transporte
         })
 
-        fetch('http://localhost:3001/productos/huellaCarbonoNuevo', {
+        fetch('https://backend-rastro.vercel.app/productos/huellaCarbonoNuevo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ const CompPago = () => {
                 "transporte" : transporte
             })
     
-            fetch('http://localhost:3001/productos/huellaCarbono', {
+            fetch('https://backend-rastro.vercel.app/productos/huellaCarbono', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

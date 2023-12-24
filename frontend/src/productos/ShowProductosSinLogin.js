@@ -15,7 +15,7 @@ const ShowProductosSinLogin = () => {
     const getProductos = async () => {
         // Hacer la solicitud para obtener productos desde el backend
         // Mostramos todos los productos cuya subasta sigue abierta (vendido = false)
-        fetch('http://localhost:3001/productos/inicio/mostrar', {
+        fetch('https://backend-rastro.vercel.app/productos/inicio/mostrar', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
