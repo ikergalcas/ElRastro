@@ -6,9 +6,9 @@ const CompPago = () => {
     
     const paypal = useRef()
     const { idUsuario, idProducto } = useParams()
-
     const [huellaCarbono, setHuellaCarbono] = useState()
     const [vendedor, setVendedor] = useState()
+    const [comprador, setComprador]=useState()
     const [producto, setProducto] = useState(null)
     const [transporte,setTransporte] = useState(null)
     const [extraHuella, setExtraHuella] =useState(null)
@@ -74,6 +74,9 @@ const CompPago = () => {
     }   
 
     const getDatos = async () =>{
+        if(transporte== undefined){
+            setTransporte("camion")
+        }
         var raw = JSON.stringify({
             "idComprador" : idUsuario,
             "idProducto" : idProducto,
@@ -90,7 +93,10 @@ const CompPago = () => {
         .then(data => {
             setProducto(data.producto)
             setVendedor(data.vendedor)
-           // setHuellaCarbono(data.huellaCarbono)
+            setComprador(data.comprador)
+            setHuellaCarbono(data.huellaCarbono)
+            setExtraHuella (data.huellaCarbono * 0.01)
+            setPrecioFinal(data.producto.maximaPuja + data.huellaCarbono * 0.01)
             console.log(data.producto)
             console.log(data.vendedor)
            // console.log(data.huellaCarbono)
@@ -101,7 +107,7 @@ const CompPago = () => {
         if(producto) {
             var raw = JSON.stringify({
                 "ubicacionOrigen" : producto.ubicacion,
-                "ubicacionDestino" : idProducto,
+                "ubicacionDestino" : comprador.ubicacion ,
                 "peso" : producto.peso,
                 "transporte" : transporte
             })
