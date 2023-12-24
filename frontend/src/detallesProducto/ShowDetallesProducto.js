@@ -266,30 +266,32 @@ const CompShowDetallesProducto = () => {
             <div className='row'>
                 <div className='col-1'></div>
                 <div className='col-4'>
-                   <div className='row'>
-                   <div className='container-fluid'>
-                        <div id="carouselExampleDark" className="carousel carousel-dark slide" data-bs-interval="false" style={{width: '80%'}}>
-                            <div className="carousel-inner">
-                                <div key={0} className={'carousel-item active'}>
-                                    <img src={producto.foto} className="d-block w-100" alt='...' style={{height: '35vmin'}} />
-                                </div>
-                                { (producto.imagenes && producto.imagenes.length > 0) && 
-                                    producto.imagenes.map((imagen, index) => (
-                                    <div key={index+1} className={'carousel-item'}>
-                                        <img src={imagen} className="d-block w-100" alt='...' style={{height: '35vmin'}} />
+                    <div className='row'>
+                        <div className='col-10'>
+                            <div className='card'>
+                                <div id="carouselExampleDark" className="carousel carousel-dark slide m-3" data-bs-interval="false">
+                                    <div className="carousel-inner">
+                                        <div key={0} className={'carousel-item active'}>
+                                            <img src={producto.foto} className="d-block w-100" alt='...' style={{height: '35vmin'}} />
+                                        </div>
+                                        { (producto.imagenes && producto.imagenes.length > 0) && 
+                                            producto.imagenes.map((imagen, index) => (
+                                            <div key={index+1} className={'carousel-item'}>
+                                                <img src={imagen} className="d-block w-100" alt='...' style={{height: '35vmin'}} />
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
+                                    <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+                                        <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span className="visually-hidden">Previous</span>
+                                    </button>
+                                        <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+                                        <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span className="visually-hidden">Next</span>
+                                    </button>
+                                </div>
                             </div>
-                            <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
-                                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span className="visually-hidden">Previous</span>
-                            </button>
-                                <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
-                                <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span className="visually-hidden">Next</span>
-                            </button>
                         </div>
-                    </div>
                     </div>
 
                     <div>

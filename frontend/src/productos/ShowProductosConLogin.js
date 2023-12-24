@@ -273,7 +273,7 @@ return(
                     <div className='col'>
                         {usuario && (
                             <div>
-                                <h3>BIENVENIDO {usuario.username}</h3> <br></br>
+                                <h3>Bienvenid@ {usuario.username}</h3> <br></br>
                             </div>
                         )}
                         <form className="form" onSubmit={buscarProductos}>
