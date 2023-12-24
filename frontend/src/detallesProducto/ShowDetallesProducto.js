@@ -156,6 +156,7 @@ const CompShowDetallesProducto = () => {
         .then(data => {
             setIdUserMaxPuja(data.id)
             setComprador(data.comprador)
+            window.location.reload();
         })
     }
 
@@ -263,17 +264,19 @@ const CompShowDetallesProducto = () => {
     return (
         <div className='container-fluid' style={{marginTop: '3%'}}>
             <div className='row'>
-                <div className='col'>
+                <div className='col-1'></div>
+                <div className='col-4'>
+                   <div className='row'>
                    <div className='container-fluid'>
-                        <div id="carouselExampleDark" className="carousel carousel-dark slide" data-bs-interval="false" style={{width: '50%'}}>
+                        <div id="carouselExampleDark" className="carousel carousel-dark slide" data-bs-interval="false" style={{width: '80%'}}>
                             <div className="carousel-inner">
                                 <div key={0} className={'carousel-item active'}>
-                                    <img src={producto.foto} className="d-block w-100" alt='...' style={{height: '30vmin'}} />
+                                    <img src={producto.foto} className="d-block w-100" alt='...' style={{height: '35vmin'}} />
                                 </div>
                                 { (producto.imagenes && producto.imagenes.length > 0) && 
                                     producto.imagenes.map((imagen, index) => (
                                     <div key={index+1} className={'carousel-item'}>
-                                        <img src={imagen} className="d-block w-100" alt='...' style={{height: '30vmin'}} />
+                                        <img src={imagen} className="d-block w-100" alt='...' style={{height: '35vmin'}} />
                                     </div>
                                 ))}
                             </div>
@@ -287,20 +290,21 @@ const CompShowDetallesProducto = () => {
                             </button>
                         </div>
                     </div>
+                    </div>
 
                     <div>
                         {idUsuario == vendedor._id ? 
                         <form id="formularioParte2" onSubmit={subirFotos} style={{marginTop: '3%', width: '90%'}} >
                             <div style={{flexdirection: 'row', width:'90%'}} >
                                 <input type="file" className="form-control" id="archivos2" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg" multiple/>
-                                <button className="btn btn-secondary mt-2" type="submit" >Cambiar foto</button>
+                                <button className="btn btn-secondary mt-2" type="submit" >Añadir nueva foto</button>
                             </div>
                         </form>
                         : null} 
                     </div> 
 
                     <div className='row'>
-                        <div className='col 2'>
+                        <div className='col-10'>
                             <div className='card text-center mt-3'>
                                 <div className='card-body'>
                                     <h3 className='card-title'>
@@ -322,10 +326,9 @@ const CompShowDetallesProducto = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className='col 2'></div>
                     </div>
                 </div>
-                <div className='col 8'>
+                <div className='col-6'>
                     <div className='row'>
                         <div className='col 2'>
                             <h3 className='card-title'>

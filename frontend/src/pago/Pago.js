@@ -141,7 +141,6 @@ const CompPago = () => {
         <div>
             <NavbarPage></NavbarPage>
             <div className="container mt-5">
-                <div className="card">
                 <div className="row">
                     <div className="col-6 bg-primary-subtle">
                     <div className="card-header bg-primary-subtle">
@@ -195,17 +194,16 @@ const CompPago = () => {
                         </div>
                     </div>
                     </div>
-                    <div className="col-6 bg-light">
-                    <div className="card-body">
-                        <h5>Credenciales pago paypal:</h5>
-                        <p>Correo: sb-bgakd28873605@personal.example.com </p>
-                        <p>Contraseña: 5U(^dThf </p>
-                        <div ref={paypal}></div>
-                    </div>
+                    <div className="col-5 bg-light">
+                        <div className="card-body">
+                            <h5>Credenciales pago paypal:</h5>
+                            <p>Correo: sb-bgakd28873605@personal.example.com </p>
+                            <p>Contraseña: 5U(^dThf </p>
+                            <div ref={paypal}></div>
+                        </div>
                     </div>
                 </div>
                 </div>
-            </div>
         </div>
     )
 }

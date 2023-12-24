@@ -75,9 +75,9 @@ const CompEditUser = () => {
 
                     <div className='col-8'> 
                         <div className= "container-fluid ">
-                            <a href={`/productosUsuario/${idUsuarioAjeno}/${idUsuario}/vendidos`} className='btn btn-success'>Productos vendidos</a>
+                            <a href={`/productosUsuario/${idUsuarioAjeno}/${idUsuario}/vendidos`} className='btn btn-outline-secondary'>Productos vendidos</a>
                             <br/>
-                            <a href={`/productosUsuario/${idUsuarioAjeno}/${idUsuario}/enVenta`} className='btn btn-success mt-2'>Productos en venta</a>
+                            <a href={`/productosUsuario/${idUsuarioAjeno}/${idUsuario}/enVenta`} className='btn btn-outline-secondary mt-2'>Productos en venta</a>
                         </div> 
                     </div>
 

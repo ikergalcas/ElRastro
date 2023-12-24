@@ -188,7 +188,8 @@ return(
             <form id="formularioParte2" onSubmit={subirFotoIdentificativa}>
                 <div style={{flexdirection: 'row'}} >
                     <a>Añade una foto representativa:</a><br/> <br/>
-                    <input type="file" className="form-control" id="archivo" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg"/>
+                    <input type="file" className="form-control" id="archivo" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg" required/>
+                    <br/>
                     <a>Añade las fotos que quieras sobre tu producto:</a><br/> <br/>
                     <input type="file" className="form-control" id="archivo2" aria-describedby="inputGroupFileAddon04" aria-label="Upload" accept=".png , .jpg" multiple/>
                     <button className="btn btn-secondary" type="submit">Enviar</button>
