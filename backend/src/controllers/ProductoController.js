@@ -656,31 +656,128 @@ function getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
 
 export const getHuellaCarbono = async (req, res) => {
     try {
-        let result=0;
-        const {transporte} = req.body;
-        switch (transporte) {
-            case "avion":
-                result=1;
-                break;
-
-            case "barco":
-                result=2;
-                break;
-
-            case "camion":
-                result=3;
-                break;
-            case "tren":
-                result=4;
-                break;
-            default: 
-                result=0;
-                break;
-        }
-        /*const {ubicacionOrigen} = req.body;
+        const {ubicacionOrigen} = req.body;
         const {ubicacionDestino} =req.body;
         const {peso} = req.body;
         const {transporte} = req.body;
+        let transport;
+        switch (transporte) {
+            case "avion":
+                transport="plane";
+                break;
+            case "barco":
+                transport="ship";
+                break;
+
+            case "camion":
+                transport="truck ";
+                break;
+            case "tren":
+                transport="train";
+                break;
+            default: 
+                transport="truck";
+                break;
+        }
+        
+        var latO;
+        var lonO;
+        var latD;
+        var lonD;
+        var distancia;
+        console.log("u1", ubicacionOrigen, "u2", ubicacionDestino)
+        //const locationName = "Calle babor, 13, Malaga";
+        const apiUrl1 = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(ubicacionOrigen)}`;
+        const apiUrl2 = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(ubicacionDestino)}`;
+
+        fetch(apiUrl1) //peticion ubicacion Origen
+        .then(response => response.json())
+        .then(dataU1 => {
+            if (dataU1 && dataU1.length > 0) {
+            const firstResult = dataU1[0];
+            latO = parseFloat(firstResult.lat);
+            lonO = parseFloat(firstResult.lon);
+            } else {
+            console.log("Ubicación1 no encontrada");
+            }
+            ///////////
+            fetch(apiUrl2)//peticion ubicacion Destino
+            .then(response => response.json())
+            .then(dataU2 => {
+                if (dataU2 && dataU2.length > 0) {
+                const firstResult2 = dataU2[0];
+                latD= parseFloat(firstResult2.lat);
+                lonD = parseFloat(firstResult2.lon);
+                } else {
+                console.log("2: Ubicación2 no encontrada");
+                }
+                
+                distancia=getDistanceFromLatLonInKm (latO,lonO,latD,lonD);
+                console.log("distancia",distancia,"peso",peso, "transporte", transport)
+                //Datos para la peticion huella carbono
+                const dataHC = {
+                    "type": "shipping",
+                    "weight_value": peso,
+                    "weight_unit": "g",
+                    "distance_value": distancia,
+                    "distance_unit": "km",
+                    "transport_method": transport
+                };
+                  
+                const options = {
+                  method: 'POST',
+                  body: JSON.stringify(dataHC),
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer FAEJgvTeItGghJZhfiWJg'
+                  }
+                };
+                const apiUrl = `https://www.carboninterface.com/api/v1/estimates`;
+        
+                fetch(apiUrl,options) //peticion huella carbono
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    res.json({"carbon":data.data.attributes.carbon_g})
+                })  
+                .catch(error => {
+                    console.error("Error en la solicitud de huella de carbono: " + error);
+                });
+            })
+            .catch(error => {
+                console.error("Error en la solicitud de geocodificación1: " + error);
+            });
+        })
+        .catch(error => {
+            console.error("Error en la solicitud de geocodificación2: " + error);
+        });
+
+    } catch (error) {
+        
+    }
+};
+
+export const getHuellaCarbonoNuevo = async (req, res) => {
+    try {
+        
+        const {idComprador} = req.body;
+        const {idProducto} =req.body;
+        const {transporte} = req.body;
+        let transport;
+        if (transporte==null){
+            transport="truck"
+        }
+        console.log(transport);
+
+        const comprador = await Usuario.findById(idComprador)
+        const ubicacionOrigen = comprador.ubicacion
+
+        const producto = await Producto.findById(idProducto)
+        const peso = producto.peso
+        const ubicacionDestino = producto.ubicacion
+
+        const vendedor = await Usuario.findById(producto.vendedor)
+
         var latO;
         var lonO;
         var latD;
@@ -710,114 +807,11 @@ export const getHuellaCarbono = async (req, res) => {
                 latD= parseFloat(firstResult2.lat);
                 lonD = parseFloat(firstResult2.lon);
                 } else {
-                console.log("Ubicación2 no encontrada");
+                console.log("1: Ubicación2 no encontrada");
                 }
                 
                 distancia=getDistanceFromLatLonInKm (latO,lonO,latD,lonD);
-                
-                //Datos para la peticion huella carbono
-                const dataHC = {
-                    "type": "shipping",
-                    "weight_value": peso,
-                    "weight_unit": "g",
-                    "distance_value": distancia,
-                    "distance_unit": "km",
-                    "transport_method": `${transporte}`
-                };
-                  
-                const options = {
-                  method: 'POST',
-                  body: JSON.stringify(dataHC),
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer wxfLsXHV9f8w4hmXKSxA'
-                  }
-                };
-                const apiUrl = `https://www.carboninterface.com/api/v1/estimates`;
-        
-                fetch(apiUrl,options) //peticion huella carbono
-                .then(response => response.json())
-                .then(data => {
-                    res.json(data.data.attributes.carbon_g)
-                })  
-                .catch(error => {
-                    console.error("Error en la solicitud de huella de carbono: " + error);
-                });
-            })
-            .catch(error => {
-                console.error("Error en la solicitud de geocodificación1: " + error);
-            });
-        })
-        .catch(error => {
-            console.error("Error en la solicitud de geocodificación2: " + error);
-        });*/
-        console.log("Entra")
-        res.json({"carbon": result})
-
-    } catch (error) {
-        
-    }
-};
-
-export const getHuellaCarbonoNuevo = async (req, res) => {
-    try {
-        
-        const {idComprador} = req.body;
-        const {idProducto} =req.body;
-       // const {peso} = req.body;
-        const {transporte} = req.body;
-        const peso = 400;
-        let transport;
-        //const transporte = "plane"
-        if (transporte==null){
-            transport="truck"
-        }
-        console.log(transport);
-
-        const comprador = await Usuario.findById(idComprador)
-        const ubicacionOrigen = comprador.ubicacion
-
-        const producto = await Producto.findById(idProducto)
-        //const peso = producto.peso
-        const ubicacionDestino = producto.ubicacion
-
-        const vendedor = await Usuario.findById(producto.vendedor)
-
-
-/*        var latO;
-        var lonO;
-        var latD;
-        var lonD;
-        var distancia;
-
-        //const locationName = "Calle babor, 13, Malaga";
-        const apiUrl1 = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(ubicacionOrigen)}`;
-        const apiUrl2 = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(ubicacionDestino)}`;
-
-        fetch(apiUrl1) //peticion ubicacion Origen
-        .then(response => response.json())
-        .then(dataU1 => {
-            if (dataU1 && dataU1.length > 0) {
-            const firstResult = dataU1[0];
-            latO = parseFloat(firstResult.lat);
-            lonO = parseFloat(firstResult.lon);
-            } else {
-            console.log("Ubicación1 no encontrada");
-            }
-            ///////////
-            fetch(apiUrl2)//peticion ubicacion Destino
-            .then(response => response.json())
-            .then(dataU2 => {
-                if (dataU2 && dataU2.length > 0) {
-                const firstResult2 = dataU2[0];
-                latD= parseFloat(firstResult2.lat);
-                lonD = parseFloat(firstResult2.lon);
-                } else {
-                console.log("Ubicación2 no encontrada");
-                }
-                
-                distancia=getDistanceFromLatLonInKm (latO,lonO,latD,lonD);
-                
+                console.log("distancia", distancia)
                 //Datos para la peticion huella carbono
                 const dataHC = {
                     "type": "shipping",
@@ -833,7 +827,7 @@ export const getHuellaCarbonoNuevo = async (req, res) => {
                   body: JSON.stringify(dataHC),
                   headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer wxfLsXHV9f8w4hmXKSxA'
+                    'Authorization': 'Bearer FAEJgvTeItGghJZhfiWJg'
                   }
                 };
                 const apiUrl = `https://www.carboninterface.com/api/v1/estimates`;
@@ -845,7 +839,7 @@ export const getHuellaCarbonoNuevo = async (req, res) => {
                     console.log("Vendedor: " + vendedor) 
                     console.log("Producto: " + producto)
 
-                    res.json({"huellaCarbono" : data.data.attributes.carbon_g, "vendedor" : vendedor, "producto" : producto})
+                    res.json({"huellaCarbono" : data.data.attributes.carbon_g, "vendedor" : vendedor, "producto" : producto, "comprador": comprador})
                 })  
                 .catch(error => {
                     console.error("Error en la solicitud de huella de carbono: " + error);
@@ -857,8 +851,7 @@ export const getHuellaCarbonoNuevo = async (req, res) => {
         })
         .catch(error => {
             console.error("Error en la solicitud de geocodificación2: " + error);
-        });*/
-        res.json({"vendedor" : vendedor, "producto": producto})
+        });
 
     } catch (error) {
         
